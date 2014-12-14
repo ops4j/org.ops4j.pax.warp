@@ -1,0 +1,55 @@
+precisionScaleMap ::= [
+    "DECIMAL" : true,
+    default : false
+]
+
+lengthMap ::= [
+    "CHAR"  : true,
+    "VARCHAR" : true,
+    default : false
+]
+
+precisionScale(col) ::= <%
+<if(precisionScaleMap.(col.type))>
+(<col.precision>, <col.scale>)
+<endif>
+%>
+
+lengthSuffix(col) ::= <%
+<if(lengthMap.(col.type) && col.length)>
+(<col.length>)
+<endif>
+%>
+
+createColumn(col) ::= <<
+<col.name> <columnType(col.type)><precisionScale(col)><lengthSuffix(col)><if(!col.constraints.nullable)> NOT NULL<endif>
+>>
+
+createTable(action) ::= <<
+CREATE TABLE <action.tableName> (
+  <action.column:createColumn(); separator=",\n">
+);
+>>
+
+addPrimaryKey(action) ::= <<
+ALTER TABLE <action.tableName> ADD CONSTRAINT <action.constraintName> PRIMARY KEY (<action.column; separator=", ">);
+>>
+
+addForeignKey(action) ::= <<
+ALTER TABLE <action.baseTable.tableName> ADD CONSTRAINT <action.constraintName>  
+FOREIGN KEY (<baseColumns(action.columnPair)>) REFERENCES <action.referencedTable.tableName> (<referencedColumns(action.columnPair)>);
+>>
+
+
+baseColumns(columnPairs) ::= <%
+<columnPairs:baseColumn(); separator=", ">
+%>
+
+baseColumn(columnPair) ::= "<columnPair.base.columnName>"
+
+referencedColumns(columnPairs) ::= <%
+<columnPairs:referencedColumn(); separator=", ">
+%>
+
+referencedColumn(columnPair) ::= "<columnPair.referenced.columnName>"
+

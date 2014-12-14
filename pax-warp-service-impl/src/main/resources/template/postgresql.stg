@@ -1,0 +1,23 @@
+import "database.stg"
+
+columnTypeMap ::= [
+    "INT_8" : "SMALLINT",
+    "INT_16" : "SMALLINT",
+    "INT_32" : "INT",
+    "INT_64" : "BIGINT",
+    "DECIMAL" : "DECIMAL",
+    "FLOAT" : "REAL",
+    "DOUBLE" : "DOUBLE PRECISION",
+    "CHAR"  : "CHAR",
+    "VARCHAR" : "VARCHAR",
+    "BLOB"  : "BYTEA",
+    "CLOB" : "TEXT",
+    "BOOLEAN" : "BOOLEAN",
+    "DATE" : "DATE",
+    "TIME" : "TIME",
+    "TIMESTAMP" : "TIMESTAMP",
+    default : key
+]
+    
+columnType(type) ::= "<columnTypeMap.(type)>"
+    

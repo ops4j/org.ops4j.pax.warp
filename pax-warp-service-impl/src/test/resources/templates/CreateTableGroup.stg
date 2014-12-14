@@ -1,0 +1,9 @@
+createColumn(col) ::= <<
+<col.name> <col.type><if(col.constraints.nullable)> NOT NULL<endif>
+>>
+
+createTable(c) ::= <<
+CREATE TABLE <c.tableName> (
+  <c.column:createColumn(); separator=",\n">
+);
+>>
