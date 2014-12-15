@@ -10,7 +10,7 @@ lengthMap ::= [
 ]
 
 precisionScale(col) ::= <%
-<if(precisionScaleMap.(col.type))>
+<if(precisionScaleMap.(col.type) && col.precision)>
 (<col.precision>, <col.scale>)
 <endif>
 %>
@@ -28,16 +28,16 @@ createColumn(col) ::= <<
 createTable(action) ::= <<
 CREATE TABLE <action.tableName> (
   <action.column:createColumn(); separator=",\n">
-);
+)
 >>
 
 addPrimaryKey(action) ::= <<
-ALTER TABLE <action.tableName> ADD CONSTRAINT <action.constraintName> PRIMARY KEY (<action.column; separator=", ">);
+ALTER TABLE <action.tableName> ADD PRIMARY KEY (<action.column; separator=", ">)
 >>
 
 addForeignKey(action) ::= <<
 ALTER TABLE <action.baseTable.tableName> ADD CONSTRAINT <action.constraintName>  
-FOREIGN KEY (<baseColumns(action.columnPair)>) REFERENCES <action.referencedTable.tableName> (<referencedColumns(action.columnPair)>);
+FOREIGN KEY (<baseColumns(action.columnPair)>) REFERENCES <action.referencedTable.tableName> (<referencedColumns(action.columnPair)>)
 >>
 
 

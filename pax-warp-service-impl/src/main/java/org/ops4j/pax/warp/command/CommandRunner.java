@@ -25,8 +25,10 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
+import javax.sql.DataSource;
 import javax.xml.bind.JAXBException;
 
 import org.ops4j.pax.warp.changelog.DatabaseChangeLogWriter;
@@ -37,6 +39,9 @@ import org.ops4j.pax.warp.jaxb.ChangeSet;
 import org.ops4j.pax.warp.jaxb.DatabaseChangeLog;
 import org.ops4j.pax.warp.jdbc.Database;
 import org.ops4j.pax.warp.jdbc.MetaDataInspector;
+import org.ops4j.pax.warp.util.Exceptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Harald Wellmann
@@ -44,14 +49,25 @@ import org.ops4j.pax.warp.jdbc.MetaDataInspector;
  */
 public class CommandRunner {
 
+    private static Logger log = LoggerFactory.getLogger(CommandRunner.class);
+
     public void dump(String jdbcUrl, String username, String password, OutputStream os)
         throws SQLException, JAXBException {
         Connection dbc = DriverManager.getConnection(jdbcUrl, username, password);
+        dump(dbc, os);
+    }
+
+    public void dump(DataSource ds, OutputStream os) throws SQLException, JAXBException {
+        try (Connection dbc = ds.getConnection()) {
+            dump(dbc, os);
+        }
+    }
+
+    public void dump(Connection dbc, OutputStream os) throws SQLException, JAXBException {
         MetaDataInspector inspector = new MetaDataInspector(dbc, null, null);
         Database database = inspector.buildDatabaseModel();
 
         DatabaseChangeLog changeLog = new DatabaseChangeLog();
-        changeLog.setLogicalFilePath("changelog.xml");
         changeLog.getChangeSetOrInclude();
 
         ChangeSet changeSet = new ChangeSet();
@@ -61,19 +77,78 @@ public class CommandRunner {
         changes.addAll(database.getForeignKeys());
         changeLog.getChangeSetOrInclude().add(changeSet);
 
+        writeChangeLog(changeLog, os);
+
+    }
+
+    public void dumpData(Connection dbc, OutputStream os) throws SQLException, JAXBException {
+        MetaDataInspector inspector = new MetaDataInspector(dbc, null, null);
+        Database database = inspector.buildDatabaseModel();
+
+        DatabaseChangeLog changeLog = new DatabaseChangeLog();
+        changeLog.getChangeSetOrInclude();
+
+        ChangeSet changeSet = new ChangeSet();
+        List<Object> changes = changeSet.getCreateTableOrAddPrimaryKeyOrAddForeignKey();
+        // drop foreign keys
+        // truncate tables
+        // insert data
+        // add foreign keys
+
+        writeChangeLog(changeLog, os);
+    }
+
+    private void writeChangeLog(DatabaseChangeLog changeLog, OutputStream os) throws JAXBException {
         DatabaseChangeLogWriter changeLogWriter = new JaxbDatabaseChangeLogWriter();
         OutputStreamWriter writer = new OutputStreamWriter(os, StandardCharsets.UTF_8);
         changeLogWriter.write(changeLog, writer);
     }
 
-    public void update(String jdbcUrl, String username, String password, InputStream is) throws JAXBException {
+    public void update(String jdbcUrl, String username, String password, InputStream is)
+        throws JAXBException, SQLException {
+        Connection dbc = DriverManager.getConnection(jdbcUrl, username, password);
+        String dbms = getDbms(jdbcUrl);
+        update(dbc, is, dbms);
+    }
+
+    public void update(DataSource ds, InputStream is, String dbms) throws JAXBException,
+        SQLException {
+        try (Connection dbc = ds.getConnection()) {
+            update(dbc, is, dbms);
+        }
+    }
+
+    public void update(Connection dbc, InputStream is, String dbms) throws JAXBException {
+        DatabaseChangeLog changeLog = readChangeLog(is);
+        UpdateSqlGenerator generator = new UpdateSqlGenerator(dbms, s -> runUpdate(dbc, s));
+        changeLog.accept(generator);
+    }
+
+    /**
+     * @param jdbcUrl
+     * @return
+     */
+    private String getDbms(String jdbcUrl) {
+        String[] words = jdbcUrl.split(":", 3);
+        return words[1];
+    }
+
+    private void runUpdate(Connection dbc, String sql) {
+        log.info("running SQL statement\n{}", sql);
+
+        try (Statement st = dbc.createStatement()) {
+            st.executeUpdate(sql);
+        }
+        catch (SQLException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+    }
+
+    private DatabaseChangeLog readChangeLog(InputStream is) throws JAXBException {
         JaxbDatabaseChangeLogReader changeLogReader = new JaxbDatabaseChangeLogReader();
         InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
         DatabaseChangeLog changeLog = changeLogReader.parse(reader);
-
-        UpdateSqlGenerator generator = new UpdateSqlGenerator("mysql", System.out::println);
-        changeLog.accept(generator);
-
+        return changeLog;
     }
 
 }

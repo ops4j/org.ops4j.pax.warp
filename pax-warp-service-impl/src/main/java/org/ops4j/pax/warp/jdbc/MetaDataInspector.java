@@ -242,6 +242,10 @@ public class MetaDataInspector {
                 return SqlType.BLOB;
             case BLOB:
                 return SqlType.BLOB;
+            case BOOLEAN:
+                return SqlType.BOOLEAN;
+            case CHAR:
+                return SqlType.CHAR;
             case CLOB:
                 return SqlType.CLOB;
             case DATE:
