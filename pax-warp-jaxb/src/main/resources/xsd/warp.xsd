@@ -180,6 +180,13 @@
         <xsd:attribute name="referencesUniqueColumn" type="xsd:boolean" />
     </xsd:complexType>
 
+    <xsd:complexType name="DropForeignKey">
+        <xsd:sequence>
+            <xsd:element name="baseTable" type="TableReference" />
+        </xsd:sequence>
+        <xsd:attribute name="constraintName" type="xsd:string" use="required" />
+    </xsd:complexType>
+
     <xsd:complexType name="ColumnPair">
         <xsd:sequence>
             <xsd:element name="base" type="ColumnReference" />
@@ -257,12 +264,19 @@
     <xsd:complexType name="CreateTable">
         <xsd:sequence>
             <xsd:element ref="column" minOccurs="1" maxOccurs="unbounded" />
-            <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attributeGroup ref="tableNameAttribute" />
         <xsd:attribute name="tablespace" type="xsd:string" />
         <xsd:attribute name="remarks" type="xsd:string" />
         <xsd:anyAttribute namespace="##other" processContents="lax" />
+    </xsd:complexType>
+
+    <xsd:complexType name="DropTable">
+        <xsd:attributeGroup ref="tableNameAttribute" />
+    </xsd:complexType>
+
+    <xsd:complexType name="TruncateTable">
+        <xsd:attributeGroup ref="tableNameAttribute" />
     </xsd:complexType>
 
     <xsd:element name="createView">
@@ -279,24 +293,33 @@
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="insert">
-        <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element ref="column" maxOccurs="unbounded" />
-            </xsd:sequence>
-            <xsd:attributeGroup ref="tableNameAttribute" />
-            <xsd:attribute name="dbms" type="xsd:string" />
-        </xsd:complexType>
-    </xsd:element>
+    <xsd:complexType name="Insert">
+        <xsd:sequence>
+            <xsd:element name="column" type="ColumnValue" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attributeGroup ref="tableNameAttribute" />
+        <xsd:attribute name="dbms" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="ColumnValue">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="name" type="xsd:string" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
 
 
     <xsd:group name="changeSetChildren">
         <xsd:choice>
             <xsd:element name="createTable" type="CreateTable" />
-            <xsd:element name="addPrimaryKey" type="AddPrimaryKey"/>
+            <xsd:element name="addPrimaryKey" type="AddPrimaryKey" />
             <xsd:element name="addForeignKey" type="AddForeignKey" />
+            <xsd:element name="dropForeignKey" type="DropForeignKey" />
+            <xsd:element name="truncateTable" type="TruncateTable" />
+            <xsd:element name="dropTable" type="DropTable" />
+            <xsd:element name="insert" type="Insert"/>
             <xsd:element ref="createView" />
-            <xsd:element ref="insert" />
             <xsd:element ref="createSequence" />
             <xsd:element ref="createIndex" />
             <xsd:element ref="addUniqueConstraint" />

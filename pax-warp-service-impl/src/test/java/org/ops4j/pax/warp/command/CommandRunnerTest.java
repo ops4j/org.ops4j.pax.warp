@@ -18,7 +18,10 @@
 package org.ops4j.pax.warp.command;
 
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.xml.bind.JAXBException;
 
@@ -44,5 +47,23 @@ public class CommandRunnerTest {
         InputStream is = getClass().getResourceAsStream("/changelog1.xml");
         commandRunner.update("jdbc:derby:memory:CommandRunnerTest;create=true", null, null, is);
     }
+
+    @Test
+    public void shouldDumpDataH2() throws JAXBException, SQLException {
+        InputStream is = getClass().getResourceAsStream("/changelog1.xml");
+        String jdbcUrl = "jdbc:h2:mem:DumpData";
+        Connection dbc = DriverManager.getConnection(jdbcUrl);
+        commandRunner.update(dbc, is, "h2");
+
+        Statement st = dbc.createStatement();
+        st.executeUpdate("insert into NUMBERS (id, i8, i16, i32, i64, d) values (1, 2, 3, 4, 5, 6)");
+        st.executeUpdate("insert into NUMBERS (id, i8, i16, i32, i64, d) values (2, 3, 4, 5, 6, 7)");
+        st.executeUpdate("insert into NUMBERS (id, i8, i16, i32, i64, d) values (3, 4, 5, 6, 7, 8)");
+        st.close();
+
+        commandRunner.dumpData(dbc, System.out);
+    }
+
+
 
 }

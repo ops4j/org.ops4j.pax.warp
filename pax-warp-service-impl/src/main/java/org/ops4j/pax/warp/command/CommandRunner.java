@@ -35,6 +35,8 @@ import org.ops4j.pax.warp.changelog.DatabaseChangeLogWriter;
 import org.ops4j.pax.warp.changelog.impl.JaxbDatabaseChangeLogReader;
 import org.ops4j.pax.warp.changelog.impl.JaxbDatabaseChangeLogWriter;
 import org.ops4j.pax.warp.changelog.impl.UpdateSqlGenerator;
+import org.ops4j.pax.warp.dump.DumpDataService;
+import org.ops4j.pax.warp.dump.impl.DumpDataServiceImpl;
 import org.ops4j.pax.warp.jaxb.ChangeSet;
 import org.ops4j.pax.warp.jaxb.DatabaseChangeLog;
 import org.ops4j.pax.warp.jdbc.Database;
@@ -81,21 +83,14 @@ public class CommandRunner {
 
     }
 
+    public void dumpData(String jdbcUrl, String username, String password, OutputStream os)
+        throws SQLException, JAXBException {
+        Connection dbc = DriverManager.getConnection(jdbcUrl, username, password);
+        dumpData(dbc, os);
+    }
     public void dumpData(Connection dbc, OutputStream os) throws SQLException, JAXBException {
-        MetaDataInspector inspector = new MetaDataInspector(dbc, null, null);
-        Database database = inspector.buildDatabaseModel();
-
-        DatabaseChangeLog changeLog = new DatabaseChangeLog();
-        changeLog.getChangeSetOrInclude();
-
-        ChangeSet changeSet = new ChangeSet();
-        List<Object> changes = changeSet.getCreateTableOrAddPrimaryKeyOrAddForeignKey();
-        // drop foreign keys
-        // truncate tables
-        // insert data
-        // add foreign keys
-
-        writeChangeLog(changeLog, os);
+        DumpDataService service = new DumpDataServiceImpl();
+        service.dumpData(dbc, os);
     }
 
     private void writeChangeLog(DatabaseChangeLog changeLog, OutputStream os) throws JAXBException {
