@@ -92,6 +92,7 @@ public class MetaDataInspector {
     }
 
     private void buildColumns(CreateTable table) throws SQLException {
+        log.debug("columns of table {}", table.getTableName());
         ResultSet rs = metaData.getColumns(catalog, schema, table.getTableName(), null);
         while (rs.next()) {
             int ordinal = rs.getInt("ORDINAL_POSITION");
@@ -262,10 +263,12 @@ public class MetaDataInspector {
                 return SqlType.INT_16;
             case TINYINT:
                 return SqlType.INT_8;
+            case TIME:
+                return SqlType.TIME;
             case TIMESTAMP:
-                return SqlType.TIME;
+                return SqlType.TIMESTAMP;
             case TIMESTAMP_WITH_TIMEZONE:
-                return SqlType.TIME;
+                return SqlType.TIMESTAMP;
             case VARBINARY:
                 return SqlType.BLOB;
             case VARCHAR:

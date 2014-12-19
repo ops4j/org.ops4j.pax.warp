@@ -53,3 +53,28 @@ referencedColumns(columnPairs) ::= <%
 
 referencedColumn(columnPair) ::= "<columnPair.referenced.columnName>"
 
+dropForeignKey(action) ::= <<
+ALTER TABLE <action.baseTable.tableName> DROP CONSTRAINT <action.constraintName>  
+>>
+
+dropPrimaryKey(action) ::= <<
+ALTER TABLE <action.tableName> DROP PRIMARY KEY  
+>>
+
+truncateTable(action) ::= <<
+TRUNCATE TABLE <action.tableName>
+>>
+
+insert(action) ::= <<
+INSERT INTO <action.tableName> 
+  (<action.column:insertColumnName(); separator=", ">)
+  VALUES (<action.column:insertColumnValue(); separator=", ">)
+>>
+
+insertColumnName(column) ::= <%
+<column.name>
+%>
+
+insertColumnValue(column) ::= <%
+<column.value>
+%>

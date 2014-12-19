@@ -22,6 +22,10 @@ import java.util.function.Consumer;
 import org.ops4j.pax.warp.jaxb.AddForeignKey;
 import org.ops4j.pax.warp.jaxb.AddPrimaryKey;
 import org.ops4j.pax.warp.jaxb.CreateTable;
+import org.ops4j.pax.warp.jaxb.DropForeignKey;
+import org.ops4j.pax.warp.jaxb.DropPrimaryKey;
+import org.ops4j.pax.warp.jaxb.Insert;
+import org.ops4j.pax.warp.jaxb.TruncateTable;
 import org.ops4j.pax.warp.jaxb.visitor.VisitorAction;
 
 
@@ -46,5 +50,25 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
     public VisitorAction enter(AddForeignKey action) {
         return renderTemplate("addForeignKey", action);
     }
-
+    
+    @Override
+    public VisitorAction enter(DropForeignKey action) {
+        return renderTemplate("dropForeignKey", action);
+    }
+    
+    @Override
+    public VisitorAction enter(DropPrimaryKey action) {
+        return renderTemplate("dropPrimaryKey", action);
+    }
+    
+    @Override
+    public VisitorAction enter(Insert action) {
+        return renderTemplate("insert", action);
+    }
+    
+    @Override
+    public VisitorAction enter(TruncateTable action) {
+        return renderTemplate("truncateTable", action);
+    }
+    
 }

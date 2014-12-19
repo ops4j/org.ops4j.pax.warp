@@ -187,6 +187,11 @@
         <xsd:attribute name="constraintName" type="xsd:string" use="required" />
     </xsd:complexType>
 
+    <xsd:complexType name="DropPrimaryKey">
+        <xsd:attributeGroup ref="tableNameAttribute" />
+        <xsd:attribute name="constraintName" type="xsd:string" />
+    </xsd:complexType>
+
     <xsd:complexType name="ColumnPair">
         <xsd:sequence>
             <xsd:element name="base" type="ColumnReference" />
@@ -316,6 +321,7 @@
             <xsd:element name="addPrimaryKey" type="AddPrimaryKey" />
             <xsd:element name="addForeignKey" type="AddForeignKey" />
             <xsd:element name="dropForeignKey" type="DropForeignKey" />
+            <xsd:element name="dropPrimaryKey" type="DropPrimaryKey" />
             <xsd:element name="truncateTable" type="TruncateTable" />
             <xsd:element name="dropTable" type="DropTable" />
             <xsd:element name="insert" type="Insert"/>
