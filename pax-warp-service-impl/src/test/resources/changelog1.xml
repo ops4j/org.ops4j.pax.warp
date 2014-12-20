@@ -2,7 +2,9 @@
 <databaseChangeLog xmlns="http://www.ops4j.org/xml/ns/warp">
     <changeSet>
         <createTable tableName="numbers">
-            <column name="id" type="int32"/>
+            <column name="id" type="int32">
+                <constraints nullable="false"/>
+            </column>
             <column name="i8" type="int8"/>
             <column name="i16" type="int16"/>
             <column name="i32" type="int32"/>
@@ -10,7 +12,9 @@
             <column name="d" type="decimal"/>
         </createTable>
         <createTable tableName="strings">
-            <column name="id" type="varchar" length="255"/>
+            <column name="id" type="varchar" length="255">
+                <constraints nullable="false"/>
+            </column>
             <column name="c4" type="char" length="4"/>
             <column name="c254" type="char" length="254"/>
             <column name="v4" type="varchar" length="4"/>
@@ -19,8 +23,12 @@
             <column name="enabled" type="boolean"/>            
         </createTable>
         <createTable tableName="numbers_strings">
-            <column name="number_id" type="int32"/>
-            <column name="string_id" type="varchar" length="255"/>
+            <column name="number_id" type="int32">
+                <constraints nullable="false"/>
+            </column>
+            <column name="string_id" type="varchar" length="255">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <addPrimaryKey tableName="numbers">
             <column>id</column>
