@@ -32,6 +32,7 @@ import org.ops4j.pax.warp.jaxb.AddPrimaryKey;
 import org.ops4j.pax.warp.jaxb.Column;
 import org.ops4j.pax.warp.jaxb.ColumnPair;
 import org.ops4j.pax.warp.jaxb.ColumnReference;
+import org.ops4j.pax.warp.jaxb.Constraints;
 import org.ops4j.pax.warp.jaxb.CreateTable;
 import org.ops4j.pax.warp.jaxb.SqlType;
 import org.ops4j.pax.warp.jaxb.TableReference;
@@ -101,9 +102,10 @@ public class MetaDataInspector {
             String typeName = rs.getString("TYPE_NAME");
             int columnSize = rs.getInt("COLUMN_SIZE");
             int decimalDigits = rs.getInt("DECIMAL_DIGITS");
+            int nullable = rs.getInt("NULLABLE");
             JDBCType jdbcType = JDBCType.valueOf(dataType);
-            log.debug("column [{}]: {} {} {} {} {}", ordinal, columnName, jdbcType, typeName,
-                columnSize, decimalDigits);
+            log.debug("column [{}]: {} {} {} {} {} {}", ordinal, columnName, jdbcType, typeName,
+                columnSize, decimalDigits, nullable);
             List<Column> columns = table.getColumn();
             Column column = new Column();
             column.setName(columnName);
@@ -115,6 +117,11 @@ public class MetaDataInspector {
             if (hasPrecision(sqlType)) {
                 column.setPrecision(columnSize);
                 column.setScale(decimalDigits);
+            }
+            if (nullable == DatabaseMetaData.columnNoNulls) {
+                Constraints constraints = new Constraints();
+                constraints.setNullable(false);
+                column.setConstraints(constraints);
             }
             columns.add(column);
         }

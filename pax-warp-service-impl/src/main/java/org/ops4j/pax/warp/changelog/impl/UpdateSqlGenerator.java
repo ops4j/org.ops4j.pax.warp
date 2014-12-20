@@ -17,23 +17,30 @@
  */
 package org.ops4j.pax.warp.changelog.impl;
 
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.JDBCType;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.function.Consumer;
 
 import org.ops4j.pax.warp.jaxb.AddForeignKey;
 import org.ops4j.pax.warp.jaxb.AddPrimaryKey;
+import org.ops4j.pax.warp.jaxb.ColumnValue;
 import org.ops4j.pax.warp.jaxb.CreateTable;
 import org.ops4j.pax.warp.jaxb.DropForeignKey;
 import org.ops4j.pax.warp.jaxb.DropPrimaryKey;
 import org.ops4j.pax.warp.jaxb.Insert;
 import org.ops4j.pax.warp.jaxb.TruncateTable;
 import org.ops4j.pax.warp.jaxb.visitor.VisitorAction;
+import org.ops4j.pax.warp.util.Exceptions;
 
 
 public class UpdateSqlGenerator extends AbstractSqlGenerator {
 
 
-    public UpdateSqlGenerator(String dbms, Consumer<String> consumer) {
-        super(dbms, consumer);
+    public UpdateSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer) {
+        super(dbms, dbc, consumer);
     }
 
     @Override
@@ -63,12 +70,83 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
     
     @Override
     public VisitorAction enter(Insert action) {
-        return renderTemplate("insert", action);
+        return generateInsert(action);
     }
     
     @Override
     public VisitorAction enter(TruncateTable action) {
         return renderTemplate("truncateTable", action);
     }
+    
+    protected VisitorAction generateInsert(Insert action) {
+        int numColumns = action.getColumn().size();
+        StringBuilder builder = new StringBuilder("INSERT INTO ");
+        builder.append(action.getTableName());
+        builder.append(" (");
+        boolean first = true;
+        for (ColumnValue columnValue : action.getColumn()) {
+            if (first) {
+                first = false;
+            }
+            else {
+                builder.append(", ");
+            }
+            builder.append(columnValue.getName());
+        }
+        builder.append(") VALUES (? ");
+        for (int i = 1; i < numColumns; i++) {
+            builder.append(", ?");
+        }
+        builder.append(")");
+        try (PreparedStatement st = dbc.prepareStatement(builder.toString())) {
+            
+            for (int i = 1; i <= numColumns; i++) {
+                ColumnValue columnValue = action.getColumn().get(i-1);
+                JDBCType jdbcType = JDBCType.valueOf(columnValue.getType());
+                Object value = convertValue(columnValue);
+                if (value == null) {
+                    st.setNull(i, jdbcType.getVendorTypeNumber());
+                }
+                st.setObject(i, value);
+            }
+            consumer.accept(st);
+        }
+        catch (SQLException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+        return VisitorAction.CONTINUE;
+    }
+
+    /**
+     * @param columnValue
+     * @return
+     */
+    private Object convertValue(ColumnValue columnValue) {
+        JDBCType jdbcType = JDBCType.valueOf(columnValue.getType());
+        String value = columnValue.getValue();
+        switch (jdbcType) {
+            case BIGINT:
+                return Long.parseLong(value);
+            case BIT:
+                return Boolean.parseBoolean(value);
+            case CHAR:
+            case CLOB:
+            case VARCHAR:
+            case LONGVARCHAR:
+                return value;
+            case DECIMAL:
+            case NUMERIC:
+                return new BigDecimal(value);
+            case INTEGER:
+                return Integer.parseInt(value);
+            case SMALLINT:
+                return Short.parseShort(value);
+            case TINYINT:
+                return Byte.parseByte(value);
+            default:
+                return null;
+        }
+    }
+    
     
 }

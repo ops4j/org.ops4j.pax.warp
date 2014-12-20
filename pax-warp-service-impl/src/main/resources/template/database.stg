@@ -22,7 +22,11 @@ lengthSuffix(col) ::= <%
 %>
 
 createColumn(col) ::= <<
-<col.name> <columnType(col.type)><precisionScale(col)><lengthSuffix(col)><if(!col.constraints.nullable)> NOT NULL<endif>
+<col.name> <columnType(col.type)><precisionScale(col)><lengthSuffix(col)><notNull(col.constraints)>
+>>
+
+notNull(constraints) ::= <<
+<if(constraints)><if(!constraints.nullable)> NOT NULL<endif><endif>
 >>
 
 createTable(action) ::= <<

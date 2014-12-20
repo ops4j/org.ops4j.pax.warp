@@ -21,7 +21,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
+import java.sql.JDBCType;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -111,6 +113,7 @@ public class DumpDataServiceImpl implements DumpDataService {
         String sql = String.format("select %s from %s", columns, createTable.getTableName());
         try (Statement st = dbc.createStatement()) {
             ResultSet rs = st.executeQuery(sql);
+            ResultSetMetaData metaData = rs.getMetaData();
             while (rs.next()) {
                 Insert insert = new Insert();
                 insert.setCatalogName(createTable.getCatalogName());
@@ -121,10 +124,16 @@ public class DumpDataServiceImpl implements DumpDataService {
                 int col = 1;
                 for (Column column : createTable.getColumn()) {
                     Object value = rs.getObject(col);
+                    JDBCType jdbcType = JDBCType.valueOf(metaData.getColumnType(col));
                     ColumnValue columnValue = new ColumnValue();
                     columnValue.setName(column.getName());
-                    String valueAsString = (rs.wasNull()) ? null : value.toString();
-                    columnValue.setValue(valueAsString);
+                    if (rs.wasNull()) {
+                        columnValue.setType("NULL");
+                    }
+                    else {
+                        columnValue.setType(jdbcType.toString());
+                        columnValue.setValue(value.toString());
+                    }
                     columnValues.add(columnValue);
                     col++;
                 }
@@ -135,7 +144,6 @@ public class DumpDataServiceImpl implements DumpDataService {
         catch (SQLException exc) {
             throw Exceptions.unchecked(exc);
         }
-
     }
 
     private void writeChangeLog(DatabaseChangeLog changeLog, OutputStream os) throws JAXBException {

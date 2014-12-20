@@ -24,8 +24,8 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -115,7 +115,7 @@ public class CommandRunner {
 
     public void update(Connection dbc, InputStream is, String dbms) throws JAXBException {
         DatabaseChangeLog changeLog = readChangeLog(is);
-        UpdateSqlGenerator generator = new UpdateSqlGenerator(dbms, s -> runUpdate(dbc, s));
+        UpdateSqlGenerator generator = new UpdateSqlGenerator(dbms, dbc, s -> runUpdate(dbc, s));
         changeLog.accept(generator);
     }
 
@@ -128,11 +128,11 @@ public class CommandRunner {
         return words[1];
     }
 
-    private void runUpdate(Connection dbc, String sql) {
-        log.info("running SQL statement\n{}", sql);
+    private void runUpdate(Connection dbc, PreparedStatement st) {
+        log.info("running SQL statement\n{}", st);
 
-        try (Statement st = dbc.createStatement()) {
-            st.executeUpdate(sql);
+        try  {
+            st.executeUpdate();
         }
         catch (SQLException exc) {
             throw Exceptions.unchecked(exc);

@@ -17,21 +17,28 @@
  */
 package org.ops4j.pax.warp.changelog.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.function.Consumer;
 
 import org.ops4j.pax.warp.jaxb.visitor.BaseVisitor;
 import org.ops4j.pax.warp.jaxb.visitor.VisitorAction;
+import org.ops4j.pax.warp.util.Exceptions;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroupFile;
+
 
 
 public class AbstractSqlGenerator extends BaseVisitor {
 
 
-    protected Consumer<String> consumer;
+    protected Connection dbc;
+    protected Consumer<PreparedStatement> consumer;
     protected STGroupFile templateGroup;
 
-    public AbstractSqlGenerator(String dbms, Consumer<String> consumer) {
+    public AbstractSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer) {
+        this.dbc = dbc;
         this.consumer = consumer;
         String templateGroupName = String.format("template/%s.stg", dbms);
         templateGroup = new STGroupFile(templateGroupName);
@@ -41,7 +48,13 @@ public class AbstractSqlGenerator extends BaseVisitor {
         ST template = templateGroup.getInstanceOf(templateName);
         template.add("action", action);
         String result = template.render();
-        consumer.accept(result);
+        try (PreparedStatement st = dbc.prepareStatement(result)) {
+            consumer.accept(st);
+        }
+        catch (SQLException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+        
         return VisitorAction.CONTINUE;
     }
 }
