@@ -75,10 +75,6 @@ INSERT INTO <action.tableName>
   VALUES (<action.column:insertColumnValue(); separator=", ">)
 >>
 
-insertColumnName(column) ::= <%
-<column.name>
-%>
+insertColumnName(column) ::= "<column.name>"
 
-insertColumnValue(column) ::= <%
-<column.value>
-%>
+insertColumnValue(column) ::= "?"

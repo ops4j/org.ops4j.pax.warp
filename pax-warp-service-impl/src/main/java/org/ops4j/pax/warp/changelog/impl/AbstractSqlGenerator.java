@@ -25,6 +25,8 @@ import java.util.function.Consumer;
 import org.ops4j.pax.warp.jaxb.visitor.BaseVisitor;
 import org.ops4j.pax.warp.jaxb.visitor.VisitorAction;
 import org.ops4j.pax.warp.util.Exceptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroupFile;
 
@@ -32,6 +34,7 @@ import org.stringtemplate.v4.STGroupFile;
 
 public class AbstractSqlGenerator extends BaseVisitor {
 
+    protected Logger log = LoggerFactory.getLogger(AbstractSqlGenerator.class);
 
     protected Connection dbc;
     protected Consumer<PreparedStatement> consumer;
@@ -44,17 +47,24 @@ public class AbstractSqlGenerator extends BaseVisitor {
         templateGroup = new STGroupFile(templateGroupName);
     }
 
-    protected VisitorAction renderTemplate(String templateName, Object action) {
-        ST template = templateGroup.getInstanceOf(templateName);
-        template.add("action", action);
-        String result = template.render();
-        try (PreparedStatement st = dbc.prepareStatement(result)) {
+    protected VisitorAction produceStatement(String templateName, Object action) {
+        String sql = renderTemplate(templateName, action);
+        try (PreparedStatement st = dbc.prepareStatement(sql)) {
             consumer.accept(st);
         }
         catch (SQLException exc) {
             throw Exceptions.unchecked(exc);
         }
-        
-        return VisitorAction.CONTINUE;
+
+        return VisitorAction.SKIP;
+    }
+
+    protected String renderTemplate(String templateName, Object action) {
+        ST template = templateGroup.getInstanceOf(templateName);
+        template.add("action", action);
+
+        String result = template.render();
+        log.info(result);
+        return result;
     }
 }

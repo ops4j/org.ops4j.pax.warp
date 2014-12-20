@@ -42,16 +42,12 @@ import org.ops4j.pax.warp.jaxb.DatabaseChangeLog;
 import org.ops4j.pax.warp.jdbc.Database;
 import org.ops4j.pax.warp.jdbc.MetaDataInspector;
 import org.ops4j.pax.warp.util.Exceptions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Harald Wellmann
  *
  */
 public class CommandRunner {
-
-    private static Logger log = LoggerFactory.getLogger(CommandRunner.class);
 
     public void dump(String jdbcUrl, String username, String password, OutputStream os)
         throws SQLException, JAXBException {
@@ -71,16 +67,19 @@ public class CommandRunner {
 
         DatabaseChangeLog changeLog = new DatabaseChangeLog();
         changeLog.getChangeSetOrInclude();
-
-        ChangeSet changeSet = new ChangeSet();
-        List<Object> changes = changeSet.getCreateTableOrAddPrimaryKeyOrAddForeignKey();
-        changes.addAll(database.getTables());
-        changes.addAll(database.getPrimaryKeys());
-        changes.addAll(database.getForeignKeys());
-        changeLog.getChangeSetOrInclude().add(changeSet);
+        database.getTables().forEach(t -> addChangeSet(changeLog, t));
+        database.getPrimaryKeys().forEach(t -> addChangeSet(changeLog, t));
+        database.getForeignKeys().forEach(t -> addChangeSet(changeLog, t));
 
         writeChangeLog(changeLog, os);
 
+    }
+
+    private void addChangeSet(DatabaseChangeLog changeLog, Object action) {
+        ChangeSet changeSet = new ChangeSet();
+        List<Object> changes = changeSet.getCreateTableOrAddPrimaryKeyOrAddForeignKey();
+        changes.add(action);
+        changeLog.getChangeSetOrInclude().add(changeSet);
     }
 
     public void dumpData(String jdbcUrl, String username, String password, OutputStream os)
@@ -88,6 +87,7 @@ public class CommandRunner {
         Connection dbc = DriverManager.getConnection(jdbcUrl, username, password);
         dumpData(dbc, os);
     }
+
     public void dumpData(Connection dbc, OutputStream os) throws SQLException, JAXBException {
         DumpDataService service = new DumpDataServiceImpl();
         service.dumpData(dbc, os);
@@ -109,14 +109,22 @@ public class CommandRunner {
     public void update(DataSource ds, InputStream is, String dbms) throws JAXBException,
         SQLException {
         try (Connection dbc = ds.getConnection()) {
+            dbc.setAutoCommit(false);
             update(dbc, is, dbms);
         }
     }
 
-    public void update(Connection dbc, InputStream is, String dbms) throws JAXBException {
-        DatabaseChangeLog changeLog = readChangeLog(is);
-        UpdateSqlGenerator generator = new UpdateSqlGenerator(dbms, dbc, s -> runUpdate(dbc, s));
-        changeLog.accept(generator);
+    public void update(Connection dbc, InputStream is, String dbms) throws JAXBException,
+        SQLException {
+        boolean autoCommit = dbc.getAutoCommit();
+        try {
+            DatabaseChangeLog changeLog = readChangeLog(is);
+            UpdateSqlGenerator generator = new UpdateSqlGenerator(dbms, dbc, s -> runUpdate(s));
+            changeLog.accept(generator);
+        }
+        finally {
+            dbc.setAutoCommit(autoCommit);
+        }
     }
 
     /**
@@ -128,10 +136,8 @@ public class CommandRunner {
         return words[1];
     }
 
-    private void runUpdate(Connection dbc, PreparedStatement st) {
-        log.info("running SQL statement\n{}", st);
-
-        try  {
+    private void runUpdate(PreparedStatement st) {
+        try {
             st.executeUpdate();
         }
         catch (SQLException exc) {
@@ -145,5 +151,4 @@ public class CommandRunner {
         DatabaseChangeLog changeLog = changeLogReader.parse(reader);
         return changeLog;
     }
-
 }

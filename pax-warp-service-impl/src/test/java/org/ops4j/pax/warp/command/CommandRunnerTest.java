@@ -49,6 +49,16 @@ public class CommandRunnerTest {
     }
 
     @Test
+    public void shouldDumpH2() throws JAXBException, SQLException {
+        InputStream is = getClass().getResourceAsStream("/changelog1.xml");
+        String jdbcUrl = "jdbc:h2:mem:Dump";
+        Connection dbc = DriverManager.getConnection(jdbcUrl);
+        commandRunner.update(dbc, is, "h2");
+
+        commandRunner.dump(dbc, System.out);
+    }
+
+    @Test
     public void shouldDumpDataH2() throws JAXBException, SQLException {
         InputStream is = getClass().getResourceAsStream("/changelog1.xml");
         String jdbcUrl = "jdbc:h2:mem:DumpData";

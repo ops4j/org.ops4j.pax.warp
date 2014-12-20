@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 
 import org.ops4j.pax.warp.jaxb.AddForeignKey;
 import org.ops4j.pax.warp.jaxb.AddPrimaryKey;
+import org.ops4j.pax.warp.jaxb.ChangeSet;
 import org.ops4j.pax.warp.jaxb.ColumnValue;
 import org.ops4j.pax.warp.jaxb.CreateTable;
 import org.ops4j.pax.warp.jaxb.DropForeignKey;
@@ -45,76 +46,69 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
 
     @Override
     public VisitorAction enter(CreateTable action) {
-        return renderTemplate("createTable", action);
+        return produceStatement("createTable", action);
     }
 
     @Override
     public VisitorAction enter(AddPrimaryKey action) {
-        return renderTemplate("addPrimaryKey", action);
+        return produceStatement("addPrimaryKey", action);
     }
 
     @Override
     public VisitorAction enter(AddForeignKey action) {
-        return renderTemplate("addForeignKey", action);
+        return produceStatement("addForeignKey", action);
     }
-    
+
     @Override
     public VisitorAction enter(DropForeignKey action) {
-        return renderTemplate("dropForeignKey", action);
+        return produceStatement("dropForeignKey", action);
     }
-    
+
     @Override
     public VisitorAction enter(DropPrimaryKey action) {
-        return renderTemplate("dropPrimaryKey", action);
+        return produceStatement("dropPrimaryKey", action);
     }
-    
+
     @Override
     public VisitorAction enter(Insert action) {
         return generateInsert(action);
     }
-    
+
     @Override
     public VisitorAction enter(TruncateTable action) {
-        return renderTemplate("truncateTable", action);
+        return produceStatement("truncateTable", action);
     }
-    
+
+    @Override
+    public VisitorAction leave(ChangeSet aBean) {
+        try {
+            dbc.commit();
+        }
+        catch (SQLException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+        return VisitorAction.CONTINUE;
+    }
+
     protected VisitorAction generateInsert(Insert action) {
-        int numColumns = action.getColumn().size();
-        StringBuilder builder = new StringBuilder("INSERT INTO ");
-        builder.append(action.getTableName());
-        builder.append(" (");
-        boolean first = true;
-        for (ColumnValue columnValue : action.getColumn()) {
-            if (first) {
-                first = false;
-            }
-            else {
-                builder.append(", ");
-            }
-            builder.append(columnValue.getName());
-        }
-        builder.append(") VALUES (? ");
-        for (int i = 1; i < numColumns; i++) {
-            builder.append(", ?");
-        }
-        builder.append(")");
-        try (PreparedStatement st = dbc.prepareStatement(builder.toString())) {
-            
-            for (int i = 1; i <= numColumns; i++) {
-                ColumnValue columnValue = action.getColumn().get(i-1);
+        String rawSql = renderTemplate("insert", action);
+        try (PreparedStatement st = dbc.prepareStatement(rawSql)) {
+            int i = 1;
+            for (ColumnValue columnValue : action.getColumn()) {
                 JDBCType jdbcType = JDBCType.valueOf(columnValue.getType());
                 Object value = convertValue(columnValue);
                 if (value == null) {
                     st.setNull(i, jdbcType.getVendorTypeNumber());
                 }
                 st.setObject(i, value);
+                i++;
             }
             consumer.accept(st);
         }
         catch (SQLException exc) {
             throw Exceptions.unchecked(exc);
         }
-        return VisitorAction.CONTINUE;
+        return VisitorAction.SKIP;
     }
 
     /**
@@ -147,6 +141,4 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
                 return null;
         }
     }
-    
-    
 }
