@@ -22,5 +22,10 @@ columnTypeMap ::= [
 
 columnType(type) ::= "<columnTypeMap.(type)>"
 
+dropForeignKey(action) ::= <<
+ALTER TABLE <action.baseTable.tableName> DROP FOREIGN KEY <action.constraintName>  
+>>
+
+
 
 
