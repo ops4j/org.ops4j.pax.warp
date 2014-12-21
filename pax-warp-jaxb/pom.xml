@@ -36,6 +36,9 @@
                     <schemaIncludes>
                         <include>xsd/warp.xsd</include>
                     </schemaIncludes>
+                  <bindingIncludes>
+                      <include>xsd/warp.xjb</include>
+                  </bindingIncludes>
                     <args>
                         <!-- generate visitor classes -->
                         <arg>-Xvisitor</arg>

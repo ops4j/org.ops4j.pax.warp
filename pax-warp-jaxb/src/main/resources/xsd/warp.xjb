@@ -1,0 +1,10 @@
+<jxb:bindings 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+    version="2.1">
+    <jxb:bindings schemaLocation="warp.xsd">
+        <jxb:bindings node="/xs:schema/xs:complexType[@name='ChangeSet']/xs:sequence/xs:choice">
+            <jxb:property name="Changes"/>
+        </jxb:bindings>
+    </jxb:bindings>
+</jxb:bindings>

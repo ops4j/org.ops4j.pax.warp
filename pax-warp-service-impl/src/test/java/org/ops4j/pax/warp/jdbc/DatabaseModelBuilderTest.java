@@ -66,7 +66,7 @@ public class DatabaseModelBuilderTest {
         changeLog.getChangeSetOrInclude();
 
         ChangeSet changeSet = new ChangeSet();
-        List<Object> changes = changeSet.getCreateTableOrAddPrimaryKeyOrAddForeignKey();
+        List<Object> changes = changeSet.getChanges();
         changes.addAll(database.getTables());
         changes.addAll(database.getPrimaryKeys());
         changes.addAll(database.getForeignKeys());

@@ -148,8 +148,20 @@
     <xsd:complexType name="ChangeSet">
         <xsd:sequence>
             <xsd:element ref="comment" minOccurs="0" />
-            <xsd:choice minOccurs="0" maxOccurs="unbounded">
-                <xsd:group ref="changeSetChildren" />
+            <xsd:choice maxOccurs="unbounded">
+                <xsd:element name="createTable" type="CreateTable" />
+                <xsd:element name="addPrimaryKey" type="AddPrimaryKey" />
+                <xsd:element name="addForeignKey" type="AddForeignKey" />
+                <xsd:element name="dropForeignKey" type="DropForeignKey" />
+                <xsd:element name="dropPrimaryKey" type="DropPrimaryKey" />
+                <xsd:element name="truncateTable" type="TruncateTable" />
+                <xsd:element name="dropTable" type="DropTable" />
+                <xsd:element name="insert" type="Insert" />
+                <xsd:element ref="createView" />
+                <xsd:element ref="createSequence" />
+                <xsd:element ref="createIndex" />
+                <xsd:element ref="addUniqueConstraint" />
+
             </xsd:choice>
         </xsd:sequence>
         <xsd:attributeGroup ref="changeSetAttributes" />
@@ -314,26 +326,6 @@
             </xsd:extension>
         </xsd:simpleContent>
     </xsd:complexType>
-
-
-    <xsd:group name="changeSetChildren">
-        <xsd:choice>
-            <xsd:element name="createTable" type="CreateTable" />
-            <xsd:element name="addPrimaryKey" type="AddPrimaryKey" />
-            <xsd:element name="addForeignKey" type="AddForeignKey" />
-            <xsd:element name="dropForeignKey" type="DropForeignKey" />
-            <xsd:element name="dropPrimaryKey" type="DropPrimaryKey" />
-            <xsd:element name="truncateTable" type="TruncateTable" />
-            <xsd:element name="dropTable" type="DropTable" />
-            <xsd:element name="insert" type="Insert"/>
-            <xsd:element ref="createView" />
-            <xsd:element ref="createSequence" />
-            <xsd:element ref="createIndex" />
-            <xsd:element ref="addUniqueConstraint" />
-
-        </xsd:choice>
-    </xsd:group>
-
 
 
     <xsd:simpleType name="fkCascadeActionOptions">

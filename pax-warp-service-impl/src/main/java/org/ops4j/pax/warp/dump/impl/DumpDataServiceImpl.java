@@ -64,7 +64,7 @@ public class DumpDataServiceImpl implements DumpDataService {
 
         ChangeSet changeSet = new ChangeSet();
         changeLog.getChangeSetOrInclude().add(changeSet);
-        List<Object> changes = changeSet.getCreateTableOrAddPrimaryKeyOrAddForeignKey();
+        List<Object> changes = changeSet.getChanges();
         dropForeignKeys(changes, database);
         truncateTables(changes, database);
         insertData(changes, database, dbc);

@@ -81,7 +81,7 @@ public class CommandRunnerImpl implements CommandRunner {
 
     private void addChangeSet(ChangeLog changeLog, Object action) {
         ChangeSet changeSet = new ChangeSet();
-        List<Object> changes = changeSet.getCreateTableOrAddPrimaryKeyOrAddForeignKey();
+        List<Object> changes = changeSet.getChanges();
         changes.add(action);
         changeLog.getChangeSetOrInclude().add(changeSet);
     }
