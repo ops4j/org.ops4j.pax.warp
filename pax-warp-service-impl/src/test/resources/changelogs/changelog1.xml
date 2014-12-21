@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<changeLog xmlns="urn:org.ops4j.pax.warp:changelog:0.1">
-    <changeSet>
+<changeLog xmlns="urn:org.ops4j.pax.warp:changelog:0.1" version="0.1">
+    <changeSet id="1">
         <createTable tableName="numbers">
             <column name="id" type="int32">
                 <constraints nullable="false"/>
