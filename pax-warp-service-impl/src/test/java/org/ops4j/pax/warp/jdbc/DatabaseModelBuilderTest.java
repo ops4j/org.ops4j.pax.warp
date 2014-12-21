@@ -37,8 +37,8 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 import org.ops4j.pax.warp.changelog.DatabaseChangeLogWriter;
 import org.ops4j.pax.warp.changelog.impl.JaxbDatabaseChangeLogWriter;
-import org.ops4j.pax.warp.jaxb.ChangeSet;
 import org.ops4j.pax.warp.jaxb.ChangeLog;
+import org.ops4j.pax.warp.jaxb.ChangeSet;
 import org.ops4j.pax.warp.util.Exceptions;
 
 
@@ -63,9 +63,11 @@ public class DatabaseModelBuilderTest {
         assertThat(database, is(notNullValue()));
 
         ChangeLog changeLog = new ChangeLog();
+        changeLog.setVersion("0.1");
         changeLog.getChangeSetOrInclude();
 
         ChangeSet changeSet = new ChangeSet();
+        changeSet.setId("1");
         List<Object> changes = changeSet.getChanges();
         changes.addAll(database.getTables());
         changes.addAll(database.getPrimaryKeys());

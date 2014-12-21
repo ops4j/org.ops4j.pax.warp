@@ -19,7 +19,6 @@ package org.ops4j.pax.warp.changelog.impl;
 
 import java.io.Writer;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
@@ -28,17 +27,13 @@ import org.ops4j.pax.warp.jaxb.ChangeLog;
 import org.ops4j.pax.warp.util.Exceptions;
 
 
-public class JaxbDatabaseChangeLogWriter implements DatabaseChangeLogWriter {
-    private JAXBContext context;
-
-    public JaxbDatabaseChangeLogWriter() throws JAXBException {
-        context = JAXBContext.newInstance(ChangeLog.class);
-    }
+public class JaxbDatabaseChangeLogWriter extends AbstractChangeLogProcessor implements DatabaseChangeLogWriter {
 
     @Override
     public void write(ChangeLog changeLog, Writer writer) {
         try {
             Marshaller marshaller = context.createMarshaller();
+            marshaller.setSchema(schema);
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(changeLog, writer);
         }

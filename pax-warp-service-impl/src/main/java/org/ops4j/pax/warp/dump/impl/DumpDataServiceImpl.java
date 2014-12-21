@@ -35,11 +35,11 @@ import org.ops4j.pax.warp.changelog.DatabaseChangeLogWriter;
 import org.ops4j.pax.warp.changelog.impl.JaxbDatabaseChangeLogWriter;
 import org.ops4j.pax.warp.dump.DumpDataService;
 import org.ops4j.pax.warp.jaxb.AddForeignKey;
+import org.ops4j.pax.warp.jaxb.ChangeLog;
 import org.ops4j.pax.warp.jaxb.ChangeSet;
 import org.ops4j.pax.warp.jaxb.Column;
 import org.ops4j.pax.warp.jaxb.ColumnValue;
 import org.ops4j.pax.warp.jaxb.CreateTable;
-import org.ops4j.pax.warp.jaxb.ChangeLog;
 import org.ops4j.pax.warp.jaxb.DropForeignKey;
 import org.ops4j.pax.warp.jaxb.Insert;
 import org.ops4j.pax.warp.jaxb.TruncateTable;
@@ -60,9 +60,11 @@ public class DumpDataServiceImpl implements DumpDataService {
         DatabaseModel database = inspector.buildDatabaseModel();
 
         ChangeLog changeLog = new ChangeLog();
+        changeLog.setVersion("0.1");
         changeLog.getChangeSetOrInclude();
 
         ChangeSet changeSet = new ChangeSet();
+        changeSet.setId("1");
         changeLog.getChangeSetOrInclude().add(changeSet);
         List<Object> changes = changeSet.getChanges();
         dropForeignKeys(changes, database);
