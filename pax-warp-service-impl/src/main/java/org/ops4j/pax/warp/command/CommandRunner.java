@@ -118,6 +118,7 @@ public class CommandRunner {
         SQLException {
         boolean autoCommit = dbc.getAutoCommit();
         try {
+            dbc.setAutoCommit(false);
             DatabaseChangeLog changeLog = readChangeLog(is);
             UpdateSqlGenerator generator = new UpdateSqlGenerator(dbms, dbc, s -> runUpdate(s));
             changeLog.accept(generator);

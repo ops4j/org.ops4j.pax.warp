@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<databaseChangeLog xmlns="http://www.ops4j.org/xml/ns/warp">
+    <changeSet>
+        <dropForeignKey constraintName="fk_numbers_strings_numbers">
+            <baseTable schemaName="public" tableName="numbers_strings"/>
+        </dropForeignKey>
+        <dropForeignKey constraintName="fk_numbers_strings_strings">
+            <baseTable schemaName="public" tableName="numbers_strings"/>
+        </dropForeignKey>
+        <truncateTable tableName="strings"/>
+        <truncateTable tableName="numbers"/>
+        <truncateTable tableName="numbers_strings"/>
+        <insert tableName="numbers">
+            <column name="id" type="INTEGER">1</column>
+            <column name="i8" type="SMALLINT">2</column>
+            <column name="i16" type="SMALLINT">3</column>
+            <column name="i32" type="INTEGER">4</column>
+            <column name="i64" type="BIGINT">5</column>
+            <column name="d" type="NUMERIC">6</column>
+        </insert>
+        <insert tableName="numbers">
+            <column name="id" type="INTEGER">2</column>
+            <column name="i8" type="SMALLINT">3</column>
+            <column name="i16" type="SMALLINT">4</column>
+            <column name="i32" type="INTEGER">5</column>
+            <column name="i64" type="BIGINT">6</column>
+            <column name="d" type="NUMERIC">7</column>
+        </insert>
+        <insert tableName="numbers">
+            <column name="id" type="INTEGER">3</column>
+            <column name="i8" type="SMALLINT">4</column>
+            <column name="i16" type="SMALLINT">5</column>
+            <column name="i32" type="INTEGER">6</column>
+            <column name="i64" type="BIGINT">7</column>
+            <column name="d" type="NUMERIC">8</column>
+        </insert>
+        <addForeignKey constraintName="fk_numbers_strings_numbers">
+            <baseTable schemaName="public" tableName="numbers_strings"/>
+            <referencedTable schemaName="public" tableName="numbers"/>
+            <columnPair>
+                <base columnName="number_id"/>
+                <referenced columnName="id"/>
+            </columnPair>
+        </addForeignKey>
+        <addForeignKey constraintName="fk_numbers_strings_strings">
+            <baseTable schemaName="public" tableName="numbers_strings"/>
+            <referencedTable schemaName="public" tableName="strings"/>
+            <columnPair>
+                <base columnName="string_id"/>
+                <referenced columnName="id"/>
+            </columnPair>
+        </addForeignKey>
+    </changeSet>
+</databaseChangeLog>

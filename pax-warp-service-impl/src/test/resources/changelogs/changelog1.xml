@@ -40,7 +40,7 @@
             <column>number_id</column>
             <column>string_id</column>
         </addPrimaryKey>
-        <addForeignKey constraintName="FK_NUMBERS_STRINGS_NUMBERS">
+        <addForeignKey constraintName="fk_numbers_strings_numbers">
             <baseTable tableName="numbers_strings"/>
             <referencedTable tableName="numbers"/>
             <columnPair>
@@ -48,7 +48,7 @@
                 <referenced columnName="id"/>
             </columnPair>
         </addForeignKey>
-        <addForeignKey constraintName="FK_NUMBERS_STRINGS_STRINGS">
+        <addForeignKey constraintName="fk_numbers_strings_strings">
             <baseTable tableName="numbers_strings"/>
             <referencedTable tableName="strings"/>
             <columnPair>
