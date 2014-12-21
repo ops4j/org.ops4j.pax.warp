@@ -36,6 +36,7 @@ public class PaxWarp {
     public PaxWarp() {
         commander = new JCommander();
         commander.addCommand("dump", new DumpCommand());
+        commander.addCommand("dumpData", new DumpDataCommand());
         commander.addCommand("update", new UpdateCommand());
     }
 
