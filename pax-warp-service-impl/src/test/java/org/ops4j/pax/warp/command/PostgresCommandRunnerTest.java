@@ -17,15 +17,12 @@
  */
 package org.ops4j.pax.warp.command;
 
-import org.junit.FixMethodOrder;
-import org.junit.runners.MethodSorters;
 
 
 /**
  * @author Harald Wellmann
  *
  */
-@FixMethodOrder(MethodSorters.JVM)
 public class PostgresCommandRunnerTest extends AbstractCommandRunnerTest {
 
     @Override
