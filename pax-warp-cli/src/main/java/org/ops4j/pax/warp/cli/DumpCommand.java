@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import javax.xml.bind.JAXBException;
 
 import org.ops4j.pax.warp.command.CommandRunner;
+import org.ops4j.pax.warp.command.impl.CommandRunnerImpl;
 import org.ops4j.pax.warp.util.Exceptions;
 
 import com.beust.jcommander.Parameter;
@@ -96,7 +97,7 @@ public class DumpCommand implements Runnable {
 
     @Override
     public void run() {
-        CommandRunner commandRunner = new CommandRunner();
+        CommandRunner commandRunner = new CommandRunnerImpl();
         try {
             if (output == null) {
                 commandRunner.dump(url, username, password, System.out);

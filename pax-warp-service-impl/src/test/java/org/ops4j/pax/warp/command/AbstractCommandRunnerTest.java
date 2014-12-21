@@ -31,6 +31,7 @@ import javax.xml.bind.JAXBException;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import org.ops4j.pax.warp.command.impl.CommandRunnerImpl;
 
 
 /**
@@ -40,7 +41,7 @@ import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public abstract class AbstractCommandRunnerTest {
 
-    protected CommandRunner commandRunner = new CommandRunner();
+    protected CommandRunner commandRunner = new CommandRunnerImpl();
     
     protected void dropAndCreateDatabase(String jdbcAdminUrl) throws SQLException {
         Connection dbc = DriverManager.getConnection(jdbcAdminUrl, "warp", "warp");
