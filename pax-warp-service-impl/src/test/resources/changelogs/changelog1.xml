@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<databaseChangeLog xmlns="urn:org.ops4j.pax.warp:changelog:0.1">
+<changeLog xmlns="urn:org.ops4j.pax.warp:changelog:0.1">
     <changeSet>
         <createTable tableName="numbers">
             <column name="id" type="int32">
@@ -57,4 +57,4 @@
             </columnPair>
         </addForeignKey>
     </changeSet>
-</databaseChangeLog>
+</changeLog>

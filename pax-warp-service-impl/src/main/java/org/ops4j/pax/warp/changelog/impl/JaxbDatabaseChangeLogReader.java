@@ -24,7 +24,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.ops4j.pax.warp.changelog.DatabaseChangeLogReader;
-import org.ops4j.pax.warp.jaxb.DatabaseChangeLog;
+import org.ops4j.pax.warp.jaxb.ChangeLog;
 import org.ops4j.pax.warp.util.Exceptions;
 
 
@@ -34,14 +34,14 @@ public class JaxbDatabaseChangeLogReader implements DatabaseChangeLogReader {
     private JAXBContext context;
 
     public JaxbDatabaseChangeLogReader() throws JAXBException {
-        context = JAXBContext.newInstance(DatabaseChangeLog.class);
+        context = JAXBContext.newInstance(ChangeLog.class);
     }
 
     @Override
-    public DatabaseChangeLog parse(Reader reader) {
+    public ChangeLog parse(Reader reader) {
         try {
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            DatabaseChangeLog changeLog = (DatabaseChangeLog) unmarshaller.unmarshal(reader);
+            ChangeLog changeLog = (ChangeLog) unmarshaller.unmarshal(reader);
             return changeLog;
         }
         catch (JAXBException exc) {

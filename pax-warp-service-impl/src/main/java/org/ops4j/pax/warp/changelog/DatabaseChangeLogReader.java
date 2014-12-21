@@ -19,10 +19,10 @@ package org.ops4j.pax.warp.changelog;
 
 import java.io.Reader;
 
-import org.ops4j.pax.warp.jaxb.DatabaseChangeLog;
+import org.ops4j.pax.warp.jaxb.ChangeLog;
 
 
 public interface DatabaseChangeLogReader {
 
-    DatabaseChangeLog parse(Reader reader);
+    ChangeLog parse(Reader reader);
 }

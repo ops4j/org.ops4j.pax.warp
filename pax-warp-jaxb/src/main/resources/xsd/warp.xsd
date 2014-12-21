@@ -4,7 +4,7 @@
     xmlns="urn:org.ops4j.pax.warp:changelog:0.1" elementFormDefault="qualified">
 
 
-    <xsd:element name="databaseChangeLog">
+    <xsd:element name="changeLog">
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:choice minOccurs="0" maxOccurs="unbounded">

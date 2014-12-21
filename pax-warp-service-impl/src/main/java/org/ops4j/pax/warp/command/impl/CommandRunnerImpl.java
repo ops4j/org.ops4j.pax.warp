@@ -39,7 +39,7 @@ import org.ops4j.pax.warp.command.CommandRunner;
 import org.ops4j.pax.warp.dump.DumpDataService;
 import org.ops4j.pax.warp.dump.impl.DumpDataServiceImpl;
 import org.ops4j.pax.warp.jaxb.ChangeSet;
-import org.ops4j.pax.warp.jaxb.DatabaseChangeLog;
+import org.ops4j.pax.warp.jaxb.ChangeLog;
 import org.ops4j.pax.warp.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.util.Exceptions;
@@ -69,7 +69,7 @@ public class CommandRunnerImpl implements CommandRunner {
         DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
         DatabaseModel database = inspector.buildDatabaseModel();
 
-        DatabaseChangeLog changeLog = new DatabaseChangeLog();
+        ChangeLog changeLog = new ChangeLog();
         changeLog.getChangeSetOrInclude();
         database.getTables().forEach(t -> addChangeSet(changeLog, t));
         database.getPrimaryKeys().forEach(t -> addChangeSet(changeLog, t));
@@ -79,7 +79,7 @@ public class CommandRunnerImpl implements CommandRunner {
 
     }
 
-    private void addChangeSet(DatabaseChangeLog changeLog, Object action) {
+    private void addChangeSet(ChangeLog changeLog, Object action) {
         ChangeSet changeSet = new ChangeSet();
         List<Object> changes = changeSet.getCreateTableOrAddPrimaryKeyOrAddForeignKey();
         changes.add(action);
@@ -99,7 +99,7 @@ public class CommandRunnerImpl implements CommandRunner {
         service.dumpData(dbc, os);
     }
 
-    private void writeChangeLog(DatabaseChangeLog changeLog, OutputStream os) throws JAXBException {
+    private void writeChangeLog(ChangeLog changeLog, OutputStream os) throws JAXBException {
         DatabaseChangeLogWriter changeLogWriter = new JaxbDatabaseChangeLogWriter();
         OutputStreamWriter writer = new OutputStreamWriter(os, StandardCharsets.UTF_8);
         changeLogWriter.write(changeLog, writer);
@@ -128,7 +128,7 @@ public class CommandRunnerImpl implements CommandRunner {
         boolean autoCommit = dbc.getAutoCommit();
         try {
             dbc.setAutoCommit(false);
-            DatabaseChangeLog changeLog = readChangeLog(is);
+            ChangeLog changeLog = readChangeLog(is);
             UpdateSqlGenerator generator = new UpdateSqlGenerator(dbms, dbc, s -> runUpdate(s));
             changeLog.accept(generator);
         }
@@ -155,10 +155,10 @@ public class CommandRunnerImpl implements CommandRunner {
         }
     }
 
-    private DatabaseChangeLog readChangeLog(InputStream is) throws JAXBException {
+    private ChangeLog readChangeLog(InputStream is) throws JAXBException {
         JaxbDatabaseChangeLogReader changeLogReader = new JaxbDatabaseChangeLogReader();
         InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
-        DatabaseChangeLog changeLog = changeLogReader.parse(reader);
+        ChangeLog changeLog = changeLogReader.parse(reader);
         return changeLog;
     }
 }

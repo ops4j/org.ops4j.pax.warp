@@ -19,11 +19,11 @@ package org.ops4j.pax.warp.changelog;
 
 import java.io.Writer;
 
-import org.ops4j.pax.warp.jaxb.DatabaseChangeLog;
+import org.ops4j.pax.warp.jaxb.ChangeLog;
 
 
 
 public interface DatabaseChangeLogWriter {
 
-    void write(DatabaseChangeLog changeLog, Writer writer);
+    void write(ChangeLog changeLog, Writer writer);
 }

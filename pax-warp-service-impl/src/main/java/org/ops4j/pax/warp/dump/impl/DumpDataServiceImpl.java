@@ -39,7 +39,7 @@ import org.ops4j.pax.warp.jaxb.ChangeSet;
 import org.ops4j.pax.warp.jaxb.Column;
 import org.ops4j.pax.warp.jaxb.ColumnValue;
 import org.ops4j.pax.warp.jaxb.CreateTable;
-import org.ops4j.pax.warp.jaxb.DatabaseChangeLog;
+import org.ops4j.pax.warp.jaxb.ChangeLog;
 import org.ops4j.pax.warp.jaxb.DropForeignKey;
 import org.ops4j.pax.warp.jaxb.Insert;
 import org.ops4j.pax.warp.jaxb.TruncateTable;
@@ -59,7 +59,7 @@ public class DumpDataServiceImpl implements DumpDataService {
         DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
         DatabaseModel database = inspector.buildDatabaseModel();
 
-        DatabaseChangeLog changeLog = new DatabaseChangeLog();
+        ChangeLog changeLog = new ChangeLog();
         changeLog.getChangeSetOrInclude();
 
         ChangeSet changeSet = new ChangeSet();
@@ -146,7 +146,7 @@ public class DumpDataServiceImpl implements DumpDataService {
         }
     }
 
-    private void writeChangeLog(DatabaseChangeLog changeLog, OutputStream os) throws JAXBException {
+    private void writeChangeLog(ChangeLog changeLog, OutputStream os) throws JAXBException {
         DatabaseChangeLogWriter changeLogWriter = new JaxbDatabaseChangeLogWriter();
         OutputStreamWriter writer = new OutputStreamWriter(os, StandardCharsets.UTF_8);
         changeLogWriter.write(changeLog, writer);

@@ -38,11 +38,11 @@ import org.junit.Test;
 import org.ops4j.pax.warp.changelog.DatabaseChangeLogWriter;
 import org.ops4j.pax.warp.changelog.impl.JaxbDatabaseChangeLogWriter;
 import org.ops4j.pax.warp.jaxb.ChangeSet;
-import org.ops4j.pax.warp.jaxb.DatabaseChangeLog;
+import org.ops4j.pax.warp.jaxb.ChangeLog;
 import org.ops4j.pax.warp.util.Exceptions;
 
 
-public class MetaDataInspectorTest {
+public class DatabaseModelBuilderTest {
 
     @Test
     public void shouldGenerateChangeLogH2() throws SQLException, JAXBException, IOException {
@@ -62,7 +62,7 @@ public class MetaDataInspectorTest {
         DatabaseModel database = inspector.buildDatabaseModel();
         assertThat(database, is(notNullValue()));
 
-        DatabaseChangeLog changeLog = new DatabaseChangeLog();
+        ChangeLog changeLog = new ChangeLog();
         changeLog.getChangeSetOrInclude();
 
         ChangeSet changeSet = new ChangeSet();
