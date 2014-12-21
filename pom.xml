@@ -218,6 +218,34 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>verify-style</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <configLocation>checkstyle/pax-exam-checks.xml</configLocation>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.ops4j.pax.exam</groupId>
+                        <artifactId>pax-exam-checkstyle-rules</artifactId>
+                        <version>${version.pax.exam}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>6.1.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
 
