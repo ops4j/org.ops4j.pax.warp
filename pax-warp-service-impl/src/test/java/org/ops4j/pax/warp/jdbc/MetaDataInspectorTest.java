@@ -58,8 +58,8 @@ public class MetaDataInspectorTest {
         Connection dbc = DriverManager.getConnection(jdbcUrl, null, null);
         Files.lines(Paths.get("src/test/resources/sql", scriptName)).forEach(s -> runUpdate(dbc, s));
 
-        MetaDataInspector inspector = new MetaDataInspector(dbc, null, null);
-        Database database = inspector.buildDatabaseModel();
+        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
+        DatabaseModel database = inspector.buildDatabaseModel();
         assertThat(database, is(notNullValue()));
 
         DatabaseChangeLog changeLog = new DatabaseChangeLog();

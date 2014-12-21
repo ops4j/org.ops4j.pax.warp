@@ -39,8 +39,8 @@ import org.ops4j.pax.warp.dump.DumpDataService;
 import org.ops4j.pax.warp.dump.impl.DumpDataServiceImpl;
 import org.ops4j.pax.warp.jaxb.ChangeSet;
 import org.ops4j.pax.warp.jaxb.DatabaseChangeLog;
-import org.ops4j.pax.warp.jdbc.Database;
-import org.ops4j.pax.warp.jdbc.MetaDataInspector;
+import org.ops4j.pax.warp.jdbc.DatabaseModel;
+import org.ops4j.pax.warp.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.util.Exceptions;
 
 /**
@@ -62,8 +62,8 @@ public class CommandRunner {
     }
 
     public void dump(Connection dbc, OutputStream os) throws SQLException, JAXBException {
-        MetaDataInspector inspector = new MetaDataInspector(dbc, null, null);
-        Database database = inspector.buildDatabaseModel();
+        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
+        DatabaseModel database = inspector.buildDatabaseModel();
 
         DatabaseChangeLog changeLog = new DatabaseChangeLog();
         changeLog.getChangeSetOrInclude();

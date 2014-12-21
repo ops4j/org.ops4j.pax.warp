@@ -11,7 +11,7 @@ import org.ops4j.pax.warp.jaxb.AddPrimaryKey;
 import org.ops4j.pax.warp.jaxb.CreateTable;
 
 
-public class Database {
+public class DatabaseModel {
 
     private Map<String, CreateTable> tables = new HashMap<>();
 

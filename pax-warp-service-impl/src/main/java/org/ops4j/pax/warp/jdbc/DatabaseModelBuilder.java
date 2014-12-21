@@ -40,9 +40,9 @@ import org.ops4j.pax.warp.util.Exceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MetaDataInspector {
+public class DatabaseModelBuilder {
 
-    private static Logger log = LoggerFactory.getLogger(MetaDataInspector.class);
+    private static Logger log = LoggerFactory.getLogger(DatabaseModelBuilder.class);
 
     private DatabaseMetaData metaData;
 
@@ -51,16 +51,16 @@ public class MetaDataInspector {
 
     private Connection dbc;
 
-    private Database database;
+    private DatabaseModel database;
 
-    public MetaDataInspector(Connection dbc, String catalog, String schema) {
+    public DatabaseModelBuilder(Connection dbc, String catalog, String schema) {
         this.dbc = dbc;
         this.catalog = catalog;
         this.schema = schema;
     }
 
-    public Database buildDatabaseModel() {
-        database = new Database();
+    public DatabaseModel buildDatabaseModel() {
+        database = new DatabaseModel();
         try {
             this.metaData = dbc.getMetaData();
             buildTables();

@@ -43,8 +43,8 @@ import org.ops4j.pax.warp.jaxb.DatabaseChangeLog;
 import org.ops4j.pax.warp.jaxb.DropForeignKey;
 import org.ops4j.pax.warp.jaxb.Insert;
 import org.ops4j.pax.warp.jaxb.TruncateTable;
-import org.ops4j.pax.warp.jdbc.Database;
-import org.ops4j.pax.warp.jdbc.MetaDataInspector;
+import org.ops4j.pax.warp.jdbc.DatabaseModel;
+import org.ops4j.pax.warp.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.util.Exceptions;
 
 
@@ -56,8 +56,8 @@ public class DumpDataServiceImpl implements DumpDataService {
 
     @Override
     public void dumpData(Connection dbc, OutputStream os) throws JAXBException {
-        MetaDataInspector inspector = new MetaDataInspector(dbc, null, null);
-        Database database = inspector.buildDatabaseModel();
+        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
+        DatabaseModel database = inspector.buildDatabaseModel();
 
         DatabaseChangeLog changeLog = new DatabaseChangeLog();
         changeLog.getChangeSetOrInclude();
@@ -77,7 +77,7 @@ public class DumpDataServiceImpl implements DumpDataService {
      * @param changes
      * @param database
      */
-    private void dropForeignKeys(List<Object> changes, Database database) {
+    private void dropForeignKeys(List<Object> changes, DatabaseModel database) {
         for (AddForeignKey addFk : database.getForeignKeys()) {
             DropForeignKey dropFk = new DropForeignKey();
             dropFk.setBaseTable(addFk.getBaseTable());
@@ -86,7 +86,7 @@ public class DumpDataServiceImpl implements DumpDataService {
         }
     }
 
-    private void truncateTables(List<Object> changes, Database database) {
+    private void truncateTables(List<Object> changes, DatabaseModel database) {
         for (CreateTable createTable : database.getTables()) {
             TruncateTable truncateTable = new TruncateTable();
             truncateTable.setCatalogName(createTable.getCatalogName());
@@ -96,7 +96,7 @@ public class DumpDataServiceImpl implements DumpDataService {
         }
     }
 
-    private void insertData(List<Object> changes, Database database, Connection dbc) {
+    private void insertData(List<Object> changes, DatabaseModel database, Connection dbc) {
         for (CreateTable createTable : database.getTables()) {
             insertData(changes, createTable, dbc);
         }
