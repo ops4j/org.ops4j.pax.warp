@@ -9,7 +9,14 @@
 
     <groupId>org.ops4j.pax.warp</groupId>
     <artifactId>pax-warp-cli</artifactId>
+    <packaging>bundle</packaging>
+    
     <name>OPS4J Pax Warp Command Line Interface</name>
+
+    <properties>
+        <bundle.suffix>jaxb</bundle.suffix>
+    </properties>
+
     <dependencies>
 
         <dependency>
@@ -39,5 +46,14 @@
         </dependency>
 
     </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

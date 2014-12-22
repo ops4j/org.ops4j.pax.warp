@@ -8,7 +8,12 @@
     </parent>
     <groupId>org.ops4j.pax.warp</groupId>
     <artifactId>pax-warp-service-impl</artifactId>
-
+    <packaging>bundle</packaging>
+    
+    <properties>
+        <bundle.suffix>core</bundle.suffix>
+    </properties>    
+    
     <dependencies>
         <dependency>
             <groupId>org.ops4j.pax.warp</groupId>
@@ -62,7 +67,15 @@
             <scope>test</scope>
         </dependency>
 
-
-
     </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+    
 </project>

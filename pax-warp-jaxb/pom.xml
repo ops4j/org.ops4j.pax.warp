@@ -9,6 +9,11 @@
 
     <groupId>org.ops4j.pax.warp</groupId>
     <artifactId>pax-warp-jaxb</artifactId>
+    <packaging>bundle</packaging>
+    
+    <properties>
+        <bundle.suffix>jaxb</bundle.suffix>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -36,9 +41,9 @@
                     <schemaIncludes>
                         <include>xsd/warp.xsd</include>
                     </schemaIncludes>
-                  <bindingIncludes>
-                      <include>xsd/warp.xjb</include>
-                  </bindingIncludes>
+                    <bindingIncludes>
+                        <include>xsd/warp.xjb</include>
+                    </bindingIncludes>
                     <args>
                         <!-- generate visitor classes -->
                         <arg>-Xvisitor</arg>
@@ -53,6 +58,10 @@
                         </plugin>
                     </plugins>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
