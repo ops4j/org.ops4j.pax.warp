@@ -25,9 +25,9 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
-import org.ops4j.pax.warp.command.CommandRunner;
-import org.ops4j.pax.warp.command.impl.CommandRunnerImpl;
-import org.ops4j.pax.warp.util.Exceptions;
+import org.ops4j.pax.warp.core.command.CommandRunner;
+import org.ops4j.pax.warp.core.command.impl.CommandRunnerImpl;
+import org.ops4j.pax.warp.core.util.Exceptions;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;

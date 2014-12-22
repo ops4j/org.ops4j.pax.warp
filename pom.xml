@@ -36,7 +36,7 @@
 
     <modules>
         <module>pax-warp-jaxb</module>
-        <module>pax-warp-service-impl</module>
+        <module>pax-warp-core</module>
         <module>pax-warp-cli</module>
     </modules>
 

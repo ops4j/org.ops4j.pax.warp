@@ -6,43 +6,65 @@
         <artifactId>warp</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
-
     <groupId>org.ops4j.pax.warp</groupId>
-    <artifactId>pax-warp-cli</artifactId>
+    <artifactId>pax-warp-core</artifactId>
     <packaging>bundle</packaging>
     
-    <name>OPS4J Pax Warp Command Line Interface</name>
-
     <properties>
-        <bundle.suffix>jaxb</bundle.suffix>
-    </properties>
-
+        <bundle.suffix>core</bundle.suffix>
+    </properties>    
+    
     <dependencies>
-
         <dependency>
             <groupId>org.ops4j.pax.warp</groupId>
-            <artifactId>pax-warp-core</artifactId>
+            <artifactId>pax-warp-jaxb</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.beust</groupId>
-            <artifactId>jcommander</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>ST4</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -55,5 +77,5 @@
             </plugin>
         </plugins>
     </build>
-
+    
 </project>
