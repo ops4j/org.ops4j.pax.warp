@@ -38,6 +38,7 @@
         <module>pax-warp-jaxb</module>
         <module>pax-warp-core</module>
         <module>pax-warp-cli</module>
+        <module>itest</module>
     </modules>
 
     <dependencyManagement>
@@ -96,6 +97,12 @@
                 <groupId>org.apache.derby</groupId>
                 <artifactId>derby</artifactId>
                 <version>10.11.1.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.scr</artifactId>
+                <version>1.8.2</version>
             </dependency>
 
             <dependency>
@@ -201,8 +208,10 @@
                     <extensions>true</extensions>
                     <configuration>
                         <niceManifest>true</niceManifest>
+                        <unpackBundle>true</unpackBundle>
                         <instructions>
                             <Bundle-SymbolicName>org.ops4j.pax.warp.${bundle.suffix}</Bundle-SymbolicName>
+                            <_dsannotations>*</_dsannotations>
                         </instructions>
                     </configuration>
                 </plugin>

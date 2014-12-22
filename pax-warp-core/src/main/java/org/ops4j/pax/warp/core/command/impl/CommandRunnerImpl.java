@@ -41,13 +41,15 @@ import org.ops4j.pax.warp.core.dump.impl.DumpDataServiceImpl;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.core.util.Exceptions;
-import org.ops4j.pax.warp.jaxb.ChangeSet;
 import org.ops4j.pax.warp.jaxb.ChangeLog;
+import org.ops4j.pax.warp.jaxb.ChangeSet;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Harald Wellmann
  *
  */
+@Component
 public class CommandRunnerImpl implements CommandRunner {
 
     @Override
