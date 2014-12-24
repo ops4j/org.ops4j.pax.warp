@@ -22,8 +22,12 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import java.io.IOException;
 import java.net.URL;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -33,12 +37,14 @@ import org.ops4j.pax.warp.core.util.Exceptions;
 import org.ops4j.pax.warp.jaxb.ChangeLog;
 import org.xml.sax.SAXException;
 
-public abstract class AbstractChangeLogProcessor {
+@ApplicationScoped
+public class JaxbContext {
 
     protected JAXBContext context;
     protected Schema schema;
 
-    public AbstractChangeLogProcessor() {
+    @PostConstruct
+    private void init() {
         try {
             context = JAXBContext.newInstance(ChangeLog.class);
             loadSchema();
@@ -52,5 +58,17 @@ public abstract class AbstractChangeLogProcessor {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
         URL url = getClass().getResource("/xsd/warp.xsd");
         schema = schemaFactory.newSchema(new Source[] { new StreamSource(url.openStream()) });
+    }
+
+    public Unmarshaller createValidatingUnmarshaller() throws JAXBException {
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        unmarshaller.setSchema(schema);
+        return unmarshaller;
+    }
+
+    public Marshaller createValidatingMarshaller() throws JAXBException {
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setSchema(schema);
+        return marshaller;
     }
 }

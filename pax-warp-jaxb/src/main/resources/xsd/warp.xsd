@@ -8,7 +8,7 @@
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:choice minOccurs="0" maxOccurs="unbounded">
-                    <xsd:element name="changeSet" type="ChangeSet" />
+                    <xsd:element ref="changeSet"/>
                     <xsd:element name="include" type="Include" />
                 </xsd:choice>
             </xsd:sequence>
@@ -71,7 +71,8 @@
         <xsd:attribute name="tableName" type="xsd:string" use="required" />
     </xsd:attributeGroup>
 
-    <xsd:complexType name="ChangeSet">
+    <xsd:element name="changeSet">
+    <xsd:complexType>
         <xsd:sequence>
             <xsd:element ref="comment" minOccurs="0" />
             <xsd:choice maxOccurs="unbounded">
@@ -93,6 +94,7 @@
         <xsd:attribute name="id" type="xsd:string" use="required" />
         <xsd:attribute name="dbms" type="xsd:string" />
     </xsd:complexType>
+    </xsd:element>
 
     <xsd:complexType name="Include">
         <xsd:attribute name="file" type="xsd:string" use="required" />

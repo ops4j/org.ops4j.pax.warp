@@ -15,10 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.warp.core.changelog;
+package org.ops4j.pax.warp.core.history;
+
+import java.util.HashMap;
 
 
-public interface DatabaseDescriptor {
+/**
+ * @author Harald Wellmann
+ *
+ */
+public class ChangeLogHistory extends HashMap<String, String> {
 
-    String getShortName();
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
+
+
 }

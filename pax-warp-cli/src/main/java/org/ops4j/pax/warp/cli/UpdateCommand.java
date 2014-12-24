@@ -23,10 +23,11 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 
 import org.ops4j.pax.warp.core.command.CommandRunner;
-import org.ops4j.pax.warp.core.command.impl.CommandRunnerImpl;
 import org.ops4j.pax.warp.core.util.Exceptions;
 
 import com.beust.jcommander.Parameter;
@@ -36,8 +37,12 @@ import com.beust.jcommander.Parameters;
  * @author Harald Wellmann
  *
  */
+@Dependent
 @Parameters(commandDescription = "updates a database from a changelog")
 public class UpdateCommand implements Runnable {
+
+    @Inject
+    private CommandRunner commandRunner;
 
     @Parameter(names = "--url", description = "JDBC URL")
     private String url;
@@ -81,7 +86,6 @@ public class UpdateCommand implements Runnable {
 
     @Override
     public void run() {
-        CommandRunner commandRunner = new CommandRunnerImpl();
         try {
             String changeLog = changelogs.get(0);
             InputStream is = new FileInputStream(changeLog);

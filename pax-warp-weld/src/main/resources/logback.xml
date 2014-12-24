@@ -39,5 +39,7 @@
     <appender-ref ref="TEST_LOG"/>
   </root>
   <logger name="org.ops4j.pax.warp" level="INFO"/> 
+  <logger name="org.jboss.weld" level="WARN"/> 
+  <logger name="org.jboss.weld.Interceptor" level="ERROR"/> 
   
 </configuration>

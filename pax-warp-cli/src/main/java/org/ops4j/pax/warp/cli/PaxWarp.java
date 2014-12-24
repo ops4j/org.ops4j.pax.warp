@@ -17,6 +17,10 @@
  */
 package org.ops4j.pax.warp.cli;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,17 +31,28 @@ import com.beust.jcommander.ParameterException;
  * @author Harald Wellmann
  *
  */
+@Dependent
 public class PaxWarp {
 
     private static Logger log = LoggerFactory.getLogger(PaxWarp.class);
 
     private JCommander commander;
 
-    public PaxWarp() {
+    @Inject
+    private DumpCommand dumpCommand;
+
+    @Inject
+    private DumpDataCommand dumpDataCommand;
+
+    @Inject
+    private UpdateCommand updateCommand;
+
+    @PostConstruct
+    public void init() {
         commander = new JCommander();
-        commander.addCommand("dump", new DumpCommand());
-        commander.addCommand("dumpData", new DumpDataCommand());
-        commander.addCommand("update", new UpdateCommand());
+        commander.addCommand("dump", dumpCommand);
+        commander.addCommand("dumpData", dumpDataCommand);
+        commander.addCommand("update", updateCommand);
     }
 
     public void execute(String[] args) {

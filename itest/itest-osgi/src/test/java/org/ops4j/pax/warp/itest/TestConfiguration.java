@@ -33,8 +33,8 @@ import org.osgi.framework.launch.FrameworkFactory;
 
 public class TestConfiguration {
 
-    private static boolean consoleEnabled = Boolean.valueOf(System.getProperty("org.ops4j.pax.warp.console",
-        "false"));
+    private static boolean consoleEnabled = Boolean.valueOf(
+        System.getProperty("org.ops4j.pax.warp.console", "false"));
 
     public static Option logbackBundles() {
         return composite(

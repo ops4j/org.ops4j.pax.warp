@@ -15,30 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.warp.core.command;
+package org.ops4j.pax.warp.core.update;
 
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
 
+import javax.xml.bind.JAXBException;
 
 
 /**
  * @author Harald Wellmann
  *
  */
-public class H2CommandRunnerTest extends AbstractCommandRunnerTest {
+public interface UpdateService {
 
-
-    @Override
-    protected String getJdbcUrl() {
-        return "jdbc:h2:mem:warp;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
-    }
-
-    @Override
-    protected String getJdbcAdminUrl() {
-        return null;
-    }
-
-    @Override
-    protected String getDbms() {
-        return "h2";
-    }
+    void update(Connection dbc, InputStream is, String dbms) throws SQLException, JAXBException;
 }

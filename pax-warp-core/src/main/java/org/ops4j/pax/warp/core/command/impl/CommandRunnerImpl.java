@@ -28,16 +28,17 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import javax.sql.DataSource;
 import javax.xml.bind.JAXBException;
 
+import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogReader;
 import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogWriter;
-import org.ops4j.pax.warp.core.changelog.impl.JaxbDatabaseChangeLogReader;
-import org.ops4j.pax.warp.core.changelog.impl.JaxbDatabaseChangeLogWriter;
 import org.ops4j.pax.warp.core.changelog.impl.UpdateSqlGenerator;
 import org.ops4j.pax.warp.core.command.CommandRunner;
 import org.ops4j.pax.warp.core.dump.DumpDataService;
-import org.ops4j.pax.warp.core.dump.impl.DumpDataServiceImpl;
+import org.ops4j.pax.warp.core.history.ChangeLogHistoryService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.core.util.Exceptions;
@@ -50,7 +51,20 @@ import org.osgi.service.component.annotations.Component;
  *
  */
 @Component
+@Dependent
 public class CommandRunnerImpl implements CommandRunner {
+
+    @Inject
+    private DumpDataService dumpDataService;
+
+    @Inject
+    private ChangeLogHistoryService historyService;
+
+    @Inject
+    private DatabaseChangeLogReader changeLogReader;
+
+    @Inject
+    private DatabaseChangeLogWriter changeLogWriter;
 
     @Override
     public void dump(String jdbcUrl, String username, String password, OutputStream os)
@@ -97,12 +111,10 @@ public class CommandRunnerImpl implements CommandRunner {
 
     @Override
     public void dumpData(Connection dbc, OutputStream os) throws SQLException, JAXBException {
-        DumpDataService service = new DumpDataServiceImpl();
-        service.dumpData(dbc, os);
+        dumpDataService.dumpData(dbc, os);
     }
 
     private void writeChangeLog(ChangeLog changeLog, OutputStream os) throws JAXBException {
-        DatabaseChangeLogWriter changeLogWriter = new JaxbDatabaseChangeLogWriter();
         OutputStreamWriter writer = new OutputStreamWriter(os, StandardCharsets.UTF_8);
         changeLogWriter.write(changeLog, writer);
     }
@@ -131,6 +143,7 @@ public class CommandRunnerImpl implements CommandRunner {
         try {
             dbc.setAutoCommit(false);
             ChangeLog changeLog = readChangeLog(is);
+            //ChangeLogHistory history = historyService.readChangeLogHistory(dbc);
             UpdateSqlGenerator generator = new UpdateSqlGenerator(dbms, dbc, s -> runUpdate(s));
             changeLog.accept(generator);
         }
@@ -158,7 +171,6 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     private ChangeLog readChangeLog(InputStream is) throws JAXBException {
-        JaxbDatabaseChangeLogReader changeLogReader = new JaxbDatabaseChangeLogReader();
         InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
         ChangeLog changeLog = changeLogReader.parse(reader);
         return changeLog;

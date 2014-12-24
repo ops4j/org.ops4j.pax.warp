@@ -1,3 +1,4 @@
+package org.ops4.pax.warp.weld;
 /*
  * Copyright 2014 Harald Wellmann.
  *
@@ -15,7 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.warp.core.command;
+
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
+import org.ops4j.pax.warp.cli.PaxWarp;
 
 
 
@@ -24,21 +28,18 @@ package org.ops4j.pax.warp.core.command;
  * @author Harald Wellmann
  *
  */
-public class H2CommandRunnerTest extends AbstractCommandRunnerTest {
+public class PaxWarpWeld {
 
-
-    @Override
-    protected String getJdbcUrl() {
-        return "jdbc:h2:mem:warp;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
-    }
-
-    @Override
-    protected String getJdbcAdminUrl() {
-        return null;
-    }
-
-    @Override
-    protected String getDbms() {
-        return "h2";
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        System.setProperty("org.jboss.weld.se.archive.isolation", "false");
+        System.setProperty("org.jboss.logging.provider", "slf4j");
+        Weld weld = new Weld();
+        WeldContainer container = weld.initialize();
+        PaxWarp warp = container.instance().select(PaxWarp.class).get();
+        warp.execute(args);
+        weld.shutdown();
     }
 }

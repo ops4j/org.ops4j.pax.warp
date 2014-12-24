@@ -39,6 +39,7 @@
         <module>pax-warp-core</module>
         <module>pax-warp-cli</module>
         <module>itest</module>
+        <module>pax-warp-weld</module>
     </modules>
 
     <dependencyManagement>

@@ -19,6 +19,8 @@ package org.ops4j.pax.warp.core.changelog.impl;
 
 import java.io.Reader;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
@@ -26,14 +28,16 @@ import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogReader;
 import org.ops4j.pax.warp.core.util.Exceptions;
 import org.ops4j.pax.warp.jaxb.ChangeLog;
 
-public class JaxbDatabaseChangeLogReader extends AbstractChangeLogProcessor implements
-    DatabaseChangeLogReader {
+@Dependent
+public class JaxbDatabaseChangeLogReader implements DatabaseChangeLogReader {
+
+    @Inject
+    private JaxbContext context;
 
     @Override
     public ChangeLog parse(Reader reader) {
         try {
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-            unmarshaller.setSchema(schema);
+            Unmarshaller unmarshaller = context.createValidatingUnmarshaller();
             ChangeLog changeLog = (ChangeLog) unmarshaller.unmarshal(reader);
             return changeLog;
         }

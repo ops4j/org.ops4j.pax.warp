@@ -22,10 +22,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 
 import org.ops4j.pax.warp.core.command.CommandRunner;
-import org.ops4j.pax.warp.core.command.impl.CommandRunnerImpl;
 import org.ops4j.pax.warp.core.util.Exceptions;
 
 import com.beust.jcommander.Parameter;
@@ -35,8 +36,12 @@ import com.beust.jcommander.Parameters;
  * @author Harald Wellmann
  *
  */
+@Dependent
 @Parameters(commandDescription = "dumps a database")
 public class DumpDataCommand implements Runnable {
+
+    @Inject
+    private CommandRunner commandRunner;
 
     @Parameter(names = "--url", description = "JDBC URL", required = true)
     private String url;
@@ -97,7 +102,6 @@ public class DumpDataCommand implements Runnable {
 
     @Override
     public void run() {
-        CommandRunner commandRunner = new CommandRunnerImpl();
         try {
             if (output == null) {
                 commandRunner.dumpData(url, username, password, System.out);

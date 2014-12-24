@@ -9,11 +9,11 @@
     <groupId>org.ops4j.pax.warp</groupId>
     <artifactId>pax-warp-core</artifactId>
     <packaging>bundle</packaging>
-    
+
     <properties>
         <bundle.suffix>core</bundle.suffix>
-    </properties>    
-    
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.ops4j.pax.warp</groupId>
@@ -38,6 +38,12 @@
         </dependency>
 
         <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -46,7 +52,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <scope>test</scope>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -73,8 +79,22 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-container-weld</artifactId>
+            <version>${version.pax.exam}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-junit4</artifactId>
+            <version>${version.pax.exam}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -83,5 +103,5 @@
             </plugin>
         </plugins>
     </build>
-    
+
 </project>

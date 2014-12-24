@@ -29,10 +29,11 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 
 import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogWriter;
-import org.ops4j.pax.warp.core.changelog.impl.JaxbDatabaseChangeLogWriter;
 import org.ops4j.pax.warp.core.dump.DumpDataService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
@@ -52,7 +53,11 @@ import org.ops4j.pax.warp.jaxb.TruncateTable;
  * @author Harald Wellmann
  *
  */
+@Dependent
 public class DumpDataServiceImpl implements DumpDataService {
+
+    @Inject
+    private DatabaseChangeLogWriter changeLogWriter;
 
     @Override
     public void dumpData(Connection dbc, OutputStream os) throws JAXBException {
@@ -149,7 +154,6 @@ public class DumpDataServiceImpl implements DumpDataService {
     }
 
     private void writeChangeLog(ChangeLog changeLog, OutputStream os) throws JAXBException {
-        DatabaseChangeLogWriter changeLogWriter = new JaxbDatabaseChangeLogWriter();
         OutputStreamWriter writer = new OutputStreamWriter(os, StandardCharsets.UTF_8);
         changeLogWriter.write(changeLog, writer);
     }

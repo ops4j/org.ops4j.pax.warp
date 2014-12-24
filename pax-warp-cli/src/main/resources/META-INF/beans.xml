@@ -1,0 +1,4 @@
+<beans
+   xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+   bean-discovery-mode="annotated">
+</beans>

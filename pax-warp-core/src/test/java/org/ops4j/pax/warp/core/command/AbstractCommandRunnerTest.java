@@ -26,24 +26,27 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.ops4j.pax.warp.core.command.CommandRunner;
-import org.ops4j.pax.warp.core.command.impl.CommandRunnerImpl;
+import org.ops4j.pax.exam.junit.PaxExam;
 
 
 /**
  * @author Harald Wellmann
  *
  */
+@RunWith(PaxExam.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public abstract class AbstractCommandRunnerTest {
 
-    protected CommandRunner commandRunner = new CommandRunnerImpl();
-    
+    @Inject
+    protected CommandRunner commandRunner;
+
     protected void dropAndCreateDatabase(String jdbcAdminUrl) throws SQLException {
         Connection dbc = DriverManager.getConnection(jdbcAdminUrl, "warp", "warp");
         Statement st = dbc.createStatement();
@@ -74,13 +77,13 @@ public abstract class AbstractCommandRunnerTest {
         os.close();
         dbc.close();
     }
-    
+
     protected abstract String getJdbcUrl();
 
     protected abstract String getJdbcAdminUrl();
 
     protected abstract String getDbms();
-    
+
     @Test
     public void test01ShouldUpdate() throws JAXBException, SQLException, IOException {
         String adminUrl = getJdbcAdminUrl();
@@ -99,5 +102,5 @@ public abstract class AbstractCommandRunnerTest {
     public void test03ShouldDumpData() throws JAXBException, SQLException, IOException {
         dumpData(getJdbcUrl(), getDbms());
     }
-    
+
 }

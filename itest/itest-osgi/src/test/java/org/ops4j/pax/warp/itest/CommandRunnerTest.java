@@ -54,6 +54,9 @@ public class CommandRunnerTest {
             junitBundles(),
 
             linkBundle("org.apache.felix.scr"),
+            linkBundle("javax.enterprise.cdi-api"),
+            linkBundle("javax.interceptor-api"),
+            linkBundle("javax.el-api"),
             mavenBundle("org.ops4j.pax.tipi", "org.ops4j.pax.tipi.antlr.runtime", "3.5.2.1-SNAPSHOT"),
             mavenBundle("org.ops4j.pax.tipi", "org.ops4j.pax.tipi.stringtemplate", "4.0.8.1-SNAPSHOT"),
 

@@ -32,19 +32,22 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogWriter;
-import org.ops4j.pax.warp.core.changelog.impl.JaxbDatabaseChangeLogWriter;
-import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
-import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.core.util.Exceptions;
 import org.ops4j.pax.warp.jaxb.ChangeLog;
 import org.ops4j.pax.warp.jaxb.ChangeSet;
 
-
+@RunWith(PaxExam.class)
 public class DatabaseModelBuilderTest {
+
+    @Inject
+    private DatabaseChangeLogWriter changeLogWriter;
 
     @Test
     public void shouldGenerateChangeLogH2() throws SQLException, JAXBException, IOException {
@@ -76,7 +79,6 @@ public class DatabaseModelBuilderTest {
         changes.addAll(database.getForeignKeys());
         changeLog.getChangeSetOrInclude().add(changeSet);
 
-        DatabaseChangeLogWriter changeLogWriter = new JaxbDatabaseChangeLogWriter();
         OutputStreamWriter writer = new OutputStreamWriter(System.out, StandardCharsets.UTF_8);
         changeLogWriter.write(changeLog, writer);
     }
