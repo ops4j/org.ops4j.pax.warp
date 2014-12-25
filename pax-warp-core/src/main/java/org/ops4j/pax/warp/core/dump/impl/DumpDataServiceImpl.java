@@ -47,6 +47,7 @@ import org.ops4j.pax.warp.jaxb.CreateTable;
 import org.ops4j.pax.warp.jaxb.DropForeignKey;
 import org.ops4j.pax.warp.jaxb.Insert;
 import org.ops4j.pax.warp.jaxb.TruncateTable;
+import org.osgi.service.component.annotations.Component;
 
 
 /**
@@ -54,6 +55,7 @@ import org.ops4j.pax.warp.jaxb.TruncateTable;
  *
  */
 @Dependent
+@Component
 public class DumpDataServiceImpl implements DumpDataService {
 
     @Inject

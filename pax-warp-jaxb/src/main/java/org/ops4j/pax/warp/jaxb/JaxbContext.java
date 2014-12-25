@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.warp.core.changelog.impl;
+package org.ops4j.pax.warp.jaxb;
 
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 
@@ -33,24 +33,26 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.ops4j.pax.warp.core.util.Exceptions;
-import org.ops4j.pax.warp.jaxb.ChangeLog;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.xml.sax.SAXException;
 
 @ApplicationScoped
+@Component(service = JaxbContext.class)
 public class JaxbContext {
 
     protected JAXBContext context;
     protected Schema schema;
 
     @PostConstruct
-    private void init() {
+    @Activate
+    protected void init() {
         try {
             context = JAXBContext.newInstance(ChangeLog.class);
             loadSchema();
         }
         catch (JAXBException | SAXException | IOException exc) {
-            throw Exceptions.unchecked(exc);
+            throw new IllegalStateException(exc);
         }
     }
 

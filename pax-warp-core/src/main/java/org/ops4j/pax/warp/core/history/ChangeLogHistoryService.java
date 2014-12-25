@@ -40,6 +40,7 @@ import org.ops4j.pax.warp.jaxb.Column;
 import org.ops4j.pax.warp.jaxb.Constraints;
 import org.ops4j.pax.warp.jaxb.CreateTable;
 import org.ops4j.pax.warp.jaxb.SqlType;
+import org.osgi.service.component.annotations.Component;
 
 
 /**
@@ -47,6 +48,7 @@ import org.ops4j.pax.warp.jaxb.SqlType;
  *
  */
 @Dependent
+@Component(service = ChangeLogHistoryService.class)
 public class ChangeLogHistoryService {
 
     public CreateTable createHistoryTableAction() {

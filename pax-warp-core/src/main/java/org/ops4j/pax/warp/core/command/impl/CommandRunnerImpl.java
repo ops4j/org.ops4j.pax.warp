@@ -45,6 +45,7 @@ import org.ops4j.pax.warp.core.util.Exceptions;
 import org.ops4j.pax.warp.jaxb.ChangeLog;
 import org.ops4j.pax.warp.jaxb.ChangeSet;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Harald Wellmann
@@ -175,4 +176,42 @@ public class CommandRunnerImpl implements CommandRunner {
         ChangeLog changeLog = changeLogReader.parse(reader);
         return changeLog;
     }
+
+
+    /**
+     * @param dumpDataService the dumpDataService to set
+     */
+    @Reference
+    public void setDumpDataService(DumpDataService dumpDataService) {
+        this.dumpDataService = dumpDataService;
+    }
+
+
+    /**
+     * @param historyService the historyService to set
+     */
+    @Reference
+    public void setHistoryService(ChangeLogHistoryService historyService) {
+        this.historyService = historyService;
+    }
+
+
+    /**
+     * @param changeLogReader the changeLogReader to set
+     */
+    @Reference
+    public void setChangeLogReader(DatabaseChangeLogReader changeLogReader) {
+        this.changeLogReader = changeLogReader;
+    }
+
+
+    /**
+     * @param changeLogWriter the changeLogWriter to set
+     */
+    @Reference
+    public void setChangeLogWriter(DatabaseChangeLogWriter changeLogWriter) {
+        this.changeLogWriter = changeLogWriter;
+    }
+
+
 }
