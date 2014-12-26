@@ -21,8 +21,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.ops4j.pax.warp.core.util.Exceptions;
+import org.ops4j.pax.warp.jaxb.ChangeSet;
 import org.ops4j.pax.warp.jaxb.visitor.BaseVisitor;
 import org.ops4j.pax.warp.jaxb.visitor.VisitorAction;
 import org.slf4j.Logger;
@@ -39,12 +41,23 @@ public class AbstractSqlGenerator extends BaseVisitor {
     protected Connection dbc;
     protected Consumer<PreparedStatement> consumer;
     protected STGroupFile templateGroup;
+    protected Predicate<ChangeSet> changeSetFilter = (x -> true);
 
     public AbstractSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer) {
         this.dbc = dbc;
         this.consumer = consumer;
         String templateGroupName = String.format("template/%s.stg", dbms);
         templateGroup = new STGroupFile(templateGroupName);
+    }
+
+    @Override
+    public VisitorAction enter(ChangeSet changeSet) {
+        if (changeSetFilter.test(changeSet)) {
+            return VisitorAction.CONTINUE;
+        }
+        else {
+            return VisitorAction.SKIP;
+        }
     }
 
     protected VisitorAction produceStatement(String templateName, Object action) {
@@ -56,7 +69,7 @@ public class AbstractSqlGenerator extends BaseVisitor {
             throw Exceptions.unchecked(exc);
         }
 
-        return VisitorAction.SKIP;
+        return VisitorAction.CONTINUE;
     }
 
     protected String renderTemplate(String templateName, Object action) {
@@ -67,4 +80,22 @@ public class AbstractSqlGenerator extends BaseVisitor {
         log.info(result);
         return result;
     }
+
+
+    /**
+     * @return the changeSetFilter
+     */
+    public Predicate<ChangeSet> getChangeSetFilter() {
+        return changeSetFilter;
+    }
+
+
+    /**
+     * @param changeSetFilter the changeSetFilter to set
+     */
+    public void setChangeSetFilter(Predicate<ChangeSet> changeSetFilter) {
+        this.changeSetFilter = changeSetFilter;
+    }
+
+
 }

@@ -17,12 +17,21 @@
  */
 package org.ops4j.pax.warp.core.changelog.impl;
 
+import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.function.Consumer;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import org.ops4j.pax.warp.core.util.Exceptions;
 import org.ops4j.pax.warp.jaxb.AddForeignKey;
@@ -33,6 +42,7 @@ import org.ops4j.pax.warp.jaxb.CreateTable;
 import org.ops4j.pax.warp.jaxb.DropForeignKey;
 import org.ops4j.pax.warp.jaxb.DropPrimaryKey;
 import org.ops4j.pax.warp.jaxb.Insert;
+import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.ops4j.pax.warp.jaxb.TruncateTable;
 import org.ops4j.pax.warp.jaxb.visitor.VisitorAction;
 
@@ -40,8 +50,11 @@ import org.ops4j.pax.warp.jaxb.visitor.VisitorAction;
 public class UpdateSqlGenerator extends AbstractSqlGenerator {
 
 
-    public UpdateSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer) {
+    private WarpJaxbContext context;
+
+    public UpdateSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer, WarpJaxbContext context) {
         super(dbms, dbc, consumer);
+        this.context = context;
     }
 
     @Override
@@ -80,8 +93,15 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
     }
 
     @Override
-    public VisitorAction leave(ChangeSet aBean) {
+    public VisitorAction leave(ChangeSet changeSet) {
         try {
+            String checksum = computeChecksum(changeSet);
+            PreparedStatement st = dbc.prepareStatement("insert into warp_history (id, checksum, executed) values (?, ?, ?)");
+            st.setString(1, changeSet.getId());
+            st.setString(2, checksum);
+            st.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+            st.executeUpdate();
+            st.close();
             dbc.commit();
         }
         catch (SQLException exc) {
@@ -141,4 +161,24 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
                 return null;
         }
     }
+
+    public String computeChecksum(ChangeSet changeSet) {
+        try {
+            Marshaller marshaller = context.createFragmentMarshaller();
+            StringWriter writer = new StringWriter();
+            marshaller.marshal(changeSet, writer);
+
+
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+            digest.update(writer.toString().getBytes(StandardCharsets.UTF_8));
+            byte[] checksum = digest.digest();
+            return new BigInteger(1, checksum).toString(16);
+        }
+        catch (JAXBException | NoSuchAlgorithmException exc) {
+            throw Exceptions.unchecked(exc);
+        }
+    }
+
+
 }

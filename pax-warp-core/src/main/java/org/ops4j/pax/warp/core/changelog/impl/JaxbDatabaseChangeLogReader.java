@@ -27,7 +27,7 @@ import javax.xml.bind.Unmarshaller;
 import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogReader;
 import org.ops4j.pax.warp.core.util.Exceptions;
 import org.ops4j.pax.warp.jaxb.ChangeLog;
-import org.ops4j.pax.warp.jaxb.JaxbContext;
+import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Reference;
 public class JaxbDatabaseChangeLogReader implements DatabaseChangeLogReader {
 
     @Inject
-    private JaxbContext context;
+    private WarpJaxbContext context;
 
     @Override
     public ChangeLog parse(Reader reader) {
@@ -51,7 +51,7 @@ public class JaxbDatabaseChangeLogReader implements DatabaseChangeLogReader {
     }
 
     @Reference
-    public void setContext(JaxbContext context) {
+    public void setContext(WarpJaxbContext context) {
         this.context = context;
     }
 

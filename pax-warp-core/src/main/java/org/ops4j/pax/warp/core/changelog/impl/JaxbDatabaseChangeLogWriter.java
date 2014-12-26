@@ -27,7 +27,7 @@ import javax.xml.bind.Marshaller;
 import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogWriter;
 import org.ops4j.pax.warp.core.util.Exceptions;
 import org.ops4j.pax.warp.jaxb.ChangeLog;
-import org.ops4j.pax.warp.jaxb.JaxbContext;
+import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -37,7 +37,7 @@ import org.osgi.service.component.annotations.Reference;
 public class JaxbDatabaseChangeLogWriter implements DatabaseChangeLogWriter {
 
     @Inject
-    private JaxbContext context;
+    private WarpJaxbContext context;
 
     @Override
     public void write(ChangeLog changeLog, Writer writer) {
@@ -56,7 +56,7 @@ public class JaxbDatabaseChangeLogWriter implements DatabaseChangeLogWriter {
      * @param context the context to set
      */
     @Reference
-    public void setContext(JaxbContext context) {
+    public void setContext(WarpJaxbContext context) {
         this.context = context;
     }
 

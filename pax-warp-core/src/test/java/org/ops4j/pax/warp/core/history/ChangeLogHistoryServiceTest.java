@@ -20,26 +20,35 @@ package org.ops4j.pax.warp.core.history;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import javax.inject.Inject;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.warp.core.changelog.impl.UpdateSqlGenerator;
 import org.ops4j.pax.warp.jaxb.AddPrimaryKey;
 import org.ops4j.pax.warp.jaxb.ChangeSet;
+import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 
 /**
  * @author Harald Wellmann
  *
  */
+@RunWith(PaxExam.class)
 public class ChangeLogHistoryServiceTest {
 
-    private ChangeLogHistoryService historyService = new ChangeLogHistoryService();
+    @Inject
+    private WarpJaxbContext context;
 
     @Test
     public void shouldComputeChecksum() {
+        UpdateSqlGenerator generator = new UpdateSqlGenerator("derby", null, c -> {}, context);
         AddPrimaryKey addPk = new AddPrimaryKey();
         addPk.getColumn().add("id");
         ChangeSet changeSet = new ChangeSet();
         changeSet.setId("123");
         changeSet.getChanges().add(addPk);
-        assertThat(historyService.computeChecksum(changeSet),
+        assertThat(generator.computeChecksum(changeSet),
             is("9e872d1c84fe80cc7ae87ac04d7c9e522dee8d3372384203c9e95833e3cf789"));
     }
 }

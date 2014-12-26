@@ -18,13 +18,11 @@
 package org.ops4j.pax.warp.core.command.impl;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -33,15 +31,12 @@ import javax.inject.Inject;
 import javax.sql.DataSource;
 import javax.xml.bind.JAXBException;
 
-import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogReader;
 import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogWriter;
-import org.ops4j.pax.warp.core.changelog.impl.UpdateSqlGenerator;
 import org.ops4j.pax.warp.core.command.CommandRunner;
 import org.ops4j.pax.warp.core.dump.DumpDataService;
-import org.ops4j.pax.warp.core.history.ChangeLogHistoryService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
-import org.ops4j.pax.warp.core.util.Exceptions;
+import org.ops4j.pax.warp.core.update.UpdateService;
 import org.ops4j.pax.warp.jaxb.ChangeLog;
 import org.ops4j.pax.warp.jaxb.ChangeSet;
 import org.osgi.service.component.annotations.Component;
@@ -59,10 +54,7 @@ public class CommandRunnerImpl implements CommandRunner {
     private DumpDataService dumpDataService;
 
     @Inject
-    private ChangeLogHistoryService historyService;
-
-    @Inject
-    private DatabaseChangeLogReader changeLogReader;
+    private UpdateService updateService;
 
     @Inject
     private DatabaseChangeLogWriter changeLogWriter;
@@ -140,17 +132,7 @@ public class CommandRunnerImpl implements CommandRunner {
     @Override
     public void update(Connection dbc, InputStream is, String dbms) throws JAXBException,
         SQLException {
-        boolean autoCommit = dbc.getAutoCommit();
-        try {
-            dbc.setAutoCommit(false);
-            ChangeLog changeLog = readChangeLog(is);
-            //ChangeLogHistory history = historyService.readChangeLogHistory(dbc);
-            UpdateSqlGenerator generator = new UpdateSqlGenerator(dbms, dbc, s -> runUpdate(s));
-            changeLog.accept(generator);
-        }
-        finally {
-            dbc.setAutoCommit(autoCommit);
-        }
+        updateService.update(dbc, is, dbms);
     }
 
     /**
@@ -162,22 +144,6 @@ public class CommandRunnerImpl implements CommandRunner {
         return words[1];
     }
 
-    private void runUpdate(PreparedStatement st) {
-        try {
-            st.executeUpdate();
-        }
-        catch (SQLException exc) {
-            throw Exceptions.unchecked(exc);
-        }
-    }
-
-    private ChangeLog readChangeLog(InputStream is) throws JAXBException {
-        InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
-        ChangeLog changeLog = changeLogReader.parse(reader);
-        return changeLog;
-    }
-
-
     /**
      * @param dumpDataService the dumpDataService to set
      */
@@ -188,30 +154,10 @@ public class CommandRunnerImpl implements CommandRunner {
 
 
     /**
-     * @param historyService the historyService to set
-     */
-    @Reference
-    public void setHistoryService(ChangeLogHistoryService historyService) {
-        this.historyService = historyService;
-    }
-
-
-    /**
-     * @param changeLogReader the changeLogReader to set
-     */
-    @Reference
-    public void setChangeLogReader(DatabaseChangeLogReader changeLogReader) {
-        this.changeLogReader = changeLogReader;
-    }
-
-
-    /**
      * @param changeLogWriter the changeLogWriter to set
      */
     @Reference
     public void setChangeLogWriter(DatabaseChangeLogWriter changeLogWriter) {
         this.changeLogWriter = changeLogWriter;
     }
-
-
 }

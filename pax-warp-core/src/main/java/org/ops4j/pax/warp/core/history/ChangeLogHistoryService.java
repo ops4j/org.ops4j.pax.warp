@@ -17,25 +17,16 @@
  */
 package org.ops4j.pax.warp.core.history;
 
-import java.io.StringWriter;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 import org.ops4j.pax.warp.core.util.Exceptions;
-import org.ops4j.pax.warp.jaxb.ChangeLog;
-import org.ops4j.pax.warp.jaxb.ChangeSet;
 import org.ops4j.pax.warp.jaxb.Column;
 import org.ops4j.pax.warp.jaxb.Constraints;
 import org.ops4j.pax.warp.jaxb.CreateTable;
@@ -79,24 +70,22 @@ public class ChangeLogHistoryService {
         return action;
     }
 
-    public String computeChecksum(ChangeSet changeSet) {
-        try {
-            JAXBContext context = JAXBContext.newInstance(ChangeLog.class);
-            Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
-            StringWriter writer = new StringWriter();
-            marshaller.marshal(changeSet, writer);
-
-
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-
-            digest.update(writer.toString().getBytes(StandardCharsets.UTF_8));
-            byte[] checksum = digest.digest();
-            return new BigInteger(1, checksum).toString(16);
+    public boolean hasMetaDataTable(Connection dbc) throws SQLException {
+        DatabaseMetaData metaData = dbc.getMetaData();
+        String tableName = "warp_history";
+        if (metaData.storesUpperCaseIdentifiers()) {
+            tableName = tableName.toUpperCase();
         }
-        catch (JAXBException | NoSuchAlgorithmException exc) {
-            throw Exceptions.unchecked(exc);
-        }
+        return hasTable(metaData, tableName);
+    }
+
+    private boolean hasTable(DatabaseMetaData metaData, String tableName) throws SQLException {
+        boolean result = false;
+        ResultSet rs = metaData.getTables(null, null, tableName, new String[] { "TABLE" });
+        result = rs.next();
+        rs.close();
+        return result;
+
     }
 
     public ChangeLogHistory readChangeLogHistory(Connection dbc) {
@@ -112,9 +101,8 @@ public class ChangeLogHistoryService {
             rs.close();
             st.close();
         }
-        catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        catch (SQLException exc) {
+            throw Exceptions.unchecked(exc);
         }
         return history;
     }

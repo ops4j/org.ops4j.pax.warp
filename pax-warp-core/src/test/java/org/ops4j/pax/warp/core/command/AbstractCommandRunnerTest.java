@@ -103,4 +103,11 @@ public abstract class AbstractCommandRunnerTest {
         dumpData(getJdbcUrl(), getDbms());
     }
 
+    @Test
+    public void test04UpdateDataShouldBeIdempotent() throws JAXBException, SQLException, IOException {
+        updateData(getJdbcUrl(), getDbms());
+    }
+
+
+
 }

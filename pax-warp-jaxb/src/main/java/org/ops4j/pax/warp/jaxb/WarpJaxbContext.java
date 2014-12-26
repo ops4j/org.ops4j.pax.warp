@@ -38,8 +38,8 @@ import org.osgi.service.component.annotations.Component;
 import org.xml.sax.SAXException;
 
 @ApplicationScoped
-@Component(service = JaxbContext.class)
-public class JaxbContext {
+@Component(service = WarpJaxbContext.class)
+public class WarpJaxbContext {
 
     protected JAXBContext context;
     protected Schema schema;
@@ -71,6 +71,12 @@ public class JaxbContext {
     public Marshaller createValidatingMarshaller() throws JAXBException {
         Marshaller marshaller = context.createMarshaller();
         marshaller.setSchema(schema);
+        return marshaller;
+    }
+
+    public Marshaller createFragmentMarshaller() throws JAXBException {
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
         return marshaller;
     }
 }

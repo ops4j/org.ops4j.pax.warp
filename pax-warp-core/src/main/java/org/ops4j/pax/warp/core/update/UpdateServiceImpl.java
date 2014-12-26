@@ -34,6 +34,8 @@ import org.ops4j.pax.warp.core.history.ChangeLogHistory;
 import org.ops4j.pax.warp.core.history.ChangeLogHistoryService;
 import org.ops4j.pax.warp.core.util.Exceptions;
 import org.ops4j.pax.warp.jaxb.ChangeLog;
+import org.ops4j.pax.warp.jaxb.CreateTable;
+import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 
 
 /**
@@ -46,15 +48,27 @@ public class UpdateServiceImpl implements UpdateService {
     @Inject
     private JaxbDatabaseChangeLogReader changeLogReader;
 
+    @Inject
+    private ChangeLogHistoryService historyService;
+
+    @Inject
+    private WarpJaxbContext context;
+
     @Override
     public void update(Connection dbc, InputStream is, String dbms) throws SQLException, JAXBException {
         boolean autoCommit = dbc.getAutoCommit();
         try {
             dbc.setAutoCommit(false);
-            ChangeLog changeLog = readChangeLog(is);
-            ChangeLogHistoryService historyService = new ChangeLogHistoryService();
+            UpdateSqlGenerator generator = new UpdateSqlGenerator(dbms, dbc, s -> runUpdate(s), context);
+            if (!historyService.hasMetaDataTable(dbc)) {
+                CreateTable action = historyService.createHistoryTableAction();
+                action.accept(generator);
+            }
+
             ChangeLogHistory history = historyService.readChangeLogHistory(dbc);
-            UpdateSqlGenerator generator = new UpdateSqlGenerator(dbms, dbc, s -> runUpdate(s));
+            generator.setChangeSetFilter(c -> !history.containsKey(c.getId()));
+
+            ChangeLog changeLog = readChangeLog(is);
             changeLog.accept(generator);
         }
         finally {
