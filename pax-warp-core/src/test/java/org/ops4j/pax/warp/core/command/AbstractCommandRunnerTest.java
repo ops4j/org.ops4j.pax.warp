@@ -61,6 +61,7 @@ public abstract class AbstractCommandRunnerTest {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         commandRunner.update(dbc, is, dbms);
         dbc.close();
+        is.close();
     }
 
     protected void updateData(String jdbcUrl, String dbms) throws JAXBException, SQLException, IOException {
@@ -68,6 +69,7 @@ public abstract class AbstractCommandRunnerTest {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         commandRunner.update(dbc, is, dbms);
         dbc.close();
+        is.close();
     }
 
     protected void dumpData(String jdbcUrl, String dbms) throws JAXBException, SQLException, IOException {

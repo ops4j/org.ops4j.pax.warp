@@ -67,6 +67,7 @@ public class PaxWarp {
             log.error(exc.getMessage());
             commander.usage();
         }
+        // CHECKSTYLE:SKIP
         catch (Exception exc) {
             log.error("exception running command", exc);
         }

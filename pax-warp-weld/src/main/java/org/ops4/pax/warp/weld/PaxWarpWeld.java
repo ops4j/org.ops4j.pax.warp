@@ -30,6 +30,11 @@ import org.ops4j.pax.warp.cli.PaxWarp;
  */
 public class PaxWarpWeld {
 
+
+    private PaxWarpWeld() {
+        // hidden constructor
+    }
+
     /**
      * @param args
      */

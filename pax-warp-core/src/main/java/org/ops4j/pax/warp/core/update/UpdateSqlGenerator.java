@@ -53,8 +53,8 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
 
 
     private WarpJaxbContext context;
-    private String checksum;
-    private ChangeLogHistory history;
+    private String actualChecksum;
+    private ChangeLogHistory changeLogHistory;
 
     public UpdateSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer, WarpJaxbContext context) {
         super(dbms, dbc, consumer);
@@ -98,11 +98,11 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
 
     @Override
     public VisitorAction enter(ChangeSet changeSet) {
-        checksum = computeChecksum(changeSet);
+        actualChecksum = computeChecksum(changeSet);
         String id = changeSet.getId();
-        String expectedChecksum = history.get(id);
+        String expectedChecksum = changeLogHistory.get(id);
         if (expectedChecksum != null) {
-            if (!expectedChecksum.equals(checksum)) {
+            if (!expectedChecksum.equals(actualChecksum)) {
                 String msg = String.format("checksum mismatch for change set [id=%s]", id);
                 throw new IllegalArgumentException(msg);
             }
@@ -115,7 +115,7 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
         try {
             PreparedStatement st = dbc.prepareStatement("insert into warp_history (id, checksum, executed) values (?, ?, ?)");
             st.setString(1, changeSet.getId());
-            st.setString(2, checksum);
+            st.setString(2, actualChecksum);
             st.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
             st.executeUpdate();
             st.close();
@@ -185,9 +185,7 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
             StringWriter writer = new StringWriter();
             marshaller.marshal(changeSet, writer);
 
-
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-
             digest.update(writer.toString().getBytes(StandardCharsets.UTF_8));
             byte[] checksum = digest.digest();
             return new BigInteger(1, checksum).toString(16);
@@ -197,12 +195,7 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
         }
     }
 
-    /**
-     * @param history
-     */
     public void setChangeLogHistory(ChangeLogHistory history) {
-        this.history = history;
+        this.changeLogHistory = history;
     }
-
-
 }
