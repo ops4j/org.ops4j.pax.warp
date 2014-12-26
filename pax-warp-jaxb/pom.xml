@@ -49,7 +49,7 @@
                 </executions>
                 <configuration>
                     <extension>true</extension>
-                    <generatePackage>org.ops4j.pax.warp.jaxb</generatePackage>
+                    <generatePackage>org.ops4j.pax.warp.jaxb.gen</generatePackage>
                     <schemaIncludes>
                         <include>xsd/warp.xsd</include>
                     </schemaIncludes>
@@ -60,7 +60,7 @@
                         <!-- generate visitor classes -->
                         <arg>-Xvisitor</arg>
                         <!-- the plugin selects a random package, by default, so we define it explicitly -->
-                        <arg>-Xvisitor-package:org.ops4j.pax.warp.jaxb.visitor</arg>
+                        <arg>-Xvisitor-package:org.ops4j.pax.warp.jaxb.gen.visitor</arg>
                     </args>
                     <plugins>
                         <plugin>

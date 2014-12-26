@@ -26,8 +26,8 @@ import javax.xml.bind.Marshaller;
 
 import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogWriter;
 import org.ops4j.pax.warp.core.util.Exceptions;
-import org.ops4j.pax.warp.jaxb.ChangeLog;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
+import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 

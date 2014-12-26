@@ -40,8 +40,8 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogWriter;
 import org.ops4j.pax.warp.core.util.Exceptions;
-import org.ops4j.pax.warp.jaxb.ChangeLog;
-import org.ops4j.pax.warp.jaxb.ChangeSet;
+import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
+import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
 
 @RunWith(PaxExam.class)
 public class DatabaseModelBuilderTest {

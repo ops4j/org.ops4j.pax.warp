@@ -27,10 +27,10 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 
 import org.ops4j.pax.warp.core.util.Exceptions;
-import org.ops4j.pax.warp.jaxb.Column;
-import org.ops4j.pax.warp.jaxb.Constraints;
-import org.ops4j.pax.warp.jaxb.CreateTable;
-import org.ops4j.pax.warp.jaxb.SqlType;
+import org.ops4j.pax.warp.jaxb.gen.Column;
+import org.ops4j.pax.warp.jaxb.gen.Constraints;
+import org.ops4j.pax.warp.jaxb.gen.CreateTable;
+import org.ops4j.pax.warp.jaxb.gen.SqlType;
 import org.osgi.service.component.annotations.Component;
 
 

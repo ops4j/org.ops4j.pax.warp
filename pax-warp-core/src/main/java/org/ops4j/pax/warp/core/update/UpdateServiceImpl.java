@@ -32,9 +32,9 @@ import org.ops4j.pax.warp.core.changelog.impl.JaxbDatabaseChangeLogReader;
 import org.ops4j.pax.warp.core.history.ChangeLogHistory;
 import org.ops4j.pax.warp.core.history.ChangeLogHistoryService;
 import org.ops4j.pax.warp.core.util.Exceptions;
-import org.ops4j.pax.warp.jaxb.ChangeLog;
-import org.ops4j.pax.warp.jaxb.CreateTable;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
+import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
+import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 
 
 /**

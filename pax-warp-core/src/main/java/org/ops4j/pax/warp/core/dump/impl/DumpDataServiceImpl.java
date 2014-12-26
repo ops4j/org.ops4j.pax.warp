@@ -38,15 +38,15 @@ import org.ops4j.pax.warp.core.dump.DumpDataService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.core.util.Exceptions;
-import org.ops4j.pax.warp.jaxb.AddForeignKey;
-import org.ops4j.pax.warp.jaxb.ChangeLog;
-import org.ops4j.pax.warp.jaxb.ChangeSet;
-import org.ops4j.pax.warp.jaxb.Column;
-import org.ops4j.pax.warp.jaxb.ColumnValue;
-import org.ops4j.pax.warp.jaxb.CreateTable;
-import org.ops4j.pax.warp.jaxb.DropForeignKey;
-import org.ops4j.pax.warp.jaxb.Insert;
-import org.ops4j.pax.warp.jaxb.TruncateTable;
+import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
+import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
+import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
+import org.ops4j.pax.warp.jaxb.gen.Column;
+import org.ops4j.pax.warp.jaxb.gen.ColumnValue;
+import org.ops4j.pax.warp.jaxb.gen.CreateTable;
+import org.ops4j.pax.warp.jaxb.gen.DropForeignKey;
+import org.ops4j.pax.warp.jaxb.gen.Insert;
+import org.ops4j.pax.warp.jaxb.gen.TruncateTable;
 import org.osgi.service.component.annotations.Component;
 
 

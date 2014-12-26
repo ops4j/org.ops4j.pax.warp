@@ -36,17 +36,17 @@ import javax.xml.bind.Marshaller;
 import org.ops4j.pax.warp.core.changelog.impl.AbstractSqlGenerator;
 import org.ops4j.pax.warp.core.history.ChangeLogHistory;
 import org.ops4j.pax.warp.core.util.Exceptions;
-import org.ops4j.pax.warp.jaxb.AddForeignKey;
-import org.ops4j.pax.warp.jaxb.AddPrimaryKey;
-import org.ops4j.pax.warp.jaxb.ChangeSet;
-import org.ops4j.pax.warp.jaxb.ColumnValue;
-import org.ops4j.pax.warp.jaxb.CreateTable;
-import org.ops4j.pax.warp.jaxb.DropForeignKey;
-import org.ops4j.pax.warp.jaxb.DropPrimaryKey;
-import org.ops4j.pax.warp.jaxb.Insert;
-import org.ops4j.pax.warp.jaxb.TruncateTable;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
-import org.ops4j.pax.warp.jaxb.visitor.VisitorAction;
+import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
+import org.ops4j.pax.warp.jaxb.gen.AddPrimaryKey;
+import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
+import org.ops4j.pax.warp.jaxb.gen.ColumnValue;
+import org.ops4j.pax.warp.jaxb.gen.CreateTable;
+import org.ops4j.pax.warp.jaxb.gen.DropForeignKey;
+import org.ops4j.pax.warp.jaxb.gen.DropPrimaryKey;
+import org.ops4j.pax.warp.jaxb.gen.Insert;
+import org.ops4j.pax.warp.jaxb.gen.TruncateTable;
+import org.ops4j.pax.warp.jaxb.gen.visitor.VisitorAction;
 
 
 public class UpdateSqlGenerator extends AbstractSqlGenerator {

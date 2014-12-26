@@ -24,9 +24,9 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.ops4j.pax.warp.core.util.Exceptions;
-import org.ops4j.pax.warp.jaxb.ChangeSet;
-import org.ops4j.pax.warp.jaxb.visitor.BaseVisitor;
-import org.ops4j.pax.warp.jaxb.visitor.VisitorAction;
+import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
+import org.ops4j.pax.warp.jaxb.gen.visitor.BaseVisitor;
+import org.ops4j.pax.warp.jaxb.gen.visitor.VisitorAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.stringtemplate.v4.ST;

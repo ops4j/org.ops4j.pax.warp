@@ -18,10 +18,10 @@
 package org.ops4j.pax.warp.core.service.impl;
 
 import org.junit.Test;
-import org.ops4j.pax.warp.jaxb.Column;
-import org.ops4j.pax.warp.jaxb.Constraints;
-import org.ops4j.pax.warp.jaxb.CreateTable;
-import org.ops4j.pax.warp.jaxb.SqlType;
+import org.ops4j.pax.warp.jaxb.gen.Column;
+import org.ops4j.pax.warp.jaxb.gen.Constraints;
+import org.ops4j.pax.warp.jaxb.gen.CreateTable;
+import org.ops4j.pax.warp.jaxb.gen.SqlType;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroupFile;
 

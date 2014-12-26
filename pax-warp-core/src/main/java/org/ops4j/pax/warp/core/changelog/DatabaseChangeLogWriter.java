@@ -19,7 +19,7 @@ package org.ops4j.pax.warp.core.changelog;
 
 import java.io.Writer;
 
-import org.ops4j.pax.warp.jaxb.ChangeLog;
+import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 
 
 

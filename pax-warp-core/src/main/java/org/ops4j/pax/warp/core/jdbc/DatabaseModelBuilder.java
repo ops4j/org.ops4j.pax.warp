@@ -28,15 +28,15 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.ops4j.pax.warp.core.util.Exceptions;
-import org.ops4j.pax.warp.jaxb.AddForeignKey;
-import org.ops4j.pax.warp.jaxb.AddPrimaryKey;
-import org.ops4j.pax.warp.jaxb.Column;
-import org.ops4j.pax.warp.jaxb.ColumnPair;
-import org.ops4j.pax.warp.jaxb.ColumnReference;
-import org.ops4j.pax.warp.jaxb.Constraints;
-import org.ops4j.pax.warp.jaxb.CreateTable;
-import org.ops4j.pax.warp.jaxb.SqlType;
-import org.ops4j.pax.warp.jaxb.TableReference;
+import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
+import org.ops4j.pax.warp.jaxb.gen.AddPrimaryKey;
+import org.ops4j.pax.warp.jaxb.gen.Column;
+import org.ops4j.pax.warp.jaxb.gen.ColumnPair;
+import org.ops4j.pax.warp.jaxb.gen.ColumnReference;
+import org.ops4j.pax.warp.jaxb.gen.Constraints;
+import org.ops4j.pax.warp.jaxb.gen.CreateTable;
+import org.ops4j.pax.warp.jaxb.gen.SqlType;
+import org.ops4j.pax.warp.jaxb.gen.TableReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

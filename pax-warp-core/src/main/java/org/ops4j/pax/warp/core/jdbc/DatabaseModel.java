@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.ops4j.pax.warp.jaxb.AddForeignKey;
-import org.ops4j.pax.warp.jaxb.AddPrimaryKey;
-import org.ops4j.pax.warp.jaxb.CreateTable;
+import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
+import org.ops4j.pax.warp.jaxb.gen.AddPrimaryKey;
+import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 
 
 public class DatabaseModel {
