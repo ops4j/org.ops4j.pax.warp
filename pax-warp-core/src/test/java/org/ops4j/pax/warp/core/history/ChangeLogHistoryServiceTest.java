@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.warp.core.changelog.impl.UpdateSqlGenerator;
+import org.ops4j.pax.warp.core.update.UpdateSqlGenerator;
 import org.ops4j.pax.warp.jaxb.AddPrimaryKey;
 import org.ops4j.pax.warp.jaxb.ChangeSet;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;

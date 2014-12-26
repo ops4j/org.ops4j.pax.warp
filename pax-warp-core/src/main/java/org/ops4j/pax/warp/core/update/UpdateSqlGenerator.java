@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.warp.core.changelog.impl;
+package org.ops4j.pax.warp.core.update;
 
 import java.io.StringWriter;
 import java.math.BigDecimal;
@@ -33,6 +33,8 @@ import java.util.function.Consumer;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.ops4j.pax.warp.core.changelog.impl.AbstractSqlGenerator;
+import org.ops4j.pax.warp.core.history.ChangeLogHistory;
 import org.ops4j.pax.warp.core.util.Exceptions;
 import org.ops4j.pax.warp.jaxb.AddForeignKey;
 import org.ops4j.pax.warp.jaxb.AddPrimaryKey;
@@ -42,8 +44,8 @@ import org.ops4j.pax.warp.jaxb.CreateTable;
 import org.ops4j.pax.warp.jaxb.DropForeignKey;
 import org.ops4j.pax.warp.jaxb.DropPrimaryKey;
 import org.ops4j.pax.warp.jaxb.Insert;
-import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.ops4j.pax.warp.jaxb.TruncateTable;
+import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.ops4j.pax.warp.jaxb.visitor.VisitorAction;
 
 
@@ -51,6 +53,8 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
 
 
     private WarpJaxbContext context;
+    private String checksum;
+    private ChangeLogHistory history;
 
     public UpdateSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer, WarpJaxbContext context) {
         super(dbms, dbc, consumer);
@@ -93,9 +97,22 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
     }
 
     @Override
+    public VisitorAction enter(ChangeSet changeSet) {
+        checksum = computeChecksum(changeSet);
+        String id = changeSet.getId();
+        String expectedChecksum = history.get(id);
+        if (expectedChecksum != null) {
+            if (!expectedChecksum.equals(checksum)) {
+                String msg = String.format("checksum mismatch for change set [id=%s]", id);
+                throw new IllegalArgumentException(msg);
+            }
+        }
+        return VisitorAction.CONTINUE;
+    }
+
+    @Override
     public VisitorAction leave(ChangeSet changeSet) {
         try {
-            String checksum = computeChecksum(changeSet);
             PreparedStatement st = dbc.prepareStatement("insert into warp_history (id, checksum, executed) values (?, ?, ?)");
             st.setString(1, changeSet.getId());
             st.setString(2, checksum);
@@ -178,6 +195,13 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
         catch (JAXBException | NoSuchAlgorithmException exc) {
             throw Exceptions.unchecked(exc);
         }
+    }
+
+    /**
+     * @param history
+     */
+    public void setChangeLogHistory(ChangeLogHistory history) {
+        this.history = history;
     }
 
 

@@ -29,7 +29,6 @@ import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 
 import org.ops4j.pax.warp.core.changelog.impl.JaxbDatabaseChangeLogReader;
-import org.ops4j.pax.warp.core.changelog.impl.UpdateSqlGenerator;
 import org.ops4j.pax.warp.core.history.ChangeLogHistory;
 import org.ops4j.pax.warp.core.history.ChangeLogHistoryService;
 import org.ops4j.pax.warp.core.util.Exceptions;
@@ -66,6 +65,7 @@ public class UpdateServiceImpl implements UpdateService {
             }
 
             ChangeLogHistory history = historyService.readChangeLogHistory(dbc);
+            generator.setChangeLogHistory(history);
             generator.setChangeSetFilter(c -> !history.containsKey(c.getId()));
 
             ChangeLog changeLog = readChangeLog(is);
