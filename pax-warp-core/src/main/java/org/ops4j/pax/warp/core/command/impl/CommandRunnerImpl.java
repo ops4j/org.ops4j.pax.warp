@@ -160,4 +160,13 @@ public class CommandRunnerImpl implements CommandRunner {
     public void setChangeLogWriter(DatabaseChangeLogWriter changeLogWriter) {
         this.changeLogWriter = changeLogWriter;
     }
+
+
+    /**
+     * @param updateService the updateService to set
+     */
+    @Reference
+    public void setUpdateService(UpdateService updateService) {
+        this.updateService = updateService;
+    }
 }

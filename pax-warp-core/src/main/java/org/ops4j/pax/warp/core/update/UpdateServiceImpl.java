@@ -28,24 +28,27 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 
-import org.ops4j.pax.warp.core.changelog.impl.JaxbDatabaseChangeLogReader;
+import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogReader;
 import org.ops4j.pax.warp.core.history.ChangeLogHistory;
 import org.ops4j.pax.warp.core.history.ChangeLogHistoryService;
 import org.ops4j.pax.warp.core.util.Exceptions;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 
 /**
  * @author Harald Wellmann
  *
  */
+@Component
 @Dependent
 public class UpdateServiceImpl implements UpdateService {
 
     @Inject
-    private JaxbDatabaseChangeLogReader changeLogReader;
+    private DatabaseChangeLogReader changeLogReader;
 
     @Inject
     private ChangeLogHistoryService historyService;
@@ -89,5 +92,32 @@ public class UpdateServiceImpl implements UpdateService {
         InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
         ChangeLog changeLog = changeLogReader.parse(reader);
         return changeLog;
+    }
+
+
+    /**
+     * @param changeLogReader the changeLogReader to set
+     */
+    @Reference
+    public void setChangeLogReader(DatabaseChangeLogReader changeLogReader) {
+        this.changeLogReader = changeLogReader;
+    }
+
+
+    /**
+     * @param historyService the historyService to set
+     */
+    @Reference
+    public void setHistoryService(ChangeLogHistoryService historyService) {
+        this.historyService = historyService;
+    }
+
+
+    /**
+     * @param context the context to set
+     */
+    @Reference
+    public void setContext(WarpJaxbContext context) {
+        this.context = context;
     }
 }

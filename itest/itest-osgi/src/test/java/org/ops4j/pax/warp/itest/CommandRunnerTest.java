@@ -27,14 +27,30 @@ import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.warp.itest.TestConfiguration.logbackBundles;
 import static org.ops4j.pax.warp.itest.TestConfiguration.workspaceBundle;
 
-import javax.inject.Inject;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Properties;
 
+import javax.inject.Inject;
+import javax.sql.DataSource;
+import javax.xml.bind.JAXBException;
+
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
+import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.ops4j.pax.exam.util.Filter;
 import org.ops4j.pax.warp.core.command.CommandRunner;
+import org.osgi.service.jdbc.DataSourceFactory;
 
 
 /**
@@ -42,16 +58,25 @@ import org.ops4j.pax.warp.core.command.CommandRunner;
  *
  */
 @RunWith(PaxExam.class)
+@ExamReactorStrategy(PerClass.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CommandRunnerTest {
 
     @Inject
     private CommandRunner commandRunner;
+
+    @Inject
+    @Filter("(osgi.jdbc.driver.name=h2)")
+    private DataSourceFactory dsf;
 
     @Configuration
     public Option[] config() {
         return options(
             logbackBundles(),
             junitBundles(),
+
+            linkBundle("org.ops4j.pax.jdbc.h2"),
+            linkBundle("org.h2"),
 
             linkBundle("org.apache.felix.scr"),
             linkBundle("javax.enterprise.cdi-api"),
@@ -66,8 +91,46 @@ public class CommandRunnerTest {
     }
 
     @Test
-    public void shouldFindCommandRunner() {
+    public void test01ShouldFindCommandRunner() {
         assertThat(commandRunner, is(notNullValue()));
     }
 
+    @Test
+    public void test02ShouldUpdateStructure() throws SQLException, JAXBException, IOException {
+        Connection dbc = createConnection();
+        InputStream is = getClass().getResourceAsStream("/changelogs/changelog1.xml");
+        commandRunner.update(dbc, is, "h2");
+        is.close();
+        dbc.close();
+    }
+
+    @Test
+    public void test03ShouldUpdateData() throws SQLException, JAXBException, IOException {
+        Connection dbc = createConnection();
+        InputStream is = getClass().getResourceAsStream("/changelogs/data1.xml");
+        commandRunner.update(dbc, is, "h2");
+        is.close();
+        dbc.close();
+    }
+
+    @Test
+    public void test04ShouldDumpData() throws SQLException, JAXBException, IOException {
+        Connection dbc = createConnection();
+        OutputStream os = new FileOutputStream("target/data1.xml");
+        commandRunner.dumpData(dbc, os);
+        os.close();
+        dbc.close();
+    }
+
+    private Connection createConnection() throws SQLException {
+        Properties props = new Properties();
+        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, "mem:warp;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
+        props.setProperty(DataSourceFactory.JDBC_USER, "warp");
+        props.setProperty(DataSourceFactory.JDBC_PASSWORD, "warp");
+        DataSource dataSource = dsf.createDataSource(props);
+        assertThat(dataSource, is(notNullValue()));
+        Connection dbc = dataSource.getConnection();
+        assertThat(dbc, is(notNullValue()));
+        return dbc;
+    }
 }

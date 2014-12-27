@@ -48,6 +48,7 @@ import org.ops4j.pax.warp.jaxb.gen.DropForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.Insert;
 import org.ops4j.pax.warp.jaxb.gen.TruncateTable;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 
 /**
@@ -159,5 +160,16 @@ public class DumpDataServiceImpl implements DumpDataService {
         OutputStreamWriter writer = new OutputStreamWriter(os, StandardCharsets.UTF_8);
         changeLogWriter.write(changeLog, writer);
     }
+
+
+    /**
+     * @param changeLogWriter the changeLogWriter to set
+     */
+    @Reference
+    public void setChangeLogWriter(DatabaseChangeLogWriter changeLogWriter) {
+        this.changeLogWriter = changeLogWriter;
+    }
+
+
 
 }
