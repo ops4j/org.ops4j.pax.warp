@@ -18,6 +18,21 @@ columnTypeMap ::= [
     "TIMESTAMP" : "TIMESTAMP",
     default : key
 ]
+
+autoIncrementColumnTypeMap ::= [
+    "INT_8" : "SERIAL",
+    "INT_16" : "SERIAL",
+    "INT_32" : "SERIAL",
+    "INT_64" : "BIGSERIAL",
+    default : key
+]
     
-columnType(type) ::= "<columnTypeMap.(type)>"
-    
+columnType(col) ::= <%
+<if(col.autoIncrement)>
+<autoIncrementColumnTypeMap.(col.type)>
+<else>
+<columnTypeMap.(col.type)>
+<endif>
+%>
+
+autoIncrement(col) ::= ""    

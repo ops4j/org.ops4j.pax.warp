@@ -103,9 +103,10 @@ public class DatabaseModelBuilder {
             int columnSize = rs.getInt("COLUMN_SIZE");
             int decimalDigits = rs.getInt("DECIMAL_DIGITS");
             int nullable = rs.getInt("NULLABLE");
+            String autoIncrement = rs.getString("IS_AUTOINCREMENT");
             JDBCType jdbcType = JDBCType.valueOf(dataType);
-            log.debug("column [{}]: {} {} {} {} {} {}", ordinal, columnName, jdbcType, typeName,
-                columnSize, decimalDigits, nullable);
+            log.debug("column [{}]: name={}, jdbcType={}, typeName={}, size={}, digits={}, nullable={}, autoIncrement={}",
+                ordinal, columnName, jdbcType, typeName, columnSize, decimalDigits, nullable, autoIncrement);
             List<Column> columns = table.getColumn();
             Column column = new Column();
             column.setName(columnName);
@@ -122,6 +123,9 @@ public class DatabaseModelBuilder {
                 Constraints constraints = new Constraints();
                 constraints.setNullable(false);
                 column.setConstraints(constraints);
+            }
+            if ("YES".equals(autoIncrement)) {
+                column.setAutoIncrement(true);
             }
             columns.add(column);
         }

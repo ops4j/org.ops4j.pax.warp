@@ -25,6 +25,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -79,6 +80,7 @@ public class CommandRunnerImpl implements CommandRunner {
         DatabaseModel database = inspector.buildDatabaseModel();
 
         ChangeLog changeLog = new ChangeLog();
+        changeLog.setVersion("0.1");
         changeLog.getChangeSetOrInclude();
         database.getTables().forEach(t -> addChangeSet(changeLog, t));
         database.getPrimaryKeys().forEach(t -> addChangeSet(changeLog, t));
@@ -90,6 +92,7 @@ public class CommandRunnerImpl implements CommandRunner {
 
     private void addChangeSet(ChangeLog changeLog, Object action) {
         ChangeSet changeSet = new ChangeSet();
+        changeSet.setId(UUID.randomUUID().toString());
         List<Object> changes = changeSet.getChanges();
         changes.add(action);
         changeLog.getChangeSetOrInclude().add(changeSet);

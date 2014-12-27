@@ -20,7 +20,8 @@ columnTypeMap ::= [
     default : key
 ]
 
-columnType(type) ::= "<columnTypeMap.(type)>"
+columnType(col) ::= "<columnTypeMap.(col.type)>"
 
 
+autoIncrement(col) ::= "<if(col.autoIncrement)> GENERATED ALWAYS AS IDENTITY<endif>"
 
