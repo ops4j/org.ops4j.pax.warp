@@ -18,92 +18,20 @@
 package org.ops4j.pax.warp.core.history;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
 
-import javax.enterprise.context.Dependent;
-
-import org.ops4j.pax.warp.core.util.Exceptions;
-import org.ops4j.pax.warp.jaxb.gen.Column;
-import org.ops4j.pax.warp.jaxb.gen.Constraints;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
-import org.ops4j.pax.warp.jaxb.gen.SqlType;
-import org.osgi.service.component.annotations.Component;
-
 
 /**
  * @author Harald Wellmann
  *
  */
-@Dependent
-@Component(service = ChangeLogHistoryService.class)
-public class ChangeLogHistoryService {
+public interface ChangeLogHistoryService {
 
-    public CreateTable createHistoryTableAction() {
-        CreateTable action = new CreateTable();
-        action.setTableName("warp_history");
-        List<Column> columns = action.getColumn();
-        Column id = new Column();
-        id.setName("id");
-        id.setType(SqlType.VARCHAR);
-        id.setLength(20);
-        Constraints constraints = new Constraints();
-        constraints.setNullable(false);
-        id.setConstraints(constraints);
-        columns.add(id);
+    CreateTable createHistoryTableAction();
 
-        Column checksum = new Column();
-        checksum.setName("checksum");
-        checksum.setType(SqlType.CHAR);
-        checksum.setLength(64);
-        checksum.setConstraints(constraints);
-        columns.add(checksum);
+    boolean hasMetaDataTable(Connection dbc) throws SQLException;
 
-        Column executed = new Column();
-        executed.setName("executed");
-        executed.setType(SqlType.TIMESTAMP);
-        columns.add(executed);
+    ChangeLogHistory readChangeLogHistory(Connection dbc);
 
-        return action;
-    }
-
-    public boolean hasMetaDataTable(Connection dbc) throws SQLException {
-        DatabaseMetaData metaData = dbc.getMetaData();
-        String tableName = "warp_history";
-        if (metaData.storesUpperCaseIdentifiers()) {
-            tableName = tableName.toUpperCase();
-        }
-        return hasTable(metaData, tableName);
-    }
-
-    private boolean hasTable(DatabaseMetaData metaData, String tableName) throws SQLException {
-        boolean result = false;
-        ResultSet rs = metaData.getTables(null, null, tableName, new String[] { "TABLE" });
-        result = rs.next();
-        rs.close();
-        return result;
-
-    }
-
-    public ChangeLogHistory readChangeLogHistory(Connection dbc) {
-        ChangeLogHistory history = new ChangeLogHistory();
-        try {
-            Statement st = dbc.createStatement();
-            ResultSet rs = st.executeQuery("SELECT id, checksum FROM warp_history");
-            while (rs.next()) {
-                String id = rs.getString("id");
-                String checksum = rs.getString("checksum");
-                history.put(id, checksum);
-            }
-            rs.close();
-            st.close();
-        }
-        catch (SQLException exc) {
-            throw Exceptions.unchecked(exc);
-        }
-        return history;
-    }
 }
