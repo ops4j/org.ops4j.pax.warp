@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.warp.core.update;
+package org.ops4j.pax.warp.core.update.impl;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,6 +31,7 @@ import javax.xml.bind.JAXBException;
 import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogReader;
 import org.ops4j.pax.warp.core.history.ChangeLogHistory;
 import org.ops4j.pax.warp.core.history.ChangeLogHistoryService;
+import org.ops4j.pax.warp.core.update.UpdateService;
 import org.ops4j.pax.warp.core.util.Exceptions;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
