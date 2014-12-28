@@ -248,6 +248,7 @@ public class DatabaseModelBuilder {
                 String columnName = rs.getString("COLUMN_NAME");
                 Column column = new Column();
                 column.setName(columnName);
+                setKeyLength(table, column);
                 if (ordinal == 1) {
                     if (index != null) {
                         if (!isPrimaryKeyIndex(index)) {
@@ -269,6 +270,26 @@ public class DatabaseModelBuilder {
         if (index != null) {
             if (!isPrimaryKeyIndex(index)) {
                 database.getIndexes().add(index);
+            }
+        }
+    }
+
+    /**
+     * @param table
+     * @param column
+     */
+    private void setKeyLength(CreateTable table, Column column) {
+        for (Column c : table.getColumn()) {
+            if (c.getName().equals(column.getName())) {
+                switch (c.getType()) {
+                    case BLOB:
+                    case CLOB:
+                        column.setLength(300);
+                        break;
+
+                    default:
+                        break;
+                }
             }
         }
     }

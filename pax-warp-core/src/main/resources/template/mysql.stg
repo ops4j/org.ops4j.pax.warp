@@ -28,6 +28,8 @@ dropForeignKey(action) ::= <<
 ALTER TABLE <action.baseTable.tableName> DROP FOREIGN KEY <action.constraintName>  
 >>
 
+keyLength(column) ::= "<if(column.length)>(<column.length>)<endif>"
+
 
 
 
