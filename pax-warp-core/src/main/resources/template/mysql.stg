@@ -22,7 +22,7 @@ columnTypeMap ::= [
 
 columnType(col) ::= "<columnTypeMap.(col.type)>"
 
-autoIncrement(col) ::= "<if(col.autoIncrement)> AUTO_INCREMENT<endif>"
+autoIncrement(col) ::= "<if(col.autoIncrement)> AUTO_INCREMENT PRIMARY KEY<endif>"
 
 dropForeignKey(action) ::= <<
 ALTER TABLE <action.baseTable.tableName> DROP FOREIGN KEY <action.constraintName>  

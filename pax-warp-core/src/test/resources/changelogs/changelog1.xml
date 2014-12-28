@@ -2,7 +2,7 @@
 <changeLog xmlns="urn:org.ops4j.pax.warp:changelog:0.1" version="0.1">
     <changeSet id="1">
         <createTable tableName="numbers">
-            <column name="id" type="int32">
+            <column name="id" type="int32" autoIncrement="true">
                 <constraints nullable="false"/>
             </column>
             <column name="i8" type="int8"/>

@@ -28,6 +28,8 @@ import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import javax.xml.bind.JAXBException;
@@ -40,6 +42,7 @@ import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.AddPrimaryKey;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
+import org.ops4j.pax.warp.jaxb.gen.Column;
 import org.ops4j.pax.warp.jaxb.gen.ColumnValue;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 import org.ops4j.pax.warp.jaxb.gen.DropForeignKey;
@@ -55,19 +58,38 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
     private WarpJaxbContext context;
     private String actualChecksum;
     private ChangeLogHistory changeLogHistory;
+    private Set<String> autoIncrementColumns;
 
     public UpdateSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer, WarpJaxbContext context) {
         super(dbms, dbc, consumer);
         this.context = context;
+        this.autoIncrementColumns = new HashSet<>();
     }
 
     @Override
     public VisitorAction enter(CreateTable action) {
+        if ("mysql".equals(dbms)) {
+            action.getColumn().stream().filter(c -> isAutoIncrement(c)).
+            forEach(c -> autoIncrementColumns.add(action.getTableName() + "." + c.getName()));
+        }
         return produceStatement("createTable", action);
+    }
+
+    private boolean isAutoIncrement(Column c) {
+        if (c.isAutoIncrement() == null) {
+            return false;
+        }
+        return c.isAutoIncrement();
     }
 
     @Override
     public VisitorAction enter(AddPrimaryKey action) {
+        if ("mysql".equals(dbms)) {
+            String columnKey = action.getTableName() + "." + action.getColumn().get(0);
+            if (autoIncrementColumns.contains(columnKey)) {
+                return VisitorAction.SKIP;
+            }
+        }
         return produceStatement("addPrimaryKey", action);
     }
 

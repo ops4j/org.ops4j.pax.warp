@@ -38,12 +38,14 @@ public class AbstractSqlGenerator extends BaseVisitor {
 
     protected Logger log = LoggerFactory.getLogger(AbstractSqlGenerator.class);
 
+    protected String dbms;
     protected Connection dbc;
     protected Consumer<PreparedStatement> consumer;
     protected STGroupFile templateGroup;
     protected Predicate<ChangeSet> changeSetFilter = (x -> true);
 
     public AbstractSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer) {
+        this.dbms = dbms;
         this.dbc = dbc;
         this.consumer = consumer;
         String templateGroupName = String.format("template/%s.stg", dbms);
