@@ -50,7 +50,6 @@ import org.ops4j.pax.warp.jaxb.gen.TruncateTable;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-
 /**
  * @author Harald Wellmann
  *
@@ -112,17 +111,16 @@ public class DumpDataServiceImpl implements DumpDataService {
         }
     }
 
-
     /**
      * @param changes
      * @param createTable
      * @param dbc
      */
     private void insertData(List<Object> changes, CreateTable createTable, Connection dbc) {
-        String columns = createTable.getColumn().stream().map(c -> c.getName()).collect(Collectors.joining(", "));
+        String columns = createTable.getColumn().stream().map(c -> c.getName())
+            .collect(Collectors.joining(", "));
         String sql = String.format("select %s from %s", columns, createTable.getTableName());
-        try (Statement st = dbc.createStatement()) {
-            ResultSet rs = st.executeQuery(sql);
+        try (Statement st = dbc.createStatement(); ResultSet rs = st.executeQuery(sql)) {
             ResultSetMetaData metaData = rs.getMetaData();
             while (rs.next()) {
                 Insert insert = new Insert();
@@ -149,7 +147,6 @@ public class DumpDataServiceImpl implements DumpDataService {
                 }
                 changes.add(insert);
             }
-            rs.close();
         }
         catch (SQLException exc) {
             throw Exceptions.unchecked(exc);
@@ -161,15 +158,12 @@ public class DumpDataServiceImpl implements DumpDataService {
         changeLogWriter.write(changeLog, writer);
     }
 
-
     /**
-     * @param changeLogWriter the changeLogWriter to set
+     * @param changeLogWriter
+     *            the changeLogWriter to set
      */
     @Reference
     public void setChangeLogWriter(DatabaseChangeLogWriter changeLogWriter) {
         this.changeLogWriter = changeLogWriter;
     }
-
-
-
 }

@@ -63,8 +63,9 @@ public class CommandRunnerImpl implements CommandRunner {
     @Override
     public void dump(String jdbcUrl, String username, String password, OutputStream os)
         throws SQLException, JAXBException {
-        Connection dbc = DriverManager.getConnection(jdbcUrl, username, password);
-        dump(dbc, os);
+        try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
+            dump(dbc, os);
+        }
     }
 
     @Override
@@ -101,8 +102,9 @@ public class CommandRunnerImpl implements CommandRunner {
     @Override
     public void dumpData(String jdbcUrl, String username, String password, OutputStream os)
         throws SQLException, JAXBException {
-        Connection dbc = DriverManager.getConnection(jdbcUrl, username, password);
-        dumpData(dbc, os);
+        try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
+            dumpData(dbc, os);
+        }
     }
 
     @Override
@@ -118,9 +120,10 @@ public class CommandRunnerImpl implements CommandRunner {
     @Override
     public void update(String jdbcUrl, String username, String password, InputStream is)
         throws JAXBException, SQLException {
-        Connection dbc = DriverManager.getConnection(jdbcUrl, username, password);
-        String dbms = getDbms(jdbcUrl);
-        update(dbc, is, dbms);
+        try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
+            String dbms = getDbms(jdbcUrl);
+            update(dbc, is, dbms);
+        }
     }
 
     @Override
@@ -148,25 +151,26 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     /**
-     * @param dumpDataService the dumpDataService to set
+     * @param dumpDataService
+     *            the dumpDataService to set
      */
     @Reference
     public void setDumpDataService(DumpDataService dumpDataService) {
         this.dumpDataService = dumpDataService;
     }
 
-
     /**
-     * @param changeLogWriter the changeLogWriter to set
+     * @param changeLogWriter
+     *            the changeLogWriter to set
      */
     @Reference
     public void setChangeLogWriter(DatabaseChangeLogWriter changeLogWriter) {
         this.changeLogWriter = changeLogWriter;
     }
 
-
     /**
-     * @param updateService the updateService to set
+     * @param updateService
+     *            the updateService to set
      */
     @Reference
     public void setUpdateService(UpdateService updateService) {

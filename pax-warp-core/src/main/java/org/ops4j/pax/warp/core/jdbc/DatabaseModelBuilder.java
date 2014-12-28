@@ -93,44 +93,44 @@ public class DatabaseModelBuilder {
 
     private void buildColumns(CreateTable table) throws SQLException {
         log.debug("columns of table {}", table.getTableName());
-        ResultSet rs = metaData.getColumns(catalog, schema, table.getTableName(), null);
-        while (rs.next()) {
-            int ordinal = rs.getInt("ORDINAL_POSITION");
-            String columnName = rs.getString("COLUMN_NAME");
-            int dataType = rs.getInt("DATA_TYPE");
-            String typeName = rs.getString("TYPE_NAME");
-            int columnSize = rs.getInt("COLUMN_SIZE");
-            int decimalDigits = rs.getInt("DECIMAL_DIGITS");
-            int nullable = rs.getInt("NULLABLE");
-            String autoIncrement = rs.getString("IS_AUTOINCREMENT");
-            JDBCType jdbcType = JDBCType.valueOf(dataType);
-            log.debug(
-                "column [{}]: name={}, jdbcType={}, typeName={}, size={}, digits={}, nullable={}, autoIncrement={}",
-                ordinal, columnName, jdbcType, typeName, columnSize, decimalDigits, nullable,
-                autoIncrement);
-            List<Column> columns = table.getColumn();
-            Column column = new Column();
-            column.setName(columnName);
-            SqlType sqlType = convertType(jdbcType);
-            column.setType(sqlType);
-            if (hasLength(sqlType)) {
-                column.setLength(columnSize);
+        try (ResultSet rs = metaData.getColumns(catalog, schema, table.getTableName(), null)) {
+            while (rs.next()) {
+                int ordinal = rs.getInt("ORDINAL_POSITION");
+                String columnName = rs.getString("COLUMN_NAME");
+                int dataType = rs.getInt("DATA_TYPE");
+                String typeName = rs.getString("TYPE_NAME");
+                int columnSize = rs.getInt("COLUMN_SIZE");
+                int decimalDigits = rs.getInt("DECIMAL_DIGITS");
+                int nullable = rs.getInt("NULLABLE");
+                String autoIncrement = rs.getString("IS_AUTOINCREMENT");
+                JDBCType jdbcType = JDBCType.valueOf(dataType);
+                log.debug(
+                    "column [{}]: name={}, jdbcType={}, typeName={}, size={}, digits={}, nullable={}, autoIncrement={}",
+                    ordinal, columnName, jdbcType, typeName, columnSize, decimalDigits, nullable,
+                    autoIncrement);
+                List<Column> columns = table.getColumn();
+                Column column = new Column();
+                column.setName(columnName);
+                SqlType sqlType = convertType(jdbcType);
+                column.setType(sqlType);
+                if (hasLength(sqlType)) {
+                    column.setLength(columnSize);
+                }
+                if (hasPrecision(sqlType)) {
+                    column.setPrecision(columnSize);
+                    column.setScale(decimalDigits);
+                }
+                if (nullable == DatabaseMetaData.columnNoNulls) {
+                    Constraints constraints = new Constraints();
+                    constraints.setNullable(false);
+                    column.setConstraints(constraints);
+                }
+                if ("YES".equals(autoIncrement)) {
+                    column.setAutoIncrement(true);
+                }
+                columns.add(column);
             }
-            if (hasPrecision(sqlType)) {
-                column.setPrecision(columnSize);
-                column.setScale(decimalDigits);
-            }
-            if (nullable == DatabaseMetaData.columnNoNulls) {
-                Constraints constraints = new Constraints();
-                constraints.setNullable(false);
-                column.setConstraints(constraints);
-            }
-            if ("YES".equals(autoIncrement)) {
-                column.setAutoIncrement(true);
-            }
-            columns.add(column);
         }
-        rs.close();
     }
 
     private void buildForeignKeys() throws SQLException {
@@ -140,55 +140,55 @@ public class DatabaseModelBuilder {
     }
 
     private void buildForeignKeys(CreateTable table) throws SQLException {
-        ResultSet rs = metaData.getImportedKeys(catalog, schema, table.getTableName());
         String fkName = null;
         AddForeignKey addFk = null;
         List<ColumnPair> columnPairs = new ArrayList<>();
-        while (rs.next()) {
+        try (ResultSet rs = metaData.getImportedKeys(catalog, schema, table.getTableName())) {
+            while (rs.next()) {
 
-            String pkCatalog = rs.getString("PKTABLE_CAT");
-            String pkSchema = rs.getString("PKTABLE_SCHEM");
-            String pkTable = rs.getString("PKTABLE_NAME");
-            String pkColumn = rs.getString("PKCOLUMN_NAME");
-            String fkCatalog = rs.getString("FKTABLE_CAT");
-            String fkSchema = rs.getString("FKTABLE_SCHEM");
-            String fkTable = rs.getString("FKTABLE_NAME");
-            String fkColumn = rs.getString("FKCOLUMN_NAME");
-            int keySeq = rs.getShort("KEY_SEQ");
-            fkName = rs.getString("FK_NAME");
-            log.debug("FK column [{}]: {} {} -> {} {}", keySeq, fkTable, fkColumn, pkTable,
-                pkColumn);
+                String pkCatalog = rs.getString("PKTABLE_CAT");
+                String pkSchema = rs.getString("PKTABLE_SCHEM");
+                String pkTable = rs.getString("PKTABLE_NAME");
+                String pkColumn = rs.getString("PKCOLUMN_NAME");
+                String fkCatalog = rs.getString("FKTABLE_CAT");
+                String fkSchema = rs.getString("FKTABLE_SCHEM");
+                String fkTable = rs.getString("FKTABLE_NAME");
+                String fkColumn = rs.getString("FKCOLUMN_NAME");
+                int keySeq = rs.getShort("KEY_SEQ");
+                fkName = rs.getString("FK_NAME");
+                log.debug("FK column [{}]: {} {} -> {} {}", keySeq, fkTable, fkColumn, pkTable,
+                    pkColumn);
 
-            ColumnPair pair = new ColumnPair();
-            ColumnReference baseCol = new ColumnReference();
-            baseCol.setColumnName(fkColumn);
-            ColumnReference refCol = new ColumnReference();
-            refCol.setColumnName(pkColumn);
-            pair.setBase(baseCol);
-            pair.setReferenced(refCol);
+                ColumnPair pair = new ColumnPair();
+                ColumnReference baseCol = new ColumnReference();
+                baseCol.setColumnName(fkColumn);
+                ColumnReference refCol = new ColumnReference();
+                refCol.setColumnName(pkColumn);
+                pair.setBase(baseCol);
+                pair.setReferenced(refCol);
 
-            if (keySeq == 1) {
-                if (addFk != null) {
-                    addFk.getColumnPair().addAll(columnPairs);
-                    database.getForeignKeys().add(addFk);
-                    columnPairs = new ArrayList<>();
+                if (keySeq == 1) {
+                    if (addFk != null) {
+                        addFk.getColumnPair().addAll(columnPairs);
+                        database.getForeignKeys().add(addFk);
+                        columnPairs = new ArrayList<>();
+                    }
+                    addFk = new AddForeignKey();
+                    addFk.setConstraintName(fkName);
+                    TableReference base = new TableReference();
+                    base.setCatalogName(fkCatalog);
+                    base.setSchemaName(fkSchema);
+                    base.setTableName(fkTable);
+                    TableReference ref = new TableReference();
+                    ref.setCatalogName(pkCatalog);
+                    ref.setSchemaName(pkSchema);
+                    ref.setTableName(pkTable);
+                    addFk.setBaseTable(base);
+                    addFk.setReferencedTable(ref);
                 }
-                addFk = new AddForeignKey();
-                addFk.setConstraintName(fkName);
-                TableReference base = new TableReference();
-                base.setCatalogName(fkCatalog);
-                base.setSchemaName(fkSchema);
-                base.setTableName(fkTable);
-                TableReference ref = new TableReference();
-                ref.setCatalogName(pkCatalog);
-                ref.setSchemaName(pkSchema);
-                ref.setTableName(pkTable);
-                addFk.setBaseTable(base);
-                addFk.setReferencedTable(ref);
+                columnPairs.add(pair);
             }
-            columnPairs.add(pair);
         }
-        rs.close();
         if (addFk != null) {
             addFk.getColumnPair().addAll(columnPairs);
             database.getForeignKeys().add(addFk);
@@ -203,17 +203,17 @@ public class DatabaseModelBuilder {
 
     private void buildPrimaryKey(CreateTable table) throws SQLException {
         String tableName = table.getTableName();
-        ResultSet rs = metaData.getPrimaryKeys(catalog, schema, tableName);
         String pkName = null;
         SortedMap<Integer, String> columnMap = new TreeMap<>();
-        while (rs.next()) {
-            pkName = rs.getString("PK_NAME");
-            String columnName = rs.getString("COLUMN_NAME");
-            int keySeq = rs.getShort("KEY_SEQ");
-            columnMap.put(keySeq, columnName);
-            log.debug("PK column [{}]: {} {} {}", keySeq, tableName, pkName, columnName);
+        try (ResultSet rs = metaData.getPrimaryKeys(catalog, schema, tableName)) {
+            while (rs.next()) {
+                pkName = rs.getString("PK_NAME");
+                String columnName = rs.getString("COLUMN_NAME");
+                int keySeq = rs.getShort("KEY_SEQ");
+                columnMap.put(keySeq, columnName);
+                log.debug("PK column [{}]: {} {} {}", keySeq, tableName, pkName, columnName);
+            }
         }
-        rs.close();
         if (!columnMap.isEmpty()) {
             AddPrimaryKey addPk = new AddPrimaryKey();
             addPk.setCatalogName(catalog);
@@ -319,5 +319,4 @@ public class DatabaseModelBuilder {
     public void setSchema(String schema) {
         this.schema = schema;
     }
-
 }

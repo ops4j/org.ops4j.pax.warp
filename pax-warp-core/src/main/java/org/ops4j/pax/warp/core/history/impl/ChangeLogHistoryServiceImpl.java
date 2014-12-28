@@ -35,7 +35,6 @@ import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 import org.ops4j.pax.warp.jaxb.gen.SqlType;
 import org.osgi.service.component.annotations.Component;
 
-
 /**
  * @author Harald Wellmann
  *
@@ -44,7 +43,9 @@ import org.osgi.service.component.annotations.Component;
 @Component
 public class ChangeLogHistoryServiceImpl implements ChangeLogHistoryService {
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see org.ops4j.pax.warp.core.history.IChangeLogHistoryService#createHistoryTableAction()
      */
     @Override
@@ -76,8 +77,12 @@ public class ChangeLogHistoryServiceImpl implements ChangeLogHistoryService {
         return action;
     }
 
-    /* (non-Javadoc)
-     * @see org.ops4j.pax.warp.core.history.IChangeLogHistoryService#hasMetaDataTable(java.sql.Connection)
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.ops4j.pax.warp.core.history.IChangeLogHistoryService#hasMetaDataTable(java.sql.Connection
+     * )
      */
     @Override
     public boolean hasMetaDataTable(Connection dbc) throws SQLException {
@@ -91,29 +96,30 @@ public class ChangeLogHistoryServiceImpl implements ChangeLogHistoryService {
 
     private boolean hasTable(DatabaseMetaData metaData, String tableName) throws SQLException {
         boolean result = false;
-        ResultSet rs = metaData.getTables(null, null, tableName, new String[] { "TABLE" });
-        result = rs.next();
-        rs.close();
+        try (ResultSet rs = metaData.getTables(null, null, tableName, new String[] { "TABLE" })) {
+            result = rs.next();
+        }
         return result;
 
     }
 
-    /* (non-Javadoc)
-     * @see org.ops4j.pax.warp.core.history.IChangeLogHistoryService#readChangeLogHistory(java.sql.Connection)
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.ops4j.pax.warp.core.history.IChangeLogHistoryService#readChangeLogHistory(java.sql.Connection
+     * )
      */
     @Override
     public ChangeLogHistory readChangeLogHistory(Connection dbc) {
         ChangeLogHistory history = new ChangeLogHistory();
-        try {
-            Statement st = dbc.createStatement();
-            ResultSet rs = st.executeQuery("SELECT id, checksum FROM warp_history");
+        try (Statement st = dbc.createStatement();
+            ResultSet rs = st.executeQuery("SELECT id, checksum FROM warp_history")) {
             while (rs.next()) {
                 String id = rs.getString("id");
                 String checksum = rs.getString("checksum");
                 history.put(id, checksum);
             }
-            rs.close();
-            st.close();
         }
         catch (SQLException exc) {
             throw Exceptions.unchecked(exc);
