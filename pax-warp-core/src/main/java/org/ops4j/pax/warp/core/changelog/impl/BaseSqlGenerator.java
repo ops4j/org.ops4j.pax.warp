@@ -34,9 +34,9 @@ import org.stringtemplate.v4.STGroupFile;
 
 
 
-public abstract class AbstractSqlGenerator extends BaseVisitor {
+public class BaseSqlGenerator extends BaseVisitor {
 
-    protected Logger log = LoggerFactory.getLogger(AbstractSqlGenerator.class);
+    protected Logger log = LoggerFactory.getLogger(BaseSqlGenerator.class);
 
     protected String dbms;
     protected Connection dbc;
@@ -44,7 +44,7 @@ public abstract class AbstractSqlGenerator extends BaseVisitor {
     protected STGroupFile templateGroup;
     protected Predicate<ChangeSet> changeSetFilter = x -> true;
 
-    protected AbstractSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer) {
+    protected BaseSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer) {
         this.dbms = dbms;
         this.dbc = dbc;
         this.consumer = consumer;

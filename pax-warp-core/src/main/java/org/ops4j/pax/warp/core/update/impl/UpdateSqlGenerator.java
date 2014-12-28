@@ -35,7 +35,7 @@ import java.util.function.Consumer;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.ops4j.pax.warp.core.changelog.impl.AbstractSqlGenerator;
+import org.ops4j.pax.warp.core.changelog.impl.BaseSqlGenerator;
 import org.ops4j.pax.warp.core.history.ChangeLogHistory;
 import org.ops4j.pax.warp.core.util.Exceptions;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
@@ -52,7 +52,7 @@ import org.ops4j.pax.warp.jaxb.gen.Insert;
 import org.ops4j.pax.warp.jaxb.gen.TruncateTable;
 import org.ops4j.pax.warp.jaxb.gen.visitor.VisitorAction;
 
-public class UpdateSqlGenerator extends AbstractSqlGenerator {
+public class UpdateSqlGenerator extends BaseSqlGenerator {
 
     private WarpJaxbContext context;
     private String actualChecksum;
