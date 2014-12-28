@@ -10,6 +10,8 @@
     <groupId>org.ops4j.pax.warp</groupId>
     <artifactId>pax-warp-weld</artifactId>
 
+    <name>OPS4J Pax Warp Main Class for Weld</name>    
+
     <dependencies>
 
         <dependency>

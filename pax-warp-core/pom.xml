@@ -6,9 +6,12 @@
         <artifactId>warp</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
+    
     <groupId>org.ops4j.pax.warp</groupId>
     <artifactId>pax-warp-core</artifactId>
     <packaging>bundle</packaging>
+    
+    <name>OPS4J Pax Warp Core</name>    
 
     <properties>
         <bundle.suffix>core</bundle.suffix>
