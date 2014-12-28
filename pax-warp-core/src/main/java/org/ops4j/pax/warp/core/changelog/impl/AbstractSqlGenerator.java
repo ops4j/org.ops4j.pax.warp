@@ -42,9 +42,9 @@ public abstract class AbstractSqlGenerator extends BaseVisitor {
     protected Connection dbc;
     protected Consumer<PreparedStatement> consumer;
     protected STGroupFile templateGroup;
-    protected Predicate<ChangeSet> changeSetFilter = (x -> true);
+    protected Predicate<ChangeSet> changeSetFilter = x -> true;
 
-    public AbstractSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer) {
+    protected AbstractSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer) {
         this.dbms = dbms;
         this.dbc = dbc;
         this.consumer = consumer;
