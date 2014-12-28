@@ -94,7 +94,7 @@ public class DatabaseModelBuilder {
     }
 
     private void buildColumns(CreateTable table) throws SQLException {
-        log.warn("columns of table {}", table.getTableName());
+        log.debug("columns of table {}", table.getTableName());
         try (ResultSet rs = metaData.getColumns(catalog, schema, table.getTableName(), null)) {
             while (rs.next()) {
                 int ordinal = rs.getInt("ORDINAL_POSITION");
@@ -106,7 +106,7 @@ public class DatabaseModelBuilder {
                 int nullable = rs.getInt("NULLABLE");
                 String autoIncrement = rs.getString("IS_AUTOINCREMENT");
                 JDBCType jdbcType = JDBCType.valueOf(dataType);
-                log.warn(
+                log.debug(
                     "column [{}]: name={}, jdbcType={}, typeName={}, size={}, digits={}, nullable={}, autoIncrement={}",
                     ordinal, columnName, jdbcType, typeName, columnSize, decimalDigits, nullable,
                     autoIncrement);
@@ -300,7 +300,7 @@ public class DatabaseModelBuilder {
      */
     private boolean isPrimaryKeyIndex(CreateIndex index) {
         for (AddPrimaryKey pk : database.getPrimaryKeys()) {
-            if (pk.getConstraintName().equals(index.getIndexName())) {
+            if (index.getIndexName().equals(pk.getConstraintName())) {
                 return true;
             }
         }
