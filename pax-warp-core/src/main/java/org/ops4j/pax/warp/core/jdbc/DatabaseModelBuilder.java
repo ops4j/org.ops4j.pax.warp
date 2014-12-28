@@ -71,21 +71,20 @@ public class DatabaseModelBuilder {
         catch (SQLException exc) {
             throw Exceptions.unchecked(exc);
         }
-
     }
 
     private void buildTables() throws SQLException {
-        ResultSet rs = metaData.getTables(catalog, schema, null, new String[] { "TABLE" });
-        while (rs.next()) {
-            String tableName = rs.getString("TABLE_NAME");
-            CreateTable createTable = new CreateTable();
-            createTable.setCatalogName(catalog);
-            createTable.setSchemaName(schema);
-            createTable.setTableName(tableName);
-            log.debug("table: {}", tableName);
-            database.addTable(createTable);
+        try (ResultSet rs = metaData.getTables(catalog, schema, null, new String[] { "TABLE" })) {
+            while (rs.next()) {
+                String tableName = rs.getString("TABLE_NAME");
+                CreateTable createTable = new CreateTable();
+                createTable.setCatalogName(catalog);
+                createTable.setSchemaName(schema);
+                createTable.setTableName(tableName);
+                log.debug("table: {}", tableName);
+                database.addTable(createTable);
+            }
         }
-        rs.close();
 
         for (CreateTable table : database.getTables()) {
             buildColumns(table);
@@ -105,8 +104,10 @@ public class DatabaseModelBuilder {
             int nullable = rs.getInt("NULLABLE");
             String autoIncrement = rs.getString("IS_AUTOINCREMENT");
             JDBCType jdbcType = JDBCType.valueOf(dataType);
-            log.debug("column [{}]: name={}, jdbcType={}, typeName={}, size={}, digits={}, nullable={}, autoIncrement={}",
-                ordinal, columnName, jdbcType, typeName, columnSize, decimalDigits, nullable, autoIncrement);
+            log.debug(
+                "column [{}]: name={}, jdbcType={}, typeName={}, size={}, digits={}, nullable={}, autoIncrement={}",
+                ordinal, columnName, jdbcType, typeName, columnSize, decimalDigits, nullable,
+                autoIncrement);
             List<Column> columns = table.getColumn();
             Column column = new Column();
             column.setName(columnName);
