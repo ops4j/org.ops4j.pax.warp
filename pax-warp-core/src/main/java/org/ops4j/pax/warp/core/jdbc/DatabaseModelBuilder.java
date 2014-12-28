@@ -92,7 +92,7 @@ public class DatabaseModelBuilder {
     }
 
     private void buildColumns(CreateTable table) throws SQLException {
-        log.debug("columns of table {}", table.getTableName());
+        log.warn("columns of table {}", table.getTableName());
         try (ResultSet rs = metaData.getColumns(catalog, schema, table.getTableName(), null)) {
             while (rs.next()) {
                 int ordinal = rs.getInt("ORDINAL_POSITION");
@@ -104,7 +104,7 @@ public class DatabaseModelBuilder {
                 int nullable = rs.getInt("NULLABLE");
                 String autoIncrement = rs.getString("IS_AUTOINCREMENT");
                 JDBCType jdbcType = JDBCType.valueOf(dataType);
-                log.debug(
+                log.warn(
                     "column [{}]: name={}, jdbcType={}, typeName={}, size={}, digits={}, nullable={}, autoIncrement={}",
                     ordinal, columnName, jdbcType, typeName, columnSize, decimalDigits, nullable,
                     autoIncrement);
@@ -112,6 +112,9 @@ public class DatabaseModelBuilder {
                 Column column = new Column();
                 column.setName(columnName);
                 SqlType sqlType = convertType(jdbcType);
+                if (typeName.equals("text")) {
+                    sqlType = SqlType.CLOB;
+                }
                 column.setType(sqlType);
                 if (hasLength(sqlType)) {
                     column.setLength(columnSize);

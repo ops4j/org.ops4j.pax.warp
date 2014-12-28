@@ -56,7 +56,7 @@ public class ChangeLogHistoryServiceImpl implements ChangeLogHistoryService {
         Column id = new Column();
         id.setName("id");
         id.setType(SqlType.VARCHAR);
-        id.setLength(20);
+        id.setLength(40);
         Constraints constraints = new Constraints();
         constraints.setNullable(false);
         id.setConstraints(constraints);
