@@ -86,6 +86,7 @@ public class CommandRunnerImpl implements CommandRunner {
         database.getTables().forEach(t -> addChangeSet(changeLog, t));
         database.getPrimaryKeys().forEach(t -> addChangeSet(changeLog, t));
         database.getForeignKeys().forEach(t -> addChangeSet(changeLog, t));
+        database.getIndexes().forEach(t -> addChangeSet(changeLog, t));
 
         writeChangeLog(changeLog, os);
 

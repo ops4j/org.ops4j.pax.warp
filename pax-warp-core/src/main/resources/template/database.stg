@@ -78,3 +78,11 @@ INSERT INTO <action.tableName>
 insertColumnName(column) ::= "<column.name>"
 
 insertColumnValue(column) ::= "?"
+
+createIndex(action) ::= <<
+CREATE<uniqueIndex(action)> INDEX <action.indexName> ON <action.tableName> (<action.column:indexColumn(); separator=", ">)
+>>
+
+indexColumn(column) ::= "<column.name>"
+
+uniqueIndex(action) ::= "<if(action.unique)> UNIQUE<endif>"

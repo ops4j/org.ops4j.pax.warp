@@ -34,6 +34,7 @@ import org.ops4j.pax.warp.jaxb.gen.Column;
 import org.ops4j.pax.warp.jaxb.gen.ColumnPair;
 import org.ops4j.pax.warp.jaxb.gen.ColumnReference;
 import org.ops4j.pax.warp.jaxb.gen.Constraints;
+import org.ops4j.pax.warp.jaxb.gen.CreateIndex;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 import org.ops4j.pax.warp.jaxb.gen.SqlType;
 import org.ops4j.pax.warp.jaxb.gen.TableReference;
@@ -66,6 +67,7 @@ public class DatabaseModelBuilder {
             buildTables();
             buildPrimaryKeys();
             buildForeignKeys();
+            buildIndexes();
             return database;
         }
         catch (SQLException exc) {
@@ -228,6 +230,60 @@ public class DatabaseModelBuilder {
             addPk.getColumn().addAll(columnMap.values());
             database.getPrimaryKeys().add(addPk);
         }
+    }
+
+    private void buildIndexes() throws SQLException {
+        for (CreateTable table : database.getTables()) {
+            buildIndexes(table);
+        }
+    }
+
+    private void buildIndexes(CreateTable table) throws SQLException {
+        CreateIndex index = null;
+        try (ResultSet rs = metaData.getIndexInfo(catalog, schema, table.getTableName(), false, false)) {
+            while (rs.next()) {
+                boolean nonUnique = rs.getBoolean("NON_UNIQUE");
+                String indexName = rs.getString("INDEX_NAME");
+                int ordinal = rs.getShort("ORDINAL_POSITION");
+                String columnName = rs.getString("COLUMN_NAME");
+                Column column = new Column();
+                column.setName(columnName);
+                if (ordinal == 1) {
+                    if (index != null) {
+                        if (!isPrimaryKeyIndex(index)) {
+                            database.getIndexes().add(index);
+                        }
+                    }
+                    index = new CreateIndex();
+                    index.setCatalogName(catalog);
+                    index.setSchemaName(schema);
+                    index.setTableName(table.getTableName());
+                    index.setIndexName(indexName);
+                    if (!nonUnique) {
+                        index.setUnique(true);
+                    }
+                }
+                index.getColumn().add(column);
+            }
+        }
+        if (index != null) {
+            if (!isPrimaryKeyIndex(index)) {
+                database.getIndexes().add(index);
+            }
+        }
+    }
+
+    /**
+     * @param index
+     * @return
+     */
+    private boolean isPrimaryKeyIndex(CreateIndex index) {
+        for (AddPrimaryKey pk : database.getPrimaryKeys()) {
+            if (pk.getConstraintName().equals(index.getIndexName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean hasPrecision(SqlType sqlType) {

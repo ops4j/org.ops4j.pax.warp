@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.AddPrimaryKey;
+import org.ops4j.pax.warp.jaxb.gen.CreateIndex;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 
 
@@ -18,6 +19,8 @@ public class DatabaseModel {
     private List<AddPrimaryKey> primaryKeys = new ArrayList<>();
 
     private List<AddForeignKey> foreignKeys = new ArrayList<>();
+
+    private List<CreateIndex> indexes = new ArrayList<>();
 
 
     public Collection<CreateTable> getTables() {
@@ -65,5 +68,18 @@ public class DatabaseModel {
     }
 
 
+    /**
+     * @return the indexes
+     */
+    public List<CreateIndex> getIndexes() {
+        return indexes;
+    }
 
+
+    /**
+     * @param indexes the indexes to set
+     */
+    public void setIndexes(List<CreateIndex> indexes) {
+        this.indexes = indexes;
+    }
 }

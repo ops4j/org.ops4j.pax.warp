@@ -44,6 +44,7 @@ import org.ops4j.pax.warp.jaxb.gen.AddPrimaryKey;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
 import org.ops4j.pax.warp.jaxb.gen.Column;
 import org.ops4j.pax.warp.jaxb.gen.ColumnValue;
+import org.ops4j.pax.warp.jaxb.gen.CreateIndex;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 import org.ops4j.pax.warp.jaxb.gen.DropForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.DropPrimaryKey;
@@ -105,6 +106,11 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
     @Override
     public VisitorAction enter(DropPrimaryKey action) {
         return produceStatement("dropPrimaryKey", action);
+    }
+
+    @Override
+    public VisitorAction enter(CreateIndex action) {
+        return produceStatement("createIndex", action);
     }
 
     @Override
