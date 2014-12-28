@@ -120,7 +120,8 @@ public class DumpDataServiceImpl implements DumpDataService {
         String columns = createTable.getColumn().stream().map(c -> c.getName())
             .collect(Collectors.joining(", "));
         String sql = String.format("select %s from %s", columns, createTable.getTableName());
-        try (Statement st = dbc.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+        try (Statement st = dbc.createStatement();
+            ResultSet rs = st.executeQuery(sql)) {
             ResultSetMetaData metaData = rs.getMetaData();
             while (rs.next()) {
                 Insert insert = new Insert();
