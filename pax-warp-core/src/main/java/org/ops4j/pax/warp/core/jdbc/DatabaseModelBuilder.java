@@ -106,8 +106,8 @@ public class DatabaseModelBuilder {
                 int nullable = rs.getInt("NULLABLE");
                 String autoIncrement = rs.getString("IS_AUTOINCREMENT");
                 JDBCType jdbcType = JDBCType.valueOf(dataType);
-                log.debug(
-                    "column [{}]: name={}, jdbcType={}, typeName={}, size={}, digits={}, nullable={}, autoIncrement={}",
+                log.debug("column [{}]: name={}, jdbcType={}, typeName={}, size={}, digits={}, "
+                    + "nullable={}, autoIncrement={}",
                     ordinal, columnName, jdbcType, typeName, columnSize, decimalDigits, nullable,
                     autoIncrement);
                 List<Column> columns = table.getColumn();
@@ -250,10 +250,8 @@ public class DatabaseModelBuilder {
                 column.setName(columnName);
                 setKeyLength(table, column);
                 if (ordinal == 1) {
-                    if (index != null) {
-                        if (!isPrimaryKeyIndex(index)) {
-                            database.getIndexes().add(index);
-                        }
+                    if (!isPrimaryKeyIndex(index)) {
+                        database.getIndexes().add(index);
                     }
                     index = new CreateIndex();
                     index.setCatalogName(catalog);
@@ -267,10 +265,8 @@ public class DatabaseModelBuilder {
                 index.getColumn().add(column);
             }
         }
-        if (index != null) {
-            if (!isPrimaryKeyIndex(index)) {
-                database.getIndexes().add(index);
-            }
+        if (!isPrimaryKeyIndex(index)) {
+            database.getIndexes().add(index);
         }
     }
 
@@ -299,6 +295,9 @@ public class DatabaseModelBuilder {
      * @return
      */
     private boolean isPrimaryKeyIndex(CreateIndex index) {
+        if (index == null) {
+            return false;
+        }
         for (AddPrimaryKey pk : database.getPrimaryKeys()) {
             if (index.getIndexName().equals(pk.getConstraintName())) {
                 return true;
@@ -330,27 +329,24 @@ public class DatabaseModelBuilder {
             case BIGINT:
                 return SqlType.INT_64;
             case BIT:
-                return SqlType.BOOLEAN;
-            case BINARY:
-                return SqlType.BLOB;
-            case BLOB:
-                return SqlType.BLOB;
             case BOOLEAN:
                 return SqlType.BOOLEAN;
+            case BINARY:
+            case BLOB:
+            case VARBINARY:
+                return SqlType.BLOB;
             case CHAR:
                 return SqlType.CHAR;
             case CLOB:
+            case LONGVARCHAR:
                 return SqlType.CLOB;
             case DATE:
                 return SqlType.DATE;
             case DECIMAL:
+            case NUMERIC:
                 return SqlType.DECIMAL;
             case INTEGER:
                 return SqlType.INT_32;
-            case LONGVARCHAR:
-                return SqlType.CLOB;
-            case NUMERIC:
-                return SqlType.DECIMAL;
             case SMALLINT:
                 return SqlType.INT_16;
             case TINYINT:
@@ -358,11 +354,8 @@ public class DatabaseModelBuilder {
             case TIME:
                 return SqlType.TIME;
             case TIMESTAMP:
-                return SqlType.TIMESTAMP;
             case TIMESTAMP_WITH_TIMEZONE:
                 return SqlType.TIMESTAMP;
-            case VARBINARY:
-                return SqlType.BLOB;
             case VARCHAR:
                 return SqlType.VARCHAR;
             default:

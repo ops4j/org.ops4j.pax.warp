@@ -34,7 +34,7 @@ import org.stringtemplate.v4.STGroupFile;
 
 
 
-public class AbstractSqlGenerator extends BaseVisitor {
+public abstract class AbstractSqlGenerator extends BaseVisitor {
 
     protected Logger log = LoggerFactory.getLogger(AbstractSqlGenerator.class);
 
