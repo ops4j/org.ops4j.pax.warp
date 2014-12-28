@@ -91,8 +91,7 @@ public class UpdateServiceImpl implements UpdateService {
 
     private ChangeLog readChangeLog(InputStream is) throws JAXBException {
         InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
-        ChangeLog changeLog = changeLogReader.parse(reader);
-        return changeLog;
+        return changeLogReader.parse(reader);
     }
 
 

@@ -1,4 +1,3 @@
-package org.ops4.pax.warp.weld;
 /*
  * Copyright 2014 Harald Wellmann.
  *
@@ -16,6 +15,7 @@ package org.ops4.pax.warp.weld;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.ops4.pax.warp.weld;
 
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;

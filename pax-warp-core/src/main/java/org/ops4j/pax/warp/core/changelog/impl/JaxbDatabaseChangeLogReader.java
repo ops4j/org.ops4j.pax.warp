@@ -42,8 +42,7 @@ public class JaxbDatabaseChangeLogReader implements DatabaseChangeLogReader {
     public ChangeLog parse(Reader reader) {
         try {
             Unmarshaller unmarshaller = context.createValidatingUnmarshaller();
-            ChangeLog changeLog = (ChangeLog) unmarshaller.unmarshal(reader);
-            return changeLog;
+            return (ChangeLog) unmarshaller.unmarshal(reader);
         }
         catch (JAXBException exc) {
             throw Exceptions.unchecked(exc);
@@ -54,5 +53,4 @@ public class JaxbDatabaseChangeLogReader implements DatabaseChangeLogReader {
     public void setContext(WarpJaxbContext context) {
         this.context = context;
     }
-
 }

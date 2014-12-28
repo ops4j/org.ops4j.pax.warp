@@ -51,16 +51,15 @@ import org.ops4j.pax.warp.jaxb.gen.Insert;
 import org.ops4j.pax.warp.jaxb.gen.TruncateTable;
 import org.ops4j.pax.warp.jaxb.gen.visitor.VisitorAction;
 
-
 public class UpdateSqlGenerator extends AbstractSqlGenerator {
-
 
     private WarpJaxbContext context;
     private String actualChecksum;
     private ChangeLogHistory changeLogHistory;
     private Set<String> autoIncrementColumns;
 
-    public UpdateSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer, WarpJaxbContext context) {
+    public UpdateSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer,
+        WarpJaxbContext context) {
         super(dbms, dbc, consumer);
         this.context = context;
         this.autoIncrementColumns = new HashSet<>();
@@ -69,8 +68,8 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
     @Override
     public VisitorAction enter(CreateTable action) {
         if ("mysql".equals(dbms)) {
-            action.getColumn().stream().filter(c -> isAutoIncrement(c)).
-            forEach(c -> autoIncrementColumns.add(action.getTableName() + "." + c.getName()));
+            action.getColumn().stream().filter(c -> isAutoIncrement(c))
+                .forEach(c -> autoIncrementColumns.add(action.getTableName() + "." + c.getName()));
         }
         return produceStatement("createTable", action);
     }
@@ -123,11 +122,9 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
         actualChecksum = computeChecksum(changeSet);
         String id = changeSet.getId();
         String expectedChecksum = changeLogHistory.get(id);
-        if (expectedChecksum != null) {
-            if (!expectedChecksum.equals(actualChecksum)) {
-                String msg = String.format("checksum mismatch for change set [id=%s]", id);
-                throw new IllegalArgumentException(msg);
-            }
+        if (expectedChecksum != null && !expectedChecksum.equals(actualChecksum)) {
+            String msg = String.format("checksum mismatch for change set [id=%s]", id);
+            throw new IllegalArgumentException(msg);
         }
         return VisitorAction.CONTINUE;
     }
@@ -135,10 +132,10 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
     @Override
     public VisitorAction leave(ChangeSet changeSet) {
         try {
-            PreparedStatement st = dbc.prepareStatement("insert into warp_history (id, checksum, executed) values (?, ?, ?)");
-            st.setString(1, changeSet.getId());
-            st.setString(2, actualChecksum);
-            st.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+            PreparedStatement st = dbc
+                .prepareStatement("insert into warp_history (id, checksum, executed) values (?, ?, ?)");
+            setValues(st, changeSet.getId(), actualChecksum,
+                new Timestamp(System.currentTimeMillis()));
             st.executeUpdate();
             st.close();
             dbc.commit();
@@ -147,6 +144,13 @@ public class UpdateSqlGenerator extends AbstractSqlGenerator {
             throw Exceptions.unchecked(exc);
         }
         return VisitorAction.CONTINUE;
+    }
+
+    public static void setValues(PreparedStatement preparedStatement, Object... values)
+        throws SQLException {
+        for (int i = 0; i < values.length; i++) {
+            preparedStatement.setObject(i + 1, values[i]);
+        }
     }
 
     protected VisitorAction generateInsert(Insert action) {
