@@ -27,10 +27,10 @@ import java.util.List;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
 
 import org.ops4j.pax.warp.core.changelog.ChangeLogWriter;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
+import org.ops4j.pax.warp.core.util.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
@@ -74,13 +74,16 @@ public class ChangeLogService {
         }
     }
 
-    public void writeChangeLog(ChangeLog changeLog, File outputFile) throws JAXBException, IOException {
+    public void writeChangeLog(ChangeLog changeLog, File outputFile) {
         try (OutputStream os = new FileOutputStream(outputFile)) {
             writeChangeLog(changeLog, os);
         }
+        catch (IOException exc) {
+            throw new WarpException(exc);
+        }
     }
 
-    public void writeChangeLog(ChangeLog changeLog, OutputStream os) throws JAXBException {
+    public void writeChangeLog(ChangeLog changeLog, OutputStream os) {
         OutputStreamWriter writer = new OutputStreamWriter(os, StandardCharsets.UTF_8);
         changeLogWriter.write(changeLog, writer);
     }

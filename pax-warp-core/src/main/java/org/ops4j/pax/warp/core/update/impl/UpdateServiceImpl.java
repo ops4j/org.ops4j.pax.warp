@@ -41,6 +41,7 @@ import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.core.update.UpdateService;
 import org.ops4j.pax.warp.core.util.Exceptions;
+import org.ops4j.pax.warp.core.util.WarpException;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
@@ -70,9 +71,10 @@ public class UpdateServiceImpl implements UpdateService {
     private WarpJaxbContext context;
 
     @Override
-    public void update(Connection dbc, InputStream is, String dbms) throws SQLException, JAXBException {
-        boolean autoCommit = dbc.getAutoCommit();
+    public void update(Connection dbc, InputStream is, String dbms) {
+        boolean autoCommit = false;
         try {
+            autoCommit = dbc.getAutoCommit();
             dbc.setAutoCommit(false);
             UpdateSqlGenerator generator = new UpdateSqlGenerator(dbms, dbc, s -> runUpdate(s), context);
             if (!historyService.hasMetaDataTable(dbc)) {
@@ -86,14 +88,15 @@ public class UpdateServiceImpl implements UpdateService {
 
             ChangeLog changeLog = readChangeLog(is);
             changeLog.accept(generator);
-        }
-        finally {
             dbc.setAutoCommit(autoCommit);
+        }
+        catch (SQLException | JAXBException exc) {
+            throw new WarpException(exc);
         }
     }
 
     @Override
-    public void insertData(Connection dbc, InputStream is, String dbms) throws JAXBException, IOException, SQLException {
+    public void insertData(Connection dbc, InputStream is, String dbms) {
         DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
         DatabaseModel database = inspector.buildDatabaseModel();
 
@@ -108,7 +111,7 @@ public class UpdateServiceImpl implements UpdateService {
         changeLogService.dropForeignKeys(changes, database);
         changeLogService.truncateTables(changes, database);
 
-        File preInsertFile = File.createTempFile("warp", ".xml");
+        File preInsertFile = createTempFile();
         changeLogService.writeChangeLog(changeLog, preInsertFile);
 
         ChangeLog postChangeLog = new ChangeLog();
@@ -120,20 +123,31 @@ public class UpdateServiceImpl implements UpdateService {
         List<Object> postChanges = postChangeSet.getChanges();
         postChanges.addAll(database.getForeignKeys());
 
-        File postInsertFile = File.createTempFile("warp", ".xml");
+        File postInsertFile = createTempFile();
         changeLogService.writeChangeLog(postChangeLog, postInsertFile);
 
-        try (InputStream preIs = new FileInputStream(preInsertFile)) {
-            update(dbc, preIs, dbms);
-        }
+        update(dbc, preInsertFile, dbms);
         update(dbc, is, dbms);
+        update(dbc, postInsertFile, dbms);
+    }
 
-        try (InputStream postIs = new FileInputStream(postInsertFile)) {
-            update(dbc, postIs, dbms);
+    private File createTempFile() {
+        try {
+            return File.createTempFile("warp", ".xml");
+        }
+        catch (IOException exc) {
+            throw new WarpException(exc);
         }
     }
 
-
+    private void update(Connection dbc, File changeLogFile, String dbms) {
+        try (InputStream preIs = new FileInputStream(changeLogFile)) {
+            update(dbc, preIs, dbms);
+        }
+        catch (IOException exc) {
+            throw new WarpException(exc);
+        }
+    }
 
     private void runUpdate(PreparedStatement st) {
         try {

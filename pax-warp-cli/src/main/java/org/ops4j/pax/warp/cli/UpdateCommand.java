@@ -20,15 +20,13 @@ package org.ops4j.pax.warp.cli;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
 
 import org.ops4j.pax.warp.core.command.CommandRunner;
-import org.ops4j.pax.warp.core.util.Exceptions;
+import org.ops4j.pax.warp.core.util.WarpException;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
@@ -92,8 +90,8 @@ public class UpdateCommand implements Runnable {
             commandRunner.update(url, username, password, is);
             is.close();
         }
-        catch (IOException | JAXBException | SQLException exc) {
-            throw Exceptions.unchecked(exc);
+        catch (IOException exc) {
+            throw new WarpException(exc);
         }
     }
 

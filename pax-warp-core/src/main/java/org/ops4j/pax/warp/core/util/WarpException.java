@@ -15,19 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.warp.core.dump;
-
-import java.io.OutputStream;
-import java.sql.Connection;
+package org.ops4j.pax.warp.core.util;
 
 
 /**
  * @author Harald Wellmann
  *
  */
-public interface DumpDataService {
+public class WarpException extends RuntimeException {
 
-    void dumpData(Connection dbc, OutputStream os);
-    void dumpDataOnly(Connection dbc, OutputStream os);
+    private static final long serialVersionUID = -5515301562862478256L;
 
+    public WarpException() {
+        super();
+    }
+
+    public WarpException(String message) {
+        super(message);
+    }
+
+    public WarpException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public WarpException(Throwable cause) {
+        super(cause);
+    }
 }

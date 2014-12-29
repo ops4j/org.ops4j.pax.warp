@@ -17,12 +17,8 @@
  */
 package org.ops4j.pax.warp.core.update;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.xml.bind.JAXBException;
 
 
 /**
@@ -31,6 +27,6 @@ import javax.xml.bind.JAXBException;
  */
 public interface UpdateService {
 
-    void update(Connection dbc, InputStream is, String dbms) throws SQLException, JAXBException;
-    void insertData(Connection dbc, InputStream is, String dbms) throws JAXBException, IOException, SQLException;
+    void update(Connection dbc, InputStream is, String dbms);
+    void insertData(Connection dbc, InputStream is, String dbms);
 }

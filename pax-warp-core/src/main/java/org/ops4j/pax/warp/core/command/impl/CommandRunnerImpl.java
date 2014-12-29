@@ -17,7 +17,6 @@
  */
 package org.ops4j.pax.warp.core.command.impl;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -31,7 +30,6 @@ import java.util.UUID;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.sql.DataSource;
-import javax.xml.bind.JAXBException;
 
 import org.ops4j.pax.warp.core.changelog.ChangeLogWriter;
 import org.ops4j.pax.warp.core.command.CommandRunner;
@@ -39,6 +37,7 @@ import org.ops4j.pax.warp.core.dump.DumpDataService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.core.update.UpdateService;
+import org.ops4j.pax.warp.core.util.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
 import org.osgi.service.component.annotations.Component;
@@ -62,22 +61,27 @@ public class CommandRunnerImpl implements CommandRunner {
     private ChangeLogWriter changeLogWriter;
 
     @Override
-    public void dump(String jdbcUrl, String username, String password, OutputStream os)
-        throws SQLException, JAXBException {
+    public void dump(String jdbcUrl, String username, String password, OutputStream os) {
         try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
             dump(dbc, os);
         }
-    }
-
-    @Override
-    public void dump(DataSource ds, OutputStream os) throws SQLException, JAXBException {
-        try (Connection dbc = ds.getConnection()) {
-            dump(dbc, os);
+        catch (SQLException exc) {
+            throw new WarpException(exc);
         }
     }
 
     @Override
-    public void dump(Connection dbc, OutputStream os) throws SQLException, JAXBException {
+    public void dump(DataSource ds, OutputStream os) {
+        try (Connection dbc = ds.getConnection()) {
+            dump(dbc, os);
+        }
+        catch (SQLException exc) {
+            throw new WarpException(exc);
+        }
+    }
+
+    @Override
+    public void dump(Connection dbc, OutputStream os) {
         DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
         DatabaseModel database = inspector.buildDatabaseModel();
 
@@ -102,63 +106,69 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     @Override
-    public void dumpData(String jdbcUrl, String username, String password, OutputStream os)
-        throws SQLException, JAXBException {
+    public void dumpData(String jdbcUrl, String username, String password, OutputStream os) {
         try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
             dumpData(dbc, os);
+        }
+        catch (SQLException exc) {
+            throw new WarpException(exc);
         }
     }
 
     @Override
-    public void dumpDataOnly(Connection dbc, OutputStream os) throws SQLException, JAXBException {
+    public void dumpDataOnly(Connection dbc, OutputStream os) {
         dumpDataService.dumpDataOnly(dbc, os);
     }
 
     @Override
-    public void dumpDataOnly(String jdbcUrl, String username, String password, OutputStream os)
-        throws SQLException, JAXBException {
+    public void dumpDataOnly(String jdbcUrl, String username, String password, OutputStream os) {
         try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
             dumpDataOnly(dbc, os);
+        }
+        catch (SQLException exc) {
+            throw new WarpException(exc);
         }
     }
 
     @Override
-    public void dumpData(Connection dbc, OutputStream os) throws SQLException, JAXBException {
+    public void dumpData(Connection dbc, OutputStream os){
         dumpDataService.dumpData(dbc, os);
     }
 
-    private void writeChangeLog(ChangeLog changeLog, OutputStream os) throws JAXBException {
+    private void writeChangeLog(ChangeLog changeLog, OutputStream os) {
         OutputStreamWriter writer = new OutputStreamWriter(os, StandardCharsets.UTF_8);
         changeLogWriter.write(changeLog, writer);
     }
 
     @Override
-    public void update(String jdbcUrl, String username, String password, InputStream is)
-        throws JAXBException, SQLException {
+    public void update(String jdbcUrl, String username, String password, InputStream is) {
         try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
             String dbms = getDbms(jdbcUrl);
             update(dbc, is, dbms);
         }
-    }
-
-    @Override
-    public void update(DataSource ds, InputStream is, String dbms) throws JAXBException,
-        SQLException {
-        try (Connection dbc = ds.getConnection()) {
-            dbc.setAutoCommit(false);
-            update(dbc, is, dbms);
+        catch (SQLException exc) {
+            throw new WarpException(exc);
         }
     }
 
     @Override
-    public void update(Connection dbc, InputStream is, String dbms) throws JAXBException,
-        SQLException {
+    public void update(DataSource ds, InputStream is, String dbms)  {
+        try (Connection dbc = ds.getConnection()) {
+            dbc.setAutoCommit(false);
+            update(dbc, is, dbms);
+        }
+        catch (SQLException exc) {
+            throw new WarpException(exc);
+        }
+    }
+
+    @Override
+    public void update(Connection dbc, InputStream is, String dbms)  {
         updateService.update(dbc, is, dbms);
     }
 
     @Override
-    public void insertData(Connection dbc, InputStream is, String dbms) throws JAXBException,
-        SQLException, IOException {
+    public void insertData(Connection dbc, InputStream is, String dbms) {
         updateService.insertData(dbc, is, dbms);
     }
 

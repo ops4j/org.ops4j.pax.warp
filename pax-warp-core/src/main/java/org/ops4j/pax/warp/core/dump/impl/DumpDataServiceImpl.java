@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
 
 import org.ops4j.pax.warp.core.changelog.impl.ChangeLogService;
 import org.ops4j.pax.warp.core.dump.DumpDataService;
@@ -57,7 +56,7 @@ public class DumpDataServiceImpl implements DumpDataService {
     private ChangeLogService changeLogService;
 
     @Override
-    public void dumpData(Connection dbc, OutputStream os) throws JAXBException {
+    public void dumpData(Connection dbc, OutputStream os) {
         DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
         DatabaseModel database = inspector.buildDatabaseModel();
 
@@ -78,7 +77,7 @@ public class DumpDataServiceImpl implements DumpDataService {
     }
 
     @Override
-    public void dumpDataOnly(Connection dbc, OutputStream os) throws JAXBException {
+    public void dumpDataOnly(Connection dbc, OutputStream os) {
         DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
         DatabaseModel database = inspector.buildDatabaseModel();
 

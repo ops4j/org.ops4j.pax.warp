@@ -20,14 +20,12 @@ package org.ops4j.pax.warp.cli;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.SQLException;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
 
 import org.ops4j.pax.warp.core.command.CommandRunner;
-import org.ops4j.pax.warp.core.util.Exceptions;
+import org.ops4j.pax.warp.core.util.WarpException;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
@@ -112,9 +110,8 @@ public class DumpCommand implements Runnable {
                 os.close();
             }
         }
-        catch (IOException | SQLException | JAXBException exc) {
-            throw Exceptions.unchecked(exc);
+        catch (IOException exc) {
+            throw new WarpException(exc);
         }
     }
-
 }
