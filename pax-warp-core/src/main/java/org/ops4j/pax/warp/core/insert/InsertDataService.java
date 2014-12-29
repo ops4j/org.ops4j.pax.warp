@@ -15,10 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.warp.core.dump;
+package org.ops4j.pax.warp.core.insert;
 
-import java.io.OutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.xml.bind.JAXBException;
 
@@ -27,9 +29,7 @@ import javax.xml.bind.JAXBException;
  * @author Harald Wellmann
  *
  */
-public interface DumpDataService {
+public interface InsertDataService {
 
-    void dumpData(Connection dbc, OutputStream os) throws JAXBException;
-    void dumpDataOnly(Connection dbc, OutputStream os) throws JAXBException;
-
+    void insertData(Connection dbc, InputStream is, String dbms) throws JAXBException, IOException, SQLException;
 }

@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.warp.core.command.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -35,6 +36,7 @@ import javax.xml.bind.JAXBException;
 import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogWriter;
 import org.ops4j.pax.warp.core.command.CommandRunner;
 import org.ops4j.pax.warp.core.dump.DumpDataService;
+import org.ops4j.pax.warp.core.insert.InsertDataService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.core.update.UpdateService;
@@ -56,6 +58,9 @@ public class CommandRunnerImpl implements CommandRunner {
 
     @Inject
     private UpdateService updateService;
+
+    @Inject
+    private InsertDataService insertService;
 
     @Inject
     private DatabaseChangeLogWriter changeLogWriter;
@@ -109,6 +114,19 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     @Override
+    public void dumpDataOnly(Connection dbc, OutputStream os) throws SQLException, JAXBException {
+        dumpDataService.dumpDataOnly(dbc, os);
+    }
+
+    @Override
+    public void dumpDataOnly(String jdbcUrl, String username, String password, OutputStream os)
+        throws SQLException, JAXBException {
+        try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
+            dumpDataOnly(dbc, os);
+        }
+    }
+
+    @Override
     public void dumpData(Connection dbc, OutputStream os) throws SQLException, JAXBException {
         dumpDataService.dumpData(dbc, os);
     }
@@ -140,6 +158,12 @@ public class CommandRunnerImpl implements CommandRunner {
     public void update(Connection dbc, InputStream is, String dbms) throws JAXBException,
         SQLException {
         updateService.update(dbc, is, dbms);
+    }
+
+    @Override
+    public void insertData(Connection dbc, InputStream is, String dbms) throws JAXBException,
+        SQLException, IOException {
+        insertService.insertData(dbc, is, dbms);
     }
 
     /**

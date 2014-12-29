@@ -17,6 +17,7 @@
  */
 package org.ops4j.pax.warp.core.command;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -80,6 +81,22 @@ public abstract class AbstractCommandRunnerTest {
         dbc.close();
     }
 
+    protected void dumpDataOnly(String jdbcUrl, String dbms) throws JAXBException, SQLException, IOException {
+        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
+        OutputStream os = new FileOutputStream("target/dataOnly1.xml");
+        commandRunner.dumpDataOnly(dbc, os);
+        os.close();
+        dbc.close();
+    }
+
+    protected void insertData(String jdbcUrl, String dbms) throws JAXBException, SQLException, IOException {
+        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
+        InputStream is = new FileInputStream("target/dataOnly1.xml");
+        commandRunner.insertData(dbc, is, getDbms());
+        is.close();
+        dbc.close();
+    }
+
     protected abstract String getJdbcUrl();
 
     protected abstract String getJdbcAdminUrl();
@@ -110,6 +127,13 @@ public abstract class AbstractCommandRunnerTest {
         updateData(getJdbcUrl(), getDbms());
     }
 
+    @Test
+    public void test05ShouldDumpDataOnly() throws JAXBException, SQLException, IOException {
+        dumpDataOnly(getJdbcUrl(), getDbms());
+    }
 
-
+    @Test
+    public void test06ShouldInsertData() throws JAXBException, SQLException, IOException {
+        insertData(getJdbcUrl(), getDbms());
+    }
 }

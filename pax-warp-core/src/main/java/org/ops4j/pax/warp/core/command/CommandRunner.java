@@ -1,10 +1,11 @@
 /*
  * Copyright 2014 EOS UPTRADE GmbH.
- * 
+ *
  * This is proprietary software. All rights reserved. Unauthorized use is prohibited.
  */
 package org.ops4j.pax.warp.core.command;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
@@ -31,6 +32,11 @@ public interface CommandRunner {
 
     void dumpData(Connection dbc, OutputStream os) throws SQLException, JAXBException;
 
+    void dumpDataOnly(String jdbcUrl, String username, String password, OutputStream os)
+        throws SQLException, JAXBException;
+
+    void dumpDataOnly(Connection dbc, OutputStream os) throws SQLException, JAXBException;
+
     void update(String jdbcUrl, String username, String password, InputStream is)
         throws JAXBException, SQLException;
 
@@ -39,5 +45,8 @@ public interface CommandRunner {
 
     void update(Connection dbc, InputStream is, String dbms) throws JAXBException,
         SQLException;
+
+    void insertData(Connection dbc, InputStream is, String dbms) throws SQLException, JAXBException, IOException;
+
 
 }

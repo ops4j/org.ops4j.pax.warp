@@ -82,6 +82,24 @@ public class DumpDataServiceImpl implements DumpDataService {
         writeChangeLog(changeLog, os);
     }
 
+    @Override
+    public void dumpDataOnly(Connection dbc, OutputStream os) throws JAXBException {
+        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
+        DatabaseModel database = inspector.buildDatabaseModel();
+
+        ChangeLog changeLog = new ChangeLog();
+        changeLog.setVersion("0.1");
+        changeLog.getChangeSetOrInclude();
+
+        ChangeSet changeSet = new ChangeSet();
+        changeSet.setId("1");
+        changeLog.getChangeSetOrInclude().add(changeSet);
+        List<Object> changes = changeSet.getChanges();
+        insertData(changes, database, dbc);
+
+        writeChangeLog(changeLog, os);
+    }
+
     /**
      * @param changes
      * @param database
