@@ -23,7 +23,7 @@ import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 
 
 
-public interface DatabaseChangeLogWriter {
+public interface ChangeLogWriter {
 
     void write(ChangeLog changeLog, Writer writer);
 }

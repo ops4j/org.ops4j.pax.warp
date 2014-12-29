@@ -33,7 +33,7 @@ import javax.inject.Inject;
 import javax.sql.DataSource;
 import javax.xml.bind.JAXBException;
 
-import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogWriter;
+import org.ops4j.pax.warp.core.changelog.ChangeLogWriter;
 import org.ops4j.pax.warp.core.command.CommandRunner;
 import org.ops4j.pax.warp.core.dump.DumpDataService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
@@ -59,7 +59,7 @@ public class CommandRunnerImpl implements CommandRunner {
     private UpdateService updateService;
 
     @Inject
-    private DatabaseChangeLogWriter changeLogWriter;
+    private ChangeLogWriter changeLogWriter;
 
     @Override
     public void dump(String jdbcUrl, String username, String password, OutputStream os)
@@ -185,7 +185,7 @@ public class CommandRunnerImpl implements CommandRunner {
      *            the changeLogWriter to set
      */
     @Reference
-    public void setChangeLogWriter(DatabaseChangeLogWriter changeLogWriter) {
+    public void setChangeLogWriter(ChangeLogWriter changeLogWriter) {
         this.changeLogWriter = changeLogWriter;
     }
 

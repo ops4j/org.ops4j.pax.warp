@@ -22,7 +22,7 @@ import java.io.Reader;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 
 
-public interface DatabaseChangeLogReader {
+public interface ChangeLogReader {
 
     ChangeLog parse(Reader reader);
 }

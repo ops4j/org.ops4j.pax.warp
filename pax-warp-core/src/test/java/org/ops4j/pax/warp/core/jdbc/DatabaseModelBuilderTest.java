@@ -38,7 +38,7 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogWriter;
+import org.ops4j.pax.warp.core.changelog.ChangeLogWriter;
 import org.ops4j.pax.warp.core.util.Exceptions;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
@@ -47,7 +47,7 @@ import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
 public class DatabaseModelBuilderTest {
 
     @Inject
-    private DatabaseChangeLogWriter changeLogWriter;
+    private ChangeLogWriter changeLogWriter;
 
     @Test
     public void shouldGenerateChangeLogH2() throws SQLException, JAXBException, IOException {

@@ -29,7 +29,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 
-import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogWriter;
+import org.ops4j.pax.warp.core.changelog.ChangeLogWriter;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
@@ -49,7 +49,7 @@ import org.osgi.service.component.annotations.Reference;
 public class ChangeLogService {
 
     @Inject
-    private DatabaseChangeLogWriter changeLogWriter;
+    private ChangeLogWriter changeLogWriter;
 
     /**
      * @param changes
@@ -90,7 +90,7 @@ public class ChangeLogService {
      * @param changeLogWriter the changeLogWriter to set
      */
     @Reference
-    public void setChangeLogWriter(DatabaseChangeLogWriter changeLogWriter) {
+    public void setChangeLogWriter(ChangeLogWriter changeLogWriter) {
         this.changeLogWriter = changeLogWriter;
     }
 }

@@ -17,48 +17,40 @@
  */
 package org.ops4j.pax.warp.core.changelog.impl;
 
-import java.io.Writer;
+import java.io.Reader;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
-import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogWriter;
+import org.ops4j.pax.warp.core.changelog.ChangeLogReader;
 import org.ops4j.pax.warp.core.util.Exceptions;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-
 @Dependent
 @Component
-public class JaxbDatabaseChangeLogWriter implements DatabaseChangeLogWriter {
+public class JaxbChangeLogReader implements ChangeLogReader {
 
     @Inject
     private WarpJaxbContext context;
 
     @Override
-    public void write(ChangeLog changeLog, Writer writer) {
+    public ChangeLog parse(Reader reader) {
         try {
-            Marshaller marshaller = context.createValidatingMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(changeLog, writer);
+            Unmarshaller unmarshaller = context.createValidatingUnmarshaller();
+            return (ChangeLog) unmarshaller.unmarshal(reader);
         }
         catch (JAXBException exc) {
             throw Exceptions.unchecked(exc);
         }
     }
 
-
-    /**
-     * @param context the context to set
-     */
     @Reference
     public void setContext(WarpJaxbContext context) {
         this.context = context;
     }
-
-
 }

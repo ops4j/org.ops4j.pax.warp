@@ -33,7 +33,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 
-import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogReader;
+import org.ops4j.pax.warp.core.changelog.ChangeLogReader;
 import org.ops4j.pax.warp.core.changelog.impl.ChangeLogService;
 import org.ops4j.pax.warp.core.history.ChangeLogHistory;
 import org.ops4j.pax.warp.core.history.ChangeLogHistoryService;
@@ -58,7 +58,7 @@ import org.osgi.service.component.annotations.Reference;
 public class UpdateServiceImpl implements UpdateService {
 
     @Inject
-    private DatabaseChangeLogReader changeLogReader;
+    private ChangeLogReader changeLogReader;
 
     @Inject
     private ChangeLogHistoryService historyService;
@@ -154,7 +154,7 @@ public class UpdateServiceImpl implements UpdateService {
      * @param changeLogReader the changeLogReader to set
      */
     @Reference
-    public void setChangeLogReader(DatabaseChangeLogReader changeLogReader) {
+    public void setChangeLogReader(ChangeLogReader changeLogReader) {
         this.changeLogReader = changeLogReader;
     }
 
