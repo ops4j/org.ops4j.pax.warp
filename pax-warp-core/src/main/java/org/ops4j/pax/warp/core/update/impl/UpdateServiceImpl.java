@@ -96,9 +96,10 @@ public class UpdateServiceImpl implements UpdateService {
     }
 
     @Override
-    public void insertData(Connection dbc, InputStream is, String dbms) {
+    public void insertData(Connection dbc, InputStream is, String dbms, List<String> excludedTables) {
         DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
         DatabaseModel database = inspector.buildDatabaseModel();
+        excludedTables.forEach(t -> database.removeTable(t));
 
         ChangeLog changeLog = new ChangeLog();
         changeLog.setVersion("0.1");

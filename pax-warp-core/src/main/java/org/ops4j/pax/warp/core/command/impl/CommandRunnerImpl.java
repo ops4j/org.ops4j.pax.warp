@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -169,7 +170,12 @@ public class CommandRunnerImpl implements CommandRunner {
 
     @Override
     public void insertData(Connection dbc, InputStream is, String dbms) {
-        updateService.insertData(dbc, is, dbms);
+        updateService.insertData(dbc, is, dbms, Collections.emptyList());
+    }
+
+    @Override
+    public void insertData(Connection dbc, InputStream is, String dbms, List<String> excludedTables) {
+        updateService.insertData(dbc, is, dbms, excludedTables);
     }
 
     /**

@@ -19,6 +19,7 @@ package org.ops4j.pax.warp.core.update;
 
 import java.io.InputStream;
 import java.sql.Connection;
+import java.util.List;
 
 
 /**
@@ -28,5 +29,5 @@ import java.sql.Connection;
 public interface UpdateService {
 
     void update(Connection dbc, InputStream is, String dbms);
-    void insertData(Connection dbc, InputStream is, String dbms);
+    void insertData(Connection dbc, InputStream is, String dbms, List<String> excludedTables);
 }

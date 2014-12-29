@@ -8,6 +8,7 @@ package org.ops4j.pax.warp.core.command;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -38,4 +39,5 @@ public interface CommandRunner {
     void update(Connection dbc, InputStream is, String dbms);
 
     void insertData(Connection dbc, InputStream is, String dbms);
+    void insertData(Connection dbc, InputStream is, String dbms, List<String> excludedTables);
 }

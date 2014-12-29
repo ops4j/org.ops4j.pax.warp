@@ -35,6 +35,10 @@ public class DatabaseModel {
         return tables.get(tableName);
     }
 
+    public CreateTable removeTable(String tableName) {
+        return tables.remove(tableName);
+    }
+
 
     /**
      * @return the primaryKeys
