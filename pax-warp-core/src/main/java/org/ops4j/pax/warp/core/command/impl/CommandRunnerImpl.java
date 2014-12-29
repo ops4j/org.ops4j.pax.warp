@@ -36,7 +36,6 @@ import javax.xml.bind.JAXBException;
 import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogWriter;
 import org.ops4j.pax.warp.core.command.CommandRunner;
 import org.ops4j.pax.warp.core.dump.DumpDataService;
-import org.ops4j.pax.warp.core.insert.InsertDataService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.core.update.UpdateService;
@@ -58,9 +57,6 @@ public class CommandRunnerImpl implements CommandRunner {
 
     @Inject
     private UpdateService updateService;
-
-    @Inject
-    private InsertDataService insertService;
 
     @Inject
     private DatabaseChangeLogWriter changeLogWriter;
@@ -163,7 +159,7 @@ public class CommandRunnerImpl implements CommandRunner {
     @Override
     public void insertData(Connection dbc, InputStream is, String dbms) throws JAXBException,
         SQLException, IOException {
-        insertService.insertData(dbc, is, dbms);
+        updateService.insertData(dbc, is, dbms);
     }
 
     /**

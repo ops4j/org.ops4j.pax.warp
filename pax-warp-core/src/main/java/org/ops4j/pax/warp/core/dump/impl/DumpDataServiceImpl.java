@@ -18,8 +18,6 @@
 package org.ops4j.pax.warp.core.dump.impl;
 
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.JDBCType;
 import java.sql.ResultSet;
@@ -33,20 +31,17 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 
-import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogWriter;
+import org.ops4j.pax.warp.core.changelog.impl.ChangeLogService;
 import org.ops4j.pax.warp.core.dump.DumpDataService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.core.util.Exceptions;
-import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
 import org.ops4j.pax.warp.jaxb.gen.Column;
 import org.ops4j.pax.warp.jaxb.gen.ColumnValue;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
-import org.ops4j.pax.warp.jaxb.gen.DropForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.Insert;
-import org.ops4j.pax.warp.jaxb.gen.TruncateTable;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -59,7 +54,7 @@ import org.osgi.service.component.annotations.Reference;
 public class DumpDataServiceImpl implements DumpDataService {
 
     @Inject
-    private DatabaseChangeLogWriter changeLogWriter;
+    private ChangeLogService changeLogService;
 
     @Override
     public void dumpData(Connection dbc, OutputStream os) throws JAXBException {
@@ -74,12 +69,12 @@ public class DumpDataServiceImpl implements DumpDataService {
         changeSet.setId("1");
         changeLog.getChangeSetOrInclude().add(changeSet);
         List<Object> changes = changeSet.getChanges();
-        dropForeignKeys(changes, database);
-        truncateTables(changes, database);
+        changeLogService.dropForeignKeys(changes, database);
+        changeLogService.truncateTables(changes, database);
         insertData(changes, database, dbc);
         changes.addAll(database.getForeignKeys());
 
-        writeChangeLog(changeLog, os);
+        changeLogService.writeChangeLog(changeLog, os);
     }
 
     @Override
@@ -97,30 +92,7 @@ public class DumpDataServiceImpl implements DumpDataService {
         List<Object> changes = changeSet.getChanges();
         insertData(changes, database, dbc);
 
-        writeChangeLog(changeLog, os);
-    }
-
-    /**
-     * @param changes
-     * @param database
-     */
-    private void dropForeignKeys(List<Object> changes, DatabaseModel database) {
-        for (AddForeignKey addFk : database.getForeignKeys()) {
-            DropForeignKey dropFk = new DropForeignKey();
-            dropFk.setBaseTable(addFk.getBaseTable());
-            dropFk.setConstraintName(addFk.getConstraintName());
-            changes.add(dropFk);
-        }
-    }
-
-    private void truncateTables(List<Object> changes, DatabaseModel database) {
-        for (CreateTable createTable : database.getTables()) {
-            TruncateTable truncateTable = new TruncateTable();
-            truncateTable.setCatalogName(createTable.getCatalogName());
-            truncateTable.setSchemaName(createTable.getSchemaName());
-            truncateTable.setTableName(createTable.getTableName());
-            changes.add(truncateTable);
-        }
+        changeLogService.writeChangeLog(changeLog, os);
     }
 
     private void insertData(List<Object> changes, DatabaseModel database, Connection dbc) {
@@ -172,17 +144,9 @@ public class DumpDataServiceImpl implements DumpDataService {
         }
     }
 
-    private void writeChangeLog(ChangeLog changeLog, OutputStream os) throws JAXBException {
-        OutputStreamWriter writer = new OutputStreamWriter(os, StandardCharsets.UTF_8);
-        changeLogWriter.write(changeLog, writer);
-    }
 
-    /**
-     * @param changeLogWriter
-     *            the changeLogWriter to set
-     */
     @Reference
-    public void setChangeLogWriter(DatabaseChangeLogWriter changeLogWriter) {
-        this.changeLogWriter = changeLogWriter;
+    public void setChangeLogService(ChangeLogService changeLogService) {
+        this.changeLogService = changeLogService;
     }
 }

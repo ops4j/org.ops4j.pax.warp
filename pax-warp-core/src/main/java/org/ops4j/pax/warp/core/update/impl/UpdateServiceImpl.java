@@ -17,24 +17,33 @@
  */
 package org.ops4j.pax.warp.core.update.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.UUID;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 
 import org.ops4j.pax.warp.core.changelog.DatabaseChangeLogReader;
+import org.ops4j.pax.warp.core.changelog.impl.ChangeLogService;
 import org.ops4j.pax.warp.core.history.ChangeLogHistory;
 import org.ops4j.pax.warp.core.history.ChangeLogHistoryService;
+import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
+import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.core.update.UpdateService;
 import org.ops4j.pax.warp.core.util.Exceptions;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
+import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -53,6 +62,9 @@ public class UpdateServiceImpl implements UpdateService {
 
     @Inject
     private ChangeLogHistoryService historyService;
+
+    @Inject
+    private ChangeLogService changeLogService;
 
     @Inject
     private WarpJaxbContext context;
@@ -79,6 +91,49 @@ public class UpdateServiceImpl implements UpdateService {
             dbc.setAutoCommit(autoCommit);
         }
     }
+
+    @Override
+    public void insertData(Connection dbc, InputStream is, String dbms) throws JAXBException, IOException, SQLException {
+        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
+        DatabaseModel database = inspector.buildDatabaseModel();
+
+        ChangeLog changeLog = new ChangeLog();
+        changeLog.setVersion("0.1");
+        changeLog.getChangeSetOrInclude();
+
+        ChangeSet changeSet = new ChangeSet();
+        changeSet.setId(UUID.randomUUID().toString());
+        changeLog.getChangeSetOrInclude().add(changeSet);
+        List<Object> changes = changeSet.getChanges();
+        changeLogService.dropForeignKeys(changes, database);
+        changeLogService.truncateTables(changes, database);
+
+        File preInsertFile = File.createTempFile("warp", ".xml");
+        changeLogService.writeChangeLog(changeLog, preInsertFile);
+
+        ChangeLog postChangeLog = new ChangeLog();
+        postChangeLog.setVersion("0.1");
+        postChangeLog.getChangeSetOrInclude();
+        ChangeSet postChangeSet = new ChangeSet();
+        postChangeSet.setId(UUID.randomUUID().toString());
+        postChangeLog.getChangeSetOrInclude().add(postChangeSet);
+        List<Object> postChanges = postChangeSet.getChanges();
+        postChanges.addAll(database.getForeignKeys());
+
+        File postInsertFile = File.createTempFile("warp", ".xml");
+        changeLogService.writeChangeLog(postChangeLog, postInsertFile);
+
+        try (InputStream preIs = new FileInputStream(preInsertFile)) {
+            update(dbc, preIs, dbms);
+        }
+        update(dbc, is, dbms);
+
+        try (InputStream postIs = new FileInputStream(postInsertFile)) {
+            update(dbc, postIs, dbms);
+        }
+    }
+
+
 
     private void runUpdate(PreparedStatement st) {
         try {
