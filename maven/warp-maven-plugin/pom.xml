@@ -9,8 +9,18 @@
     <groupId>org.ops4j.pax.maven</groupId>
     <artifactId>warp-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
+    
+    <prerequisites>
+        <maven>3.2.5</maven>
+    </prerequisites>
 
     <dependencies>
+
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.ops4j.pax.warp</groupId>
@@ -21,7 +31,7 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>3.2.1</version>
+            <version>3.2.5</version>
         </dependency>
 
         <dependency>
@@ -33,13 +43,13 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
-            <version>3.2.1</version>
+            <version>3.2.5</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-core</artifactId>
-            <version>3.2.1</version>
+            <version>3.2.5</version>
         </dependency>
 
     </dependencies>

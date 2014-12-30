@@ -28,8 +28,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.sql.DataSource;
 
 import org.ops4j.pax.warp.core.changelog.ChangeLogWriter;
@@ -41,6 +41,7 @@ import org.ops4j.pax.warp.core.update.UpdateService;
 import org.ops4j.pax.warp.core.util.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
+import org.ops4j.pax.warp.scope.CdiDependent;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -49,7 +50,8 @@ import org.osgi.service.component.annotations.Reference;
  *
  */
 @Component
-@Dependent
+@CdiDependent
+@Named
 public class CommandRunnerImpl implements CommandRunner {
 
     @Inject

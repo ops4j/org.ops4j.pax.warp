@@ -25,8 +25,8 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.ops4j.pax.warp.core.changelog.ChangeLogWriter;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
@@ -36,6 +36,7 @@ import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 import org.ops4j.pax.warp.jaxb.gen.DropForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.TruncateTable;
+import org.ops4j.pax.warp.scope.CdiDependent;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -44,7 +45,8 @@ import org.osgi.service.component.annotations.Reference;
  * @author Harald Wellmann
  *
  */
-@Dependent
+@CdiDependent
+@Named
 @Component(service = ChangeLogService.class)
 public class ChangeLogService {
 

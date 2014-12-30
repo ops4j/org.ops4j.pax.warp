@@ -24,7 +24,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import javax.enterprise.context.Dependent;
+import javax.inject.Named;
 
 import org.ops4j.pax.warp.core.history.ChangeLogHistory;
 import org.ops4j.pax.warp.core.history.ChangeLogHistoryService;
@@ -33,14 +33,16 @@ import org.ops4j.pax.warp.jaxb.gen.Column;
 import org.ops4j.pax.warp.jaxb.gen.Constraints;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 import org.ops4j.pax.warp.jaxb.gen.SqlType;
+import org.ops4j.pax.warp.scope.CdiDependent;
 import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Harald Wellmann
  *
  */
-@Dependent
 @Component
+@Named
+@CdiDependent
 public class ChangeLogHistoryServiceImpl implements ChangeLogHistoryService {
 
     /*

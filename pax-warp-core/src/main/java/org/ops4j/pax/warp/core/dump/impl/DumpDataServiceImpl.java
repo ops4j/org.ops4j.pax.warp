@@ -27,8 +27,8 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.ops4j.pax.warp.core.changelog.impl.ChangeLogService;
 import org.ops4j.pax.warp.core.dump.DumpDataService;
@@ -41,6 +41,7 @@ import org.ops4j.pax.warp.jaxb.gen.Column;
 import org.ops4j.pax.warp.jaxb.gen.ColumnValue;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 import org.ops4j.pax.warp.jaxb.gen.Insert;
+import org.ops4j.pax.warp.scope.CdiDependent;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -48,8 +49,9 @@ import org.osgi.service.component.annotations.Reference;
  * @author Harald Wellmann
  *
  */
-@Dependent
 @Component
+@CdiDependent
+@Named
 public class DumpDataServiceImpl implements DumpDataService {
 
     @Inject

@@ -22,8 +22,7 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -34,20 +33,20 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
-import org.osgi.service.component.annotations.Activate;
+import org.ops4j.pax.warp.scope.CdiApplicationScoped;
 import org.osgi.service.component.annotations.Component;
 import org.xml.sax.SAXException;
 
-@ApplicationScoped
+//@ApplicationScoped
 @Component(service = WarpJaxbContext.class)
+@Singleton
+@CdiApplicationScoped
 public class WarpJaxbContext {
 
     protected JAXBContext context;
     protected Schema schema;
 
-    @PostConstruct
-    @Activate
-    public void init() {
+    public WarpJaxbContext() {
         try {
             context = JAXBContext.newInstance(ChangeLog.class);
             loadSchema();

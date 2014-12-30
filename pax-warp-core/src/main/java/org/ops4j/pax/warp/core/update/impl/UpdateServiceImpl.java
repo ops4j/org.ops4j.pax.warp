@@ -29,8 +29,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 
 import org.ops4j.pax.warp.core.changelog.ChangeLogReader;
@@ -46,6 +46,7 @@ import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
+import org.ops4j.pax.warp.scope.CdiDependent;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -55,7 +56,8 @@ import org.osgi.service.component.annotations.Reference;
  *
  */
 @Component
-@Dependent
+@CdiDependent
+@Named
 public class UpdateServiceImpl implements UpdateService {
 
     @Inject
