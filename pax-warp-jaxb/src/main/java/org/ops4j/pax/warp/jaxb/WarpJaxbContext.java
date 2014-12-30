@@ -47,7 +47,7 @@ public class WarpJaxbContext {
 
     @PostConstruct
     @Activate
-    protected void init() {
+    public void init() {
         try {
             context = JAXBContext.newInstance(ChangeLog.class);
             loadSchema();

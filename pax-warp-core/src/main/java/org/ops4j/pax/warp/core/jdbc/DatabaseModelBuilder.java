@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -250,7 +251,7 @@ public class DatabaseModelBuilder {
                 column.setName(columnName);
                 setKeyLength(table, column);
                 if (ordinal == 1) {
-                    if (!isPrimaryKeyIndex(index)) {
+                    if (index != null && !isPrimaryKeyIndex(index)) {
                         database.getIndexes().add(index);
                     }
                     index = new CreateIndex();
@@ -265,7 +266,7 @@ public class DatabaseModelBuilder {
                 index.getColumn().add(column);
             }
         }
-        if (!isPrimaryKeyIndex(index)) {
+        if (index != null && !isPrimaryKeyIndex(index)) {
             database.getIndexes().add(index);
         }
     }
@@ -295,11 +296,10 @@ public class DatabaseModelBuilder {
      * @return
      */
     private boolean isPrimaryKeyIndex(CreateIndex index) {
-        if (index == null) {
-            return false;
-        }
+        assert index != null;
         for (AddPrimaryKey pk : database.getPrimaryKeys()) {
-            if (index.getIndexName().equals(pk.getConstraintName())) {
+            assert pk != null;
+            if (Objects.equals(index.getIndexName(), pk.getConstraintName())) {
                 return true;
             }
         }

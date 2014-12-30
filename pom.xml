@@ -41,6 +41,7 @@
         <module>pax-warp-cli</module>
         <module>itest</module>
         <module>pax-warp-weld</module>
+        <module>maven</module>
     </modules>
 
     <dependencyManagement>

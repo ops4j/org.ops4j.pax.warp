@@ -103,6 +103,7 @@ public class CommandRunnerImpl implements CommandRunner {
         changeSet.setId(UUID.randomUUID().toString());
         List<Object> changes = changeSet.getChanges();
         changes.add(action);
+        assert !changeSet.getChanges().isEmpty();
         changeLog.getChangeSetOrInclude().add(changeSet);
     }
 
