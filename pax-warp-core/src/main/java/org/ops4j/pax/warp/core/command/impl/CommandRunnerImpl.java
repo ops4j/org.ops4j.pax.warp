@@ -135,7 +135,7 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     @Override
-    public void dumpData(Connection dbc, OutputStream os){
+    public void dumpData(Connection dbc, OutputStream os) {
         dumpDataService.dumpData(dbc, os);
     }
 
