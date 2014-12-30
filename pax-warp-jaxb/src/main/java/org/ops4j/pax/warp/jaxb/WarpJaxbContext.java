@@ -37,7 +37,6 @@ import org.ops4j.pax.warp.scope.CdiApplicationScoped;
 import org.osgi.service.component.annotations.Component;
 import org.xml.sax.SAXException;
 
-//@ApplicationScoped
 @Component(service = WarpJaxbContext.class)
 @Singleton
 @CdiApplicationScoped
