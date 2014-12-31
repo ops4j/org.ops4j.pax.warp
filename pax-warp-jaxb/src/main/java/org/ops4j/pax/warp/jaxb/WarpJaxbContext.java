@@ -40,6 +40,16 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.xml.sax.SAXException;
 
+/**
+ * Wraps a JAXB context for the change log model and provides validating marshallers and
+ * unmarshallers.
+ * <p>
+ * Given that a JAXB context is thread-safe and rather expensive to build, this class is a singleton
+ * (or application scoped in CDI).
+ *
+ * @author Harald Wellmann
+ *
+ */
 @Component(service = WarpJaxbContext.class)
 @Singleton
 @CdiApplicationScoped
@@ -49,9 +59,15 @@ public class WarpJaxbContext {
     private Schema schema;
     private boolean initialized;
 
+    /**
+     * Creates the JAXB context and loads the XML schema.
+     * <p>
+     * NOTE: When running under Maven/Sisu, {@code PostConstruct} methods are not called
+     * automatically.
+     */
     @Activate
     @PostConstruct
-    public void init() {
+    protected void init() {
         try {
             context = JAXBContext.newInstance(ChangeLog.class);
             loadSchema();
@@ -62,6 +78,9 @@ public class WarpJaxbContext {
         }
     }
 
+    /**
+     * Explicitly initializes this class when running under Maven/Sisu.
+     */
     private void initIfNeeded() {
         if (!initialized) {
             init();
@@ -74,6 +93,13 @@ public class WarpJaxbContext {
         schema = schemaFactory.newSchema(new Source[] { new StreamSource(url.openStream()) });
     }
 
+    /**
+     * Creates a validating unmarshaller for change logs.
+     *
+     * @return unmarshaller
+     * @throws JAXBException
+     *             if the unmarshaller cannot be created
+     */
     public Unmarshaller createValidatingUnmarshaller() throws JAXBException {
         initIfNeeded();
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -81,6 +107,13 @@ public class WarpJaxbContext {
         return unmarshaller;
     }
 
+    /**
+     * Creates a validating pretty-printing marshaller for change logs.
+     *
+     * @return marshaller
+     * @throws JAXBException
+     *             if the marshaller cannot be created
+     */
     public Marshaller createValidatingMarshaller() throws JAXBException {
         initIfNeeded();
         Marshaller marshaller = context.createMarshaller();
@@ -88,6 +121,14 @@ public class WarpJaxbContext {
         return marshaller;
     }
 
+    /**
+     * Creates a marshaller for change logs fragments. This marshaller does not pretty-print or
+     * validate. It can be used for calculating change set checksums.
+     *
+     * @return marshaller
+     * @throws JAXBException
+     *             if the marshaller cannot be created
+     */
     public Marshaller createFragmentMarshaller() throws JAXBException {
         initIfNeeded();
         Marshaller marshaller = context.createMarshaller();

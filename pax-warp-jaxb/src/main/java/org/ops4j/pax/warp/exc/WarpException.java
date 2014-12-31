@@ -17,8 +17,10 @@
  */
 package org.ops4j.pax.warp.exc;
 
-
 /**
+ * An unchecked exception thrown by Pax Warp, mainly used to wrap checked exceptions from used
+ * libraries.
+ *
  * @author Harald Wellmann
  *
  */
@@ -26,18 +28,41 @@ public class WarpException extends RuntimeException {
 
     private static final long serialVersionUID = -5515301562862478256L;
 
+    /**
+     * Creates an exception with empty message.
+     */
     public WarpException() {
         super();
     }
 
+    /**
+     * Creates an exception with the given message.
+     *
+     * @param message
+     *            exception message
+     */
     public WarpException(String message) {
         super(message);
     }
 
+    /**
+     * Creates an exception with the given message and cause.
+     *
+     * @param message
+     *            exception message
+     * @param cause
+     *            original exception
+     */
     public WarpException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * Creates an exception with the given cause.
+     *
+     * @param cause
+     *            original exception
+     */
     public WarpException(Throwable cause) {
         super(cause);
     }

@@ -31,6 +31,8 @@ import javax.enterprise.inject.Stereotype;
 
 
 /**
+ * A CDI stereotype used to hide the CDI application scope from Sisu/Guice.
+ *
  * @author Harald Wellmann
  *
  */

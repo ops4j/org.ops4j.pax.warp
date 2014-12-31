@@ -29,8 +29,9 @@ import java.lang.annotation.Target;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Stereotype;
 
-
 /**
+ * A CDI stereotype used to hide the CDI dependent scope from Sisu/Guice.
+ *
  * @author Harald Wellmann
  *
  */
