@@ -279,9 +279,7 @@ public class DatabaseModelBuilder {
                 column.setName(columnName);
                 setKeyLength(table, column);
                 if (ordinal == 1) {
-                    if (index != null && !isPrimaryKeyIndex(index)) {
-                        database.getIndexes().add(index);
-                    }
+                    maybeAddIndex(index);
                     index = new CreateIndex();
                     index.setCatalogName(catalog);
                     index.setSchemaName(schema);
@@ -294,6 +292,10 @@ public class DatabaseModelBuilder {
                 index.getColumn().add(column);
             }
         }
+        maybeAddIndex(index);
+    }
+
+    private void maybeAddIndex(CreateIndex index) {
         if (index != null && !isPrimaryKeyIndex(index)) {
             database.getIndexes().add(index);
         }
