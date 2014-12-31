@@ -30,7 +30,6 @@ import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.ops4j.pax.warp.core.changelog.ChangeLogReader;
 import org.ops4j.pax.warp.core.changelog.ChangeLogWriter;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
@@ -41,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
 
 
 /**
- * Implements {@link ChangeLogReader} using a JAXB marshaller.
+ * Implements {@link ChangeLogWriter} using a JAXB marshaller.
  *
  * @author Harald Wellmann
  *
