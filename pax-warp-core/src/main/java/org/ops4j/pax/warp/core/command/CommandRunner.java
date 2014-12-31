@@ -182,8 +182,6 @@ public interface CommandRunner {
      *            JDBC database connection
      * @param is
      *            input stream for change log
-     * @param excludedTables
-     *            list of tables which will not be deleted
      */
     void importData(Connection dbc, InputStream is);
 
@@ -210,8 +208,6 @@ public interface CommandRunner {
      *            JDBC data source
      * @param is
      *            input stream for change log
-     * @param excludedTables
-     *            list of tables which will not be deleted
      */
     void importData(DataSource ds, InputStream is);
 

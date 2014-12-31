@@ -21,22 +21,23 @@ import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.ops4j.pax.warp.cli.CommandLineExecutor;
 
-
-
-
 /**
+ * Main class for stand-alone Pax Warp, based on Weld SE.
+ *
  * @author Harald Wellmann
  *
  */
 public class PaxWarpWeld {
-
 
     private PaxWarpWeld() {
         // hidden constructor
     }
 
     /**
+     * Entry point for invoking Pax Warp from the command line.
+     *
      * @param args
+     *            command line arguments
      */
     public static void main(String[] args) {
         System.setProperty("org.jboss.weld.se.archive.isolation", "false");

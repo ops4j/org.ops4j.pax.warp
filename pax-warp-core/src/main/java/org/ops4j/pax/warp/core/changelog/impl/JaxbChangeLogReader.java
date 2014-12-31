@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * Implements {@ChangeLogReader} using a JAXB unmarshaller.
+ * Implements {@link ChangeLogReader} using a JAXB unmarshaller.
  *
  * @author Harald Wellmann
  *

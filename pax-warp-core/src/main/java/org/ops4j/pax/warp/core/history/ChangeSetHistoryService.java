@@ -18,7 +18,6 @@
 package org.ops4j.pax.warp.core.history;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 
@@ -44,9 +43,8 @@ public interface ChangeSetHistoryService {
      * @param dbc
      *            JDBC database connection
      * @return true if the change set history table exists
-     * @throws SQLException
      */
-    boolean hasMetaDataTable(Connection dbc) throws SQLException;
+    boolean hasMetaDataTable(Connection dbc);
 
     /**
      * Reads the change set history from the given database.
