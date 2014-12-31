@@ -21,9 +21,21 @@ import java.io.Writer;
 
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 
-
-
+/**
+ * Marshals change logs to XML.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public interface ChangeLogWriter {
 
+    /**
+     * Marshals a change log model as XML to the given writer.
+     *
+     * @param changeLog
+     *            change log model
+     * @param writer
+     *            writer for XML document
+     */
     void write(ChangeLog changeLog, Writer writer);
 }

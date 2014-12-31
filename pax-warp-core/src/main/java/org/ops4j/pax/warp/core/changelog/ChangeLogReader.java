@@ -21,8 +21,20 @@ import java.io.Reader;
 
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 
-
+/**
+ * Unmarshals change logs from XML.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public interface ChangeLogReader {
 
+    /**
+     * Unmarshals a change log from XML.
+     *
+     * @param reader
+     *            reader for XML data
+     * @return change log model object
+     */
     ChangeLog parse(Reader reader);
 }

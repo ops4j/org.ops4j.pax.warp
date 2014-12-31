@@ -115,6 +115,16 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     @Override
+    public void dumpData(DataSource ds, OutputStream os) {
+        try (Connection dbc = ds.getConnection()) {
+            dumpDataService.dumpDataOnly(dbc, os);
+        }
+        catch (SQLException exc) {
+            throw new WarpException(exc);
+        }
+    }
+
+    @Override
     public void dumpData(String jdbcUrl, String username, String password, OutputStream os) {
         try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
             dumpData(dbc, os);
@@ -179,6 +189,22 @@ public class CommandRunnerImpl implements CommandRunner {
     @Override
     public void importData(Connection dbc, InputStream is, List<String> excludedTables) {
         updateService.importData(dbc, is, getDbms(dbc), excludedTables);
+    }
+
+    @Override
+    public void importData(DataSource ds, InputStream is) {
+        importData(ds, is, Collections.emptyList());
+    }
+
+    @Override
+    public void importData(DataSource ds, InputStream is, List<String> excludedTables) {
+        try (Connection dbc = ds.getConnection()) {
+            dbc.setAutoCommit(false);
+            updateService.importData(dbc, is, getDbms(dbc), excludedTables);
+        }
+        catch (SQLException exc) {
+            throw new WarpException(exc);
+        }
     }
 
     /**
