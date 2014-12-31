@@ -36,9 +36,4 @@ public class H2CommandRunnerTest extends AbstractCommandRunnerTest {
     protected String getJdbcAdminUrl() {
         return null;
     }
-
-    @Override
-    protected String getDbms() {
-        return "h2";
-    }
 }

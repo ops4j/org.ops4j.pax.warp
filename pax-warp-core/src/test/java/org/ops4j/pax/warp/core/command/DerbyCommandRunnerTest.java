@@ -35,9 +35,4 @@ public class DerbyCommandRunnerTest extends AbstractCommandRunnerTest {
     protected String getJdbcAdminUrl() {
         return null;
     }
-
-    @Override
-    protected String getDbms() {
-        return "derby";
-    }
 }

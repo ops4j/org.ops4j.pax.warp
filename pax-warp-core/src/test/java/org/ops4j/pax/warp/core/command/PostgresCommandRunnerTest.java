@@ -34,9 +34,4 @@ public class PostgresCommandRunnerTest extends AbstractCommandRunnerTest {
     protected String getJdbcAdminUrl() {
         return "jdbc:postgresql://localhost/warp_admin";
     }
-
-    @Override
-    protected String getDbms() {
-        return "postgresql";
-    }
 }

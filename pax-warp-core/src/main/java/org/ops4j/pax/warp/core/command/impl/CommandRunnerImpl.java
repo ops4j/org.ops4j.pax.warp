@@ -132,8 +132,7 @@ public class CommandRunnerImpl implements CommandRunner {
     @Override
     public void migrate(String jdbcUrl, String username, String password, InputStream is) {
         try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
-            String dbms = getDbms(jdbcUrl);
-            migrate(dbc, is, dbms);
+            migrate(dbc, is);
         }
         catch (SQLException exc) {
             throw new WarpException(exc);
@@ -141,10 +140,10 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     @Override
-    public void migrate(DataSource ds, InputStream is, String dbms)  {
+    public void migrate(DataSource ds, InputStream is)  {
         try (Connection dbc = ds.getConnection()) {
             dbc.setAutoCommit(false);
-            migrate(dbc, is, dbms);
+            migrate(dbc, is);
         }
         catch (SQLException exc) {
             throw new WarpException(exc);
@@ -152,16 +151,15 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     @Override
-    public void migrate(Connection dbc, InputStream is, String dbms)  {
-        updateService.migrate(dbc, is, dbms);
+    public void migrate(Connection dbc, InputStream is)  {
+        updateService.migrate(dbc, is, getDbms(dbc));
     }
 
     @Override
     public void importData(String jdbcUrl, String username, String password, InputStream is,
         List<String> excludedTables) {
         try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
-            String dbms = getDbms(jdbcUrl);
-            importData(dbc, is, dbms);
+            importData(dbc, is);
         }
         catch (SQLException exc) {
             throw new WarpException(exc);
@@ -174,13 +172,13 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     @Override
-    public void importData(Connection dbc, InputStream is, String dbms) {
-        updateService.importData(dbc, is, dbms, Collections.emptyList());
+    public void importData(Connection dbc, InputStream is) {
+        importData(dbc, is, Collections.emptyList());
     }
 
     @Override
-    public void importData(Connection dbc, InputStream is, String dbms, List<String> excludedTables) {
-        updateService.importData(dbc, is, dbms, excludedTables);
+    public void importData(Connection dbc, InputStream is, List<String> excludedTables) {
+        updateService.importData(dbc, is, getDbms(dbc), excludedTables);
     }
 
     /**
@@ -190,6 +188,15 @@ public class CommandRunnerImpl implements CommandRunner {
     private String getDbms(String jdbcUrl) {
         String[] words = jdbcUrl.split(":", 3);
         return words[1];
+    }
+
+    private String getDbms(Connection dbc) {
+        try {
+            return getDbms(dbc.getMetaData().getURL());
+        }
+        catch (SQLException exc) {
+            throw new WarpException(exc);
+        }
     }
 
     /**

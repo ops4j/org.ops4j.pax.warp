@@ -13,7 +13,9 @@ import java.util.List;
 import javax.sql.DataSource;
 
 /**
- * @author hwellmann
+ * Interface for embedding Pax Warp into client applications via dependency injection.
+ *
+ * @author Harald Wellmann
  *
  */
 public interface CommandRunner {
@@ -30,15 +32,15 @@ public interface CommandRunner {
 
     void migrate(String jdbcUrl, String username, String password, InputStream is);
 
-    void migrate(DataSource ds, InputStream is, String dbms);
+    void migrate(DataSource ds, InputStream is);
 
-    void migrate(Connection dbc, InputStream is, String dbms);
+    void migrate(Connection dbc, InputStream is);
 
     void importData(String jdbcUrl, String username, String password, InputStream is,  List<String> excludedTables);
 
     void importData(String jdbcUrl, String username, String password, InputStream is);
 
-    void importData(Connection dbc, InputStream is, String dbms);
+    void importData(Connection dbc, InputStream is);
 
-    void importData(Connection dbc, InputStream is, String dbms, List<String> excludedTables);
+    void importData(Connection dbc, InputStream is, List<String> excludedTables);
 }

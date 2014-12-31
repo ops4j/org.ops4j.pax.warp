@@ -57,23 +57,23 @@ public abstract class AbstractCommandRunnerTest {
         dbc.close();
     }
 
-    protected void updateStructure(String jdbcUrl, String dbms) throws JAXBException, SQLException, IOException {
+    protected void updateStructure(String jdbcUrl) throws JAXBException, SQLException, IOException {
         InputStream is = getClass().getResourceAsStream("/changelogs/changelog1.xml");
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
-        commandRunner.migrate(dbc, is, dbms);
+        commandRunner.migrate(dbc, is);
         dbc.close();
         is.close();
     }
 
-    protected void updateData(String jdbcUrl, String dbms) throws JAXBException, SQLException, IOException {
+    protected void updateData(String jdbcUrl) throws JAXBException, SQLException, IOException {
         InputStream is = getClass().getResourceAsStream("/changelogs/data1.xml");
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
-        commandRunner.migrate(dbc, is, dbms);
+        commandRunner.migrate(dbc, is);
         dbc.close();
         is.close();
     }
 
-    protected void dumpDataOnly(String jdbcUrl, String dbms) throws JAXBException, SQLException, IOException {
+    protected void dumpDataOnly(String jdbcUrl) throws JAXBException, SQLException, IOException {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         OutputStream os = new FileOutputStream("target/dataOnly1.xml");
         commandRunner.dumpData(dbc, os);
@@ -81,10 +81,10 @@ public abstract class AbstractCommandRunnerTest {
         dbc.close();
     }
 
-    protected void insertData(String jdbcUrl, String dbms) throws JAXBException, SQLException, IOException {
+    protected void insertData(String jdbcUrl) throws JAXBException, SQLException, IOException {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         InputStream is = new FileInputStream("target/dataOnly1.xml");
-        commandRunner.importData(dbc, is, getDbms());
+        commandRunner.importData(dbc, is);
         is.close();
         dbc.close();
     }
@@ -93,39 +93,27 @@ public abstract class AbstractCommandRunnerTest {
 
     protected abstract String getJdbcAdminUrl();
 
-    protected abstract String getDbms();
-
     @Test
     public void test01ShouldUpdate() throws JAXBException, SQLException, IOException {
         String adminUrl = getJdbcAdminUrl();
         if (adminUrl != null) {
             dropAndCreateDatabase(adminUrl);
         }
-        updateStructure(getJdbcUrl(), getDbms());
+        updateStructure(getJdbcUrl());
     }
-
-//    @Test
-//    public void test02ShouldUpdateData() throws JAXBException, SQLException, IOException {
-//        updateData(getJdbcUrl(), getDbms());
-//    }
-//
-//    @Test
-//    public void test03ShouldDumpData() throws JAXBException, SQLException, IOException {
-//        dumpData(getJdbcUrl(), getDbms());
-//    }
 
     @Test
     public void test04UpdateStructureShouldBeIdempotent() throws JAXBException, SQLException, IOException {
-        updateStructure(getJdbcUrl(), getDbms());
+        updateStructure(getJdbcUrl());
     }
 
     @Test
     public void test05ShouldDumpDataOnly() throws JAXBException, SQLException, IOException {
-        dumpDataOnly(getJdbcUrl(), getDbms());
+        dumpDataOnly(getJdbcUrl());
     }
 
     @Test
     public void test06ShouldInsertData() throws JAXBException, SQLException, IOException {
-        insertData(getJdbcUrl(), getDbms());
+        insertData(getJdbcUrl());
     }
 }
