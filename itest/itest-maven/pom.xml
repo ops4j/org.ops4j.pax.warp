@@ -18,7 +18,7 @@
                     <url>jdbc:mysql://localhost/warp</url>
                     <username>warp</username>
                     <password>warp</password>
-                    <changeLog>maven-warp.xml</changeLog>
+                    <changeLog>${project.build.directory}/warp.xml</changeLog>
                 </configuration>
                 <executions>
                     <execution>

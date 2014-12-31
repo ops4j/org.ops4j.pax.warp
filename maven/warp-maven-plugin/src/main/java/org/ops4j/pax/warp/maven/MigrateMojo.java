@@ -5,9 +5,9 @@
  */
 package org.ops4j.pax.warp.maven;
 
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -19,16 +19,16 @@ import org.apache.maven.plugins.annotations.Mojo;
  * @author hwellmann
  *
  */
-@Mojo(name = "dump-structure", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
-public class DumpStructureMojo extends AbstractWarpMojo {
+@Mojo(name = "migrate", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
+public class MigrateMojo extends AbstractWarpMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        try (OutputStream os = new FileOutputStream(changeLog)) {
-            commandRunner.dump(url, username, password, os);
+        try (InputStream is = new FileInputStream(changeLog)) {
+            commandRunner.update(url, username, password, is);
         }
         catch (IOException exc) {
-            throw new MojoExecutionException("error writing change log", exc);
+            throw new MojoExecutionException("error reading change log", exc);
         }
     }
 }
