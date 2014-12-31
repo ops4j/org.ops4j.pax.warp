@@ -39,10 +39,13 @@ public class CommandLineExecutor {
     private JCommander commander;
 
     @Inject
-    private DumpCommand dumpCommand;
+    private DumpStructureCommand dumpStructureCommand;
 
     @Inject
     private DumpDataCommand dumpDataCommand;
+
+    @Inject
+    private ImportDataCommand importDataCommand;
 
     @Inject
     private MigrateCommand migrateCommand;
@@ -50,8 +53,9 @@ public class CommandLineExecutor {
     @PostConstruct
     public void init() {
         commander = new JCommander();
-        commander.addCommand("dump", dumpCommand);
+        commander.addCommand("dumpStructure", dumpStructureCommand);
         commander.addCommand("dumpData", dumpDataCommand);
+        commander.addCommand("importData", importDataCommand);
         commander.addCommand("migrate", migrateCommand);
     }
 

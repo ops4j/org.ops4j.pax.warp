@@ -64,9 +64,9 @@ public class CommandRunnerImpl implements CommandRunner {
     private ChangeLogWriter changeLogWriter;
 
     @Override
-    public void dump(String jdbcUrl, String username, String password, OutputStream os) {
+    public void dumpStructure(String jdbcUrl, String username, String password, OutputStream os) {
         try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
-            dump(dbc, os);
+            dumpStructure(dbc, os);
         }
         catch (SQLException exc) {
             throw new WarpException(exc);
@@ -74,9 +74,9 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     @Override
-    public void dump(DataSource ds, OutputStream os) {
+    public void dumpStructure(DataSource ds, OutputStream os) {
         try (Connection dbc = ds.getConnection()) {
-            dump(dbc, os);
+            dumpStructure(dbc, os);
         }
         catch (SQLException exc) {
             throw new WarpException(exc);
@@ -84,7 +84,7 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     @Override
-    public void dump(Connection dbc, OutputStream os) {
+    public void dumpStructure(Connection dbc, OutputStream os) {
         DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
         DatabaseModel database = inspector.buildDatabaseModel();
 
@@ -110,14 +110,14 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     @Override
-    public void dumpDataOnly(Connection dbc, OutputStream os) {
+    public void dumpData(Connection dbc, OutputStream os) {
         dumpDataService.dumpDataOnly(dbc, os);
     }
 
     @Override
-    public void dumpDataOnly(String jdbcUrl, String username, String password, OutputStream os) {
+    public void dumpData(String jdbcUrl, String username, String password, OutputStream os) {
         try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
-            dumpDataOnly(dbc, os);
+            dumpData(dbc, os);
         }
         catch (SQLException exc) {
             throw new WarpException(exc);
@@ -157,12 +157,29 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     @Override
-    public void insertData(Connection dbc, InputStream is, String dbms) {
+    public void importData(String jdbcUrl, String username, String password, InputStream is,
+        List<String> excludedTables) {
+        try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
+            String dbms = getDbms(jdbcUrl);
+            importData(dbc, is, dbms);
+        }
+        catch (SQLException exc) {
+            throw new WarpException(exc);
+        }
+    }
+
+    @Override
+    public void importData(String jdbcUrl, String username, String password, InputStream is) {
+        importData(jdbcUrl, username, password, is, Collections.emptyList());
+    }
+
+    @Override
+    public void importData(Connection dbc, InputStream is, String dbms) {
         updateService.importData(dbc, is, dbms, Collections.emptyList());
     }
 
     @Override
-    public void insertData(Connection dbc, InputStream is, String dbms, List<String> excludedTables) {
+    public void importData(Connection dbc, InputStream is, String dbms, List<String> excludedTables) {
         updateService.importData(dbc, is, dbms, excludedTables);
     }
 
@@ -201,4 +218,5 @@ public class CommandRunnerImpl implements CommandRunner {
     public void setUpdateService(UpdateService updateService) {
         this.updateService = updateService;
     }
+
 }

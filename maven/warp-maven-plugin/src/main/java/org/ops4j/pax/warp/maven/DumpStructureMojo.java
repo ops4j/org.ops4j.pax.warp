@@ -25,7 +25,7 @@ public class DumpStructureMojo extends AbstractWarpMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try (OutputStream os = new FileOutputStream(changeLog)) {
-            commandRunner.dump(url, username, password, os);
+            commandRunner.dumpStructure(url, username, password, os);
         }
         catch (IOException exc) {
             throw new MojoExecutionException("error writing change log", exc);

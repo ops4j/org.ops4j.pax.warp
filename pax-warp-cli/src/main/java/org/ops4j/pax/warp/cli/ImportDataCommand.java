@@ -17,9 +17,9 @@
  */
 package org.ops4j.pax.warp.cli;
 
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -34,14 +34,14 @@ import com.beust.jcommander.Parameters;
  * @author Harald Wellmann
  *
  */
-@Parameters(commandDescription = "dumps a database")
 @Dependent
-public class DumpCommand implements Runnable {
+@Parameters(commandDescription = "imports data from from a change log")
+public class ImportDataCommand implements Runnable {
 
     @Inject
     private CommandRunner commandRunner;
 
-    @Parameter(names = "--url", description = "JDBC URL", required = true)
+    @Parameter(names = "--url", description = "JDBC URL")
     private String url;
 
     @Parameter(names = "--username", description = "JDBC username")
@@ -61,26 +61,10 @@ public class DumpCommand implements Runnable {
     }
 
     /**
-     * @param url
-     *            the url to set
-     */
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    /**
      * @return the username
      */
     public String getUsername() {
         return username;
-    }
-
-    /**
-     * @param username
-     *            the username to set
-     */
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     /**
@@ -91,24 +75,18 @@ public class DumpCommand implements Runnable {
     }
 
     /**
-     * @param password
-     *            the password to set
+     * @return the change log
      */
-    public void setPassword(String password) {
-        this.password = password;
+    public String getChangeLog() {
+        return changeLog;
     }
 
     @Override
     public void run() {
         try {
-            if (changeLog == null) {
-                commandRunner.dump(url, username, password, System.out);
-            }
-            else {
-                OutputStream os = new FileOutputStream(changeLog);
-                commandRunner.dump(url, username, password, os);
-                os.close();
-            }
+            InputStream is = new FileInputStream(changeLog);
+            commandRunner.importData(url, username, password, is);
+            is.close();
         }
         catch (IOException exc) {
             throw new WarpException(exc);

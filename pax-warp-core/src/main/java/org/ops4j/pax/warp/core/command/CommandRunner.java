@@ -18,15 +18,15 @@ import javax.sql.DataSource;
  */
 public interface CommandRunner {
 
-    void dump(String jdbcUrl, String username, String password, OutputStream os);
+    void dumpStructure(String jdbcUrl, String username, String password, OutputStream os);
 
-    void dump(DataSource ds, OutputStream os);
+    void dumpStructure(DataSource ds, OutputStream os);
 
-    void dump(Connection dbc, OutputStream os);
+    void dumpStructure(Connection dbc, OutputStream os);
 
-    void dumpDataOnly(String jdbcUrl, String username, String password, OutputStream os);
+    void dumpData(String jdbcUrl, String username, String password, OutputStream os);
 
-    void dumpDataOnly(Connection dbc, OutputStream os);
+    void dumpData(Connection dbc, OutputStream os);
 
     void migrate(String jdbcUrl, String username, String password, InputStream is);
 
@@ -34,6 +34,11 @@ public interface CommandRunner {
 
     void migrate(Connection dbc, InputStream is, String dbms);
 
-    void insertData(Connection dbc, InputStream is, String dbms);
-    void insertData(Connection dbc, InputStream is, String dbms, List<String> excludedTables);
+    void importData(String jdbcUrl, String username, String password, InputStream is,  List<String> excludedTables);
+
+    void importData(String jdbcUrl, String username, String password, InputStream is);
+
+    void importData(Connection dbc, InputStream is, String dbms);
+
+    void importData(Connection dbc, InputStream is, String dbms, List<String> excludedTables);
 }

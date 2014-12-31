@@ -34,9 +34,9 @@ import com.beust.jcommander.Parameters;
  * @author Harald Wellmann
  *
  */
+@Parameters(commandDescription = "dumps a database structure, including tables, indexes and constraints, but no data")
 @Dependent
-@Parameters(commandDescription = "dumps a database")
-public class DumpDataCommand implements Runnable {
+public class DumpStructureCommand implements Runnable {
 
     @Inject
     private CommandRunner commandRunner;
@@ -50,8 +50,8 @@ public class DumpDataCommand implements Runnable {
     @Parameter(names = "--password", description = "JDBC password")
     private String password;
 
-    @Parameter(names = "--output", description = "output file path")
-    private String output;
+    @Parameter(names = "--change-log", description = "change log file")
+    private String changeLog;
 
     /**
      * @return the url
@@ -101,12 +101,12 @@ public class DumpDataCommand implements Runnable {
     @Override
     public void run() {
         try {
-            if (output == null) {
-                commandRunner.dumpData(url, username, password, System.out);
+            if (changeLog == null) {
+                commandRunner.dumpStructure(url, username, password, System.out);
             }
             else {
-                OutputStream os = new FileOutputStream(output);
-                commandRunner.dumpData(url, username, password, os);
+                OutputStream os = new FileOutputStream(changeLog);
+                commandRunner.dumpStructure(url, username, password, os);
                 os.close();
             }
         }
@@ -114,5 +114,4 @@ public class DumpDataCommand implements Runnable {
             throw new WarpException(exc);
         }
     }
-
 }

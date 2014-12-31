@@ -76,7 +76,7 @@ public abstract class AbstractCommandRunnerTest {
     protected void dumpDataOnly(String jdbcUrl, String dbms) throws JAXBException, SQLException, IOException {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         OutputStream os = new FileOutputStream("target/dataOnly1.xml");
-        commandRunner.dumpDataOnly(dbc, os);
+        commandRunner.dumpData(dbc, os);
         os.close();
         dbc.close();
     }
@@ -84,7 +84,7 @@ public abstract class AbstractCommandRunnerTest {
     protected void insertData(String jdbcUrl, String dbms) throws JAXBException, SQLException, IOException {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         InputStream is = new FileInputStream("target/dataOnly1.xml");
-        commandRunner.insertData(dbc, is, getDbms());
+        commandRunner.importData(dbc, is, getDbms());
         is.close();
         dbc.close();
     }

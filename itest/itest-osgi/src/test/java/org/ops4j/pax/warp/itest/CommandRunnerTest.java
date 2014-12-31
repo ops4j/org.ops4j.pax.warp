@@ -116,7 +116,7 @@ public class CommandRunnerTest {
     public void test04ShouldDumpData() throws SQLException, JAXBException, IOException {
         Connection dbc = createConnection();
         OutputStream os = new FileOutputStream("target/data1.xml");
-        commandRunner.dumpDataOnly(dbc, os);
+        commandRunner.dumpData(dbc, os);
         os.close();
         dbc.close();
     }
