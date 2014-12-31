@@ -58,6 +58,7 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
     private String actualChecksum;
     private ChangeLogHistory changeLogHistory;
     private Set<String> autoIncrementColumns;
+    private boolean changeSetSkipped;
 
     public UpdateSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer,
         WarpJaxbContext context) {
@@ -132,11 +133,19 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
             String msg = String.format("checksum mismatch for change set [id=%s]", id);
             throw new IllegalArgumentException(msg);
         }
+        if (!changeSetFilter.test(changeSet)) {
+            changeSetSkipped = true;
+            return VisitorAction.SKIP;
+        }
+        changeSetSkipped = false;
         return VisitorAction.CONTINUE;
     }
 
     @Override
     public VisitorAction leave(ChangeSet changeSet) {
+        if (changeSetSkipped) {
+            return VisitorAction.CONTINUE;
+        }
         try {
             PreparedStatement st = dbc
                 .prepareStatement("insert into warp_history (id, checksum, executed) values (?, ?, ?)");

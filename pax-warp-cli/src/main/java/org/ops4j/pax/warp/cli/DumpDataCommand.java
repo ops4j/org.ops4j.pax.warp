@@ -102,11 +102,11 @@ public class DumpDataCommand implements Runnable {
     public void run() {
         try {
             if (output == null) {
-                commandRunner.dumpData(url, username, password, System.out);
+                commandRunner.dumpDataOnly(url, username, password, System.out);
             }
             else {
                 OutputStream os = new FileOutputStream(output);
-                commandRunner.dumpData(url, username, password, os);
+                commandRunner.dumpDataOnly(url, username, password, os);
                 os.close();
             }
         }

@@ -73,14 +73,6 @@ public abstract class AbstractCommandRunnerTest {
         is.close();
     }
 
-    protected void dumpData(String jdbcUrl, String dbms) throws JAXBException, SQLException, IOException {
-        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
-        OutputStream os = new FileOutputStream("target/data1.xml");
-        commandRunner.dumpData(dbc, os);
-        os.close();
-        dbc.close();
-    }
-
     protected void dumpDataOnly(String jdbcUrl, String dbms) throws JAXBException, SQLException, IOException {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         OutputStream os = new FileOutputStream("target/dataOnly1.xml");
@@ -112,19 +104,19 @@ public abstract class AbstractCommandRunnerTest {
         updateStructure(getJdbcUrl(), getDbms());
     }
 
-    @Test
-    public void test02ShouldUpdateData() throws JAXBException, SQLException, IOException {
-        updateData(getJdbcUrl(), getDbms());
-    }
+//    @Test
+//    public void test02ShouldUpdateData() throws JAXBException, SQLException, IOException {
+//        updateData(getJdbcUrl(), getDbms());
+//    }
+//
+//    @Test
+//    public void test03ShouldDumpData() throws JAXBException, SQLException, IOException {
+//        dumpData(getJdbcUrl(), getDbms());
+//    }
 
     @Test
-    public void test03ShouldDumpData() throws JAXBException, SQLException, IOException {
-        dumpData(getJdbcUrl(), getDbms());
-    }
-
-    @Test
-    public void test04UpdateDataShouldBeIdempotent() throws JAXBException, SQLException, IOException {
-        updateData(getJdbcUrl(), getDbms());
+    public void test04UpdateStructureShouldBeIdempotent() throws JAXBException, SQLException, IOException {
+        updateStructure(getJdbcUrl(), getDbms());
     }
 
     @Test

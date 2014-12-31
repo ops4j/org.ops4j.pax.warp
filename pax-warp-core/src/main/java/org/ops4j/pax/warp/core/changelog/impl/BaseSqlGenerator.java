@@ -52,16 +52,6 @@ public class BaseSqlGenerator extends BaseVisitor {
         templateGroup = new STGroupFile(templateGroupName);
     }
 
-    @Override
-    public VisitorAction enter(ChangeSet changeSet) {
-        if (changeSetFilter.test(changeSet)) {
-            return VisitorAction.CONTINUE;
-        }
-        else {
-            return VisitorAction.SKIP;
-        }
-    }
-
     protected VisitorAction produceStatement(String templateName, Object action) {
         String sql = renderTemplate(templateName, action);
         try (PreparedStatement st = dbc.prepareStatement(sql)) {

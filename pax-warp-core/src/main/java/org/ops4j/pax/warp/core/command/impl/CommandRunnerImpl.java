@@ -110,16 +110,6 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     @Override
-    public void dumpData(String jdbcUrl, String username, String password, OutputStream os) {
-        try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
-            dumpData(dbc, os);
-        }
-        catch (SQLException exc) {
-            throw new WarpException(exc);
-        }
-    }
-
-    @Override
     public void dumpDataOnly(Connection dbc, OutputStream os) {
         dumpDataService.dumpDataOnly(dbc, os);
     }
@@ -132,11 +122,6 @@ public class CommandRunnerImpl implements CommandRunner {
         catch (SQLException exc) {
             throw new WarpException(exc);
         }
-    }
-
-    @Override
-    public void dumpData(Connection dbc, OutputStream os) {
-        dumpDataService.dumpData(dbc, os);
     }
 
     private void writeChangeLog(ChangeLog changeLog, OutputStream os) {

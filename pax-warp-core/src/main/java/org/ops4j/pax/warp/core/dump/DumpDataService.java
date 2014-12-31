@@ -27,7 +27,6 @@ import java.sql.Connection;
  */
 public interface DumpDataService {
 
-    void dumpData(Connection dbc, OutputStream os);
     void dumpDataOnly(Connection dbc, OutputStream os);
 
 }

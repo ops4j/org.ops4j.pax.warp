@@ -24,10 +24,6 @@ public interface CommandRunner {
 
     void dump(Connection dbc, OutputStream os);
 
-    void dumpData(String jdbcUrl, String username, String password, OutputStream os);
-
-    void dumpData(Connection dbc, OutputStream os);
-
     void dumpDataOnly(String jdbcUrl, String username, String password, OutputStream os);
 
     void dumpDataOnly(Connection dbc, OutputStream os);
