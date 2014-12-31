@@ -25,13 +25,14 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.ops4j.pax.warp.core.changelog.impl.ChangeLogService;
-import org.ops4j.pax.warp.core.dump.DumpDataService;
+import org.ops4j.pax.warp.core.changelog.ChangeLogWriter;
+import org.ops4j.pax.warp.core.dump.DumpService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.exc.WarpException;
@@ -46,19 +47,47 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
+ * Implements {@link DumpService}.
+ *
  * @author Harald Wellmann
  *
  */
 @Component
 @CdiDependent
 @Named
-public class DumpDataServiceImpl implements DumpDataService {
+public class DumpServiceImpl implements DumpService {
 
     @Inject
-    private ChangeLogService changeLogService;
+    private ChangeLogWriter changeLogWriter;
 
     @Override
-    public void dumpDataOnly(Connection dbc, OutputStream os) {
+    public void dumpStructure(Connection dbc, OutputStream os) {
+        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
+        DatabaseModel database = inspector.buildDatabaseModel();
+
+        ChangeLog changeLog = new ChangeLog();
+        changeLog.setVersion("0.1");
+        changeLog.getChangeSet();
+        database.getTables().forEach(t -> addChangeSet(changeLog, t));
+        database.getPrimaryKeys().forEach(t -> addChangeSet(changeLog, t));
+        database.getForeignKeys().forEach(t -> addChangeSet(changeLog, t));
+        database.getIndexes().forEach(t -> addChangeSet(changeLog, t));
+
+        changeLogWriter.writeChangeLog(changeLog, os);
+
+    }
+
+    private void addChangeSet(ChangeLog changeLog, Object action) {
+        ChangeSet changeSet = new ChangeSet();
+        changeSet.setId(UUID.randomUUID().toString());
+        List<Object> changes = changeSet.getChanges();
+        changes.add(action);
+        assert !changeSet.getChanges().isEmpty();
+        changeLog.getChangeSet().add(changeSet);
+    }
+
+    @Override
+    public void dumpData(Connection dbc, OutputStream os) {
         DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
         DatabaseModel database = inspector.buildDatabaseModel();
 
@@ -72,7 +101,7 @@ public class DumpDataServiceImpl implements DumpDataService {
         List<Object> changes = changeSet.getChanges();
         insertData(changes, database, dbc);
 
-        changeLogService.writeChangeLog(changeLog, os);
+        changeLogWriter.writeChangeLog(changeLog, os);
     }
 
     private void insertData(List<Object> changes, DatabaseModel database, Connection dbc) {
@@ -90,8 +119,7 @@ public class DumpDataServiceImpl implements DumpDataService {
         String columns = createTable.getColumn().stream().map(c -> c.getName())
             .collect(Collectors.joining(", "));
         String sql = String.format("select %s from %s", columns, createTable.getTableName());
-        try (Statement st = dbc.createStatement();
-            ResultSet rs = st.executeQuery(sql)) {
+        try (Statement st = dbc.createStatement(); ResultSet rs = st.executeQuery(sql)) {
             ResultSetMetaData metaData = rs.getMetaData();
             while (rs.next()) {
                 Insert insert = new Insert();
@@ -124,9 +152,8 @@ public class DumpDataServiceImpl implements DumpDataService {
         }
     }
 
-
     @Reference
-    public void setChangeLogService(ChangeLogService changeLogService) {
-        this.changeLogService = changeLogService;
+    public void setChangeLogWriter(ChangeLogWriter changeLogWriter) {
+        this.changeLogWriter = changeLogWriter;
     }
 }

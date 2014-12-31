@@ -26,8 +26,8 @@ import java.util.List;
 
 import javax.inject.Named;
 
-import org.ops4j.pax.warp.core.history.ChangeLogHistory;
-import org.ops4j.pax.warp.core.history.ChangeLogHistoryService;
+import org.ops4j.pax.warp.core.history.ChangeSetHistory;
+import org.ops4j.pax.warp.core.history.ChangeSetHistoryService;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.Column;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
@@ -36,19 +36,16 @@ import org.ops4j.pax.warp.scope.CdiDependent;
 import org.osgi.service.component.annotations.Component;
 
 /**
+ * Implements {@link ChangeSetHistoryService}.
+ *
  * @author Harald Wellmann
  *
  */
 @Component
 @Named
 @CdiDependent
-public class ChangeLogHistoryServiceImpl implements ChangeLogHistoryService {
+public class ChangeSetHistoryServiceImpl implements ChangeSetHistoryService {
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.ops4j.pax.warp.core.history.IChangeLogHistoryService#createHistoryTableAction()
-     */
     @Override
     public CreateTable createHistoryTableAction() {
         CreateTable action = new CreateTable();
@@ -76,21 +73,19 @@ public class ChangeLogHistoryServiceImpl implements ChangeLogHistoryService {
         return action;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.ops4j.pax.warp.core.history.IChangeLogHistoryService#hasMetaDataTable(java.sql.Connection
-     * )
-     */
     @Override
-    public boolean hasMetaDataTable(Connection dbc) throws SQLException {
-        DatabaseMetaData metaData = dbc.getMetaData();
-        String tableName = "warp_history";
-        if (metaData.storesUpperCaseIdentifiers()) {
-            tableName = tableName.toUpperCase();
+    public boolean hasMetaDataTable(Connection dbc) {
+        try {
+            DatabaseMetaData metaData = dbc.getMetaData();
+            String tableName = "warp_history";
+            if (metaData.storesUpperCaseIdentifiers()) {
+                tableName = tableName.toUpperCase();
+            }
+            return hasTable(metaData, tableName);
         }
-        return hasTable(metaData, tableName);
+        catch (SQLException exc) {
+            throw new WarpException(exc);
+        }
     }
 
     private boolean hasTable(DatabaseMetaData metaData, String tableName) throws SQLException {
@@ -102,16 +97,9 @@ public class ChangeLogHistoryServiceImpl implements ChangeLogHistoryService {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.ops4j.pax.warp.core.history.IChangeLogHistoryService#readChangeLogHistory(java.sql.Connection
-     * )
-     */
     @Override
-    public ChangeLogHistory readChangeLogHistory(Connection dbc) {
-        ChangeLogHistory history = new ChangeLogHistory();
+    public ChangeSetHistory readChangeSetHistory(Connection dbc) {
+        ChangeSetHistory history = new ChangeSetHistory();
         try (Statement st = dbc.createStatement();
             ResultSet rs = st.executeQuery("SELECT id, checksum FROM warp_history")) {
             while (rs.next()) {

@@ -17,7 +17,13 @@
  */
 package org.ops4j.pax.warp.core.changelog.impl;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,6 +39,12 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 
+/**
+ * Implements {@ChangeLogReader} using a JAXB marshaller.
+ *
+ * @author Harald Wellmann
+ *
+ */
 @Component
 @CdiDependent
 @Named
@@ -53,9 +65,30 @@ public class JaxbChangeLogWriter implements ChangeLogWriter {
         }
     }
 
+    @Override
+    public void writeChangeLog(ChangeLog changeLog, File outputFile) {
+        try (OutputStream os = new FileOutputStream(outputFile)) {
+            writeChangeLog(changeLog, os);
+        }
+        catch (IOException exc) {
+            throw new WarpException(exc);
+        }
+    }
+
+    @Override
+    public void writeChangeLog(ChangeLog changeLog, OutputStream os) {
+        OutputStreamWriter writer = new OutputStreamWriter(os, StandardCharsets.UTF_8);
+        write(changeLog, writer);
+    }
+
+
+
 
     /**
-     * @param context the context to set
+     * Sets the JAXB context.
+     *
+     * @param context
+     *            JAXB context for change log model
      */
     @Reference
     public void setContext(WarpJaxbContext context) {

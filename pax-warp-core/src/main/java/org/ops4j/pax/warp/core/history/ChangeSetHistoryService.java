@@ -23,15 +23,37 @@ import java.sql.SQLException;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 
 /**
+ * Manages the change set history of a database. The history is stored in a metadata table named
+ * {@code warp_history} which gets created by this service when required.
+ *
  * @author Harald Wellmann
  *
  */
-public interface ChangeLogHistoryService {
+public interface ChangeSetHistoryService {
 
+    /**
+     * Creates a change action for creating the history metadata table.
+     *
+     * @return create table action
+     */
     CreateTable createHistoryTableAction();
 
+    /**
+     * Checks if the given database already contains a change set history table.
+     *
+     * @param dbc
+     *            JDBC database connection
+     * @return true if the change set history table exists
+     * @throws SQLException
+     */
     boolean hasMetaDataTable(Connection dbc) throws SQLException;
 
-    ChangeLogHistory readChangeLogHistory(Connection dbc);
-
+    /**
+     * Reads the change set history from the given database.
+     *
+     * @param dbc
+     *            JDBC database connection
+     * @return change set history
+     */
+    ChangeSetHistory readChangeSetHistory(Connection dbc);
 }

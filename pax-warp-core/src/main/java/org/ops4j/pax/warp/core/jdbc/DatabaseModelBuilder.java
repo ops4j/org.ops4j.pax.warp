@@ -41,6 +41,12 @@ import org.ops4j.pax.warp.jaxb.gen.TableReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Builds a {@link DatabaseModel} for a given relational database.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class DatabaseModelBuilder {
 
     private static Logger log = LoggerFactory.getLogger(DatabaseModelBuilder.class);
@@ -111,9 +117,8 @@ public class DatabaseModelBuilder {
                 String autoIncrement = rs.getString("IS_AUTOINCREMENT");
                 JDBCType jdbcType = JDBCType.valueOf(dataType);
                 log.debug("column [{}]: name={}, jdbcType={}, typeName={}, size={}, digits={}, "
-                    + "nullable={}, autoIncrement={}",
-                    ordinal, columnName, jdbcType, typeName, columnSize, decimalDigits, nullable,
-                    autoIncrement);
+                    + "nullable={}, autoIncrement={}", ordinal, columnName, jdbcType, typeName,
+                    columnSize, decimalDigits, nullable, autoIncrement);
                 List<Column> columns = table.getColumn();
                 Column column = new Column();
                 column.setName(columnName);
@@ -242,7 +247,8 @@ public class DatabaseModelBuilder {
 
     private void buildIndexes(CreateTable table) throws SQLException {
         CreateIndex index = null;
-        try (ResultSet rs = metaData.getIndexInfo(catalog, schema, table.getTableName(), false, false)) {
+        try (ResultSet rs = metaData.getIndexInfo(catalog, schema, table.getTableName(), false,
+            false)) {
             while (rs.next()) {
                 boolean nonUnique = rs.getBoolean("NON_UNIQUE");
                 String indexName = rs.getString("INDEX_NAME");

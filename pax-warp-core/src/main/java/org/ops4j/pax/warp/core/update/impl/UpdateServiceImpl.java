@@ -34,9 +34,10 @@ import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 
 import org.ops4j.pax.warp.core.changelog.ChangeLogReader;
+import org.ops4j.pax.warp.core.changelog.ChangeLogWriter;
 import org.ops4j.pax.warp.core.changelog.impl.ChangeLogService;
-import org.ops4j.pax.warp.core.history.ChangeLogHistory;
-import org.ops4j.pax.warp.core.history.ChangeLogHistoryService;
+import org.ops4j.pax.warp.core.history.ChangeSetHistory;
+import org.ops4j.pax.warp.core.history.ChangeSetHistoryService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.core.update.UpdateService;
@@ -49,8 +50,9 @@ import org.ops4j.pax.warp.scope.CdiDependent;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-
 /**
+ * Implements {@link UpdateService}.
+ *
  * @author Harald Wellmann
  *
  */
@@ -63,10 +65,13 @@ public class UpdateServiceImpl implements UpdateService {
     private ChangeLogReader changeLogReader;
 
     @Inject
-    private ChangeLogHistoryService historyService;
+    private ChangeSetHistoryService historyService;
 
     @Inject
     private ChangeLogService changeLogService;
+
+    @Inject
+    private ChangeLogWriter changeLogWriter;
 
     @Inject
     private WarpJaxbContext context;
@@ -77,13 +82,14 @@ public class UpdateServiceImpl implements UpdateService {
         try {
             autoCommit = dbc.getAutoCommit();
             dbc.setAutoCommit(false);
-            UpdateSqlGenerator generator = new UpdateSqlGenerator(dbms, dbc, s -> runUpdate(s), context);
+            UpdateSqlGenerator generator = new UpdateSqlGenerator(dbms, dbc, s -> runUpdate(s),
+                context);
             if (!historyService.hasMetaDataTable(dbc)) {
                 CreateTable action = historyService.createHistoryTableAction();
                 action.accept(generator);
             }
 
-            ChangeLogHistory history = historyService.readChangeLogHistory(dbc);
+            ChangeSetHistory history = historyService.readChangeSetHistory(dbc);
             generator.setChangeLogHistory(history);
             generator.setChangeSetFilter(c -> !history.containsKey(c.getId()));
 
@@ -114,7 +120,7 @@ public class UpdateServiceImpl implements UpdateService {
         changeLogService.truncateTables(changes, database);
 
         File preInsertFile = createTempFile();
-        changeLogService.writeChangeLog(changeLog, preInsertFile);
+        changeLogWriter.writeChangeLog(changeLog, preInsertFile);
 
         ChangeLog postChangeLog = new ChangeLog();
         postChangeLog.setVersion("0.1");
@@ -126,7 +132,7 @@ public class UpdateServiceImpl implements UpdateService {
         postChanges.addAll(database.getForeignKeys());
 
         File postInsertFile = createTempFile();
-        changeLogService.writeChangeLog(postChangeLog, postInsertFile);
+        changeLogWriter.writeChangeLog(postChangeLog, postInsertFile);
 
         update(dbc, preInsertFile, dbms);
         migrate(dbc, is, dbms);
@@ -165,27 +171,33 @@ public class UpdateServiceImpl implements UpdateService {
         return changeLogReader.parse(reader);
     }
 
-
     /**
-     * @param changeLogReader the changeLogReader to set
+     * Injects the change log reader.
+     *
+     * @param changeLogReader
+     *            the changeLogReader to set
      */
     @Reference
     public void setChangeLogReader(ChangeLogReader changeLogReader) {
         this.changeLogReader = changeLogReader;
     }
 
-
     /**
-     * @param historyService the historyService to set
+     * Injects the history service.
+     *
+     * @param historyService
+     *            the historyService to set
      */
     @Reference
-    public void setHistoryService(ChangeLogHistoryService historyService) {
+    public void setHistoryService(ChangeSetHistoryService historyService) {
         this.historyService = historyService;
     }
 
-
     /**
-     * @param context the context to set
+     * Injects the JAXB context.
+     *
+     * @param context
+     *            the context to set
      */
     @Reference
     public void setContext(WarpJaxbContext context) {

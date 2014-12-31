@@ -17,6 +17,8 @@
  */
 package org.ops4j.pax.warp.core.changelog;
 
+import java.io.File;
+import java.io.OutputStream;
 import java.io.Writer;
 
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
@@ -38,4 +40,24 @@ public interface ChangeLogWriter {
      *            writer for XML document
      */
     void write(ChangeLog changeLog, Writer writer);
+
+    /**
+     * Marshals a change log model as XML to the given output file.
+     *
+     * @param changeLog
+     *            change log model
+     * @param outputFile
+     *            output file
+     */
+    void writeChangeLog(ChangeLog changeLog, File outputFile);
+
+    /**
+     * Marshals a change log model as XML to the given output stream.
+     *
+     * @param changeLog
+     *            change log model
+     * @param os
+     *            output stream
+     */
+    void writeChangeLog(ChangeLog changeLog, OutputStream os);
 }

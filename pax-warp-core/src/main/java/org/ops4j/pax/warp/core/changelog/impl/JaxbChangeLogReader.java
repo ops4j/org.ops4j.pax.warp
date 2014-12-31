@@ -32,6 +32,12 @@ import org.ops4j.pax.warp.scope.CdiDependent;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+/**
+ * Implements {@ChangeLogReader} using a JAXB unmarshaller.
+ *
+ * @author Harald Wellmann
+ *
+ */
 @Component
 @CdiDependent
 @Named
@@ -51,6 +57,12 @@ public class JaxbChangeLogReader implements ChangeLogReader {
         }
     }
 
+    /**
+     * Sets the JAXB context.
+     *
+     * @param context
+     *            JAXB context for change log model
+     */
     @Reference
     public void setContext(WarpJaxbContext context) {
         this.context = context;

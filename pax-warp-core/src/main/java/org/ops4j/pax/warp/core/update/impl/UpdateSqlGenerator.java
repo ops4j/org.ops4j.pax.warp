@@ -36,7 +36,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.ops4j.pax.warp.core.changelog.impl.BaseSqlGenerator;
-import org.ops4j.pax.warp.core.history.ChangeLogHistory;
+import org.ops4j.pax.warp.core.history.ChangeSetHistory;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
@@ -56,7 +56,7 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
 
     private WarpJaxbContext context;
     private String actualChecksum;
-    private ChangeLogHistory changeLogHistory;
+    private ChangeSetHistory changeLogHistory;
     private Set<String> autoIncrementColumns;
     private boolean changeSetSkipped;
 
@@ -239,7 +239,7 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
         }
     }
 
-    public void setChangeLogHistory(ChangeLogHistory history) {
+    public void setChangeLogHistory(ChangeSetHistory history) {
         this.changeLogHistory = history;
     }
 }

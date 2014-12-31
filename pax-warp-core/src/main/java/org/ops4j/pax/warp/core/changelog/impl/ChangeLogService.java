@@ -17,31 +17,21 @@
  */
 package org.ops4j.pax.warp.core.changelog.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.ops4j.pax.warp.core.changelog.ChangeLogWriter;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
-import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
-import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 import org.ops4j.pax.warp.jaxb.gen.DropForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.TruncateTable;
 import org.ops4j.pax.warp.scope.CdiDependent;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 
 /**
+ * Performs various operations on a change log model.
+ *
  * @author Harald Wellmann
  *
  */
@@ -50,12 +40,14 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = ChangeLogService.class)
 public class ChangeLogService {
 
-    @Inject
-    private ChangeLogWriter changeLogWriter;
-
     /**
+     * Adds actions for dropping all foreign keys from the given database model to the given change
+     * log model.
+     *
      * @param changes
+     *            list of changes of a given change set in a change log model
      * @param database
+     *            database model
      */
     public void dropForeignKeys(List<Object> changes, DatabaseModel database) {
         for (AddForeignKey addFk : database.getForeignKeys()) {
@@ -66,6 +58,15 @@ public class ChangeLogService {
         }
     }
 
+    /**
+     * Adds actions for truncating all tables from the given database model to the given change
+     * log model.
+     *
+     * @param changes
+     *            list of changes of a given change set in a change log model
+     * @param database
+     *            database model
+     */
     public void truncateTables(List<Object> changes, DatabaseModel database) {
         for (CreateTable createTable : database.getTables()) {
             TruncateTable truncateTable = new TruncateTable();
@@ -74,28 +75,5 @@ public class ChangeLogService {
             truncateTable.setTableName(createTable.getTableName());
             changes.add(truncateTable);
         }
-    }
-
-    public void writeChangeLog(ChangeLog changeLog, File outputFile) {
-        try (OutputStream os = new FileOutputStream(outputFile)) {
-            writeChangeLog(changeLog, os);
-        }
-        catch (IOException exc) {
-            throw new WarpException(exc);
-        }
-    }
-
-    public void writeChangeLog(ChangeLog changeLog, OutputStream os) {
-        OutputStreamWriter writer = new OutputStreamWriter(os, StandardCharsets.UTF_8);
-        changeLogWriter.write(changeLog, writer);
-    }
-
-
-    /**
-     * @param changeLogWriter the changeLogWriter to set
-     */
-    @Reference
-    public void setChangeLogWriter(ChangeLogWriter changeLogWriter) {
-        this.changeLogWriter = changeLogWriter;
     }
 }

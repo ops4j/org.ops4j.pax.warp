@@ -19,18 +19,15 @@ package org.ops4j.pax.warp.core.history;
 
 import java.util.HashMap;
 
-
 /**
+ * History of change sets applied to a given database, represented as a map of change set identities
+ * to checksums.
+ *
  * @author Harald Wellmann
  *
  */
-public class ChangeLogHistory extends HashMap<String, String> {
+public class ChangeSetHistory extends HashMap<String, String> {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
-
-
 
 }

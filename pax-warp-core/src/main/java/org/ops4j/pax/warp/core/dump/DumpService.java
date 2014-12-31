@@ -20,13 +20,32 @@ package org.ops4j.pax.warp.core.dump;
 import java.io.OutputStream;
 import java.sql.Connection;
 
-
 /**
+ * Dumps structure information or data from a database to a change log.
+ *
  * @author Harald Wellmann
  *
  */
-public interface DumpDataService {
+public interface DumpService {
 
-    void dumpDataOnly(Connection dbc, OutputStream os);
+    /**
+     * Dumps structure information from the given database as an XML change log to the given output
+     * stream.
+     *
+     * @param dbc
+     *            JDBC database connection
+     * @param os
+     *            output stream
+     */
+    void dumpStructure(Connection dbc, OutputStream os);
 
+    /**
+     * Dumps all data from the given database as an XML change log to the given output stream.
+     *
+     * @param dbc
+     *            JDBC database connection
+     * @param os
+     *            output stream
+     */
+    void dumpData(Connection dbc, OutputStream os);
 }
