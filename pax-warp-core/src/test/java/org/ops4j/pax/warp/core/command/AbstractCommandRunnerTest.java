@@ -46,9 +46,9 @@ import org.ops4j.pax.exam.junit.PaxExam;
 public abstract class AbstractCommandRunnerTest {
 
     @Inject
-    protected CommandRunner commandRunner;
+    private CommandRunner commandRunner;
 
-    protected void dropAndCreateDatabase(String jdbcAdminUrl) throws SQLException {
+    private void dropAndCreateDatabase(String jdbcAdminUrl) throws SQLException {
         Connection dbc = DriverManager.getConnection(jdbcAdminUrl, "warp", "warp");
         Statement st = dbc.createStatement();
         st.executeUpdate("drop database if exists warp");
@@ -57,7 +57,7 @@ public abstract class AbstractCommandRunnerTest {
         dbc.close();
     }
 
-    protected void updateStructure(String jdbcUrl) throws JAXBException, SQLException, IOException {
+    private void updateStructure(String jdbcUrl) throws JAXBException, SQLException, IOException {
         InputStream is = getClass().getResourceAsStream("/changelogs/changelog1.xml");
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         commandRunner.migrate(dbc, is);
@@ -65,15 +65,7 @@ public abstract class AbstractCommandRunnerTest {
         is.close();
     }
 
-    protected void updateData(String jdbcUrl) throws JAXBException, SQLException, IOException {
-        InputStream is = getClass().getResourceAsStream("/changelogs/data1.xml");
-        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
-        commandRunner.migrate(dbc, is);
-        dbc.close();
-        is.close();
-    }
-
-    protected void dumpDataOnly(String jdbcUrl) throws JAXBException, SQLException, IOException {
+    private void dumpDataOnly(String jdbcUrl) throws JAXBException, SQLException, IOException {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         OutputStream os = new FileOutputStream("target/dataOnly1.xml");
         commandRunner.dumpData(dbc, os);
@@ -81,7 +73,7 @@ public abstract class AbstractCommandRunnerTest {
         dbc.close();
     }
 
-    protected void insertData(String jdbcUrl) throws JAXBException, SQLException, IOException {
+    private void insertData(String jdbcUrl) throws JAXBException, SQLException, IOException {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         InputStream is = new FileInputStream("target/dataOnly1.xml");
         commandRunner.importData(dbc, is);
