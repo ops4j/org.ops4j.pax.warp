@@ -31,6 +31,8 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 /**
+ * Migrate command.
+ *
  * @author Harald Wellmann
  *
  */

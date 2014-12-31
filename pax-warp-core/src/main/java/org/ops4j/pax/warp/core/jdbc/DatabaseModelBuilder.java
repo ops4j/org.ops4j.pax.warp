@@ -60,16 +60,37 @@ public class DatabaseModelBuilder {
 
     private DatabaseModel database;
 
+    /**
+     * Constructs a model builder for the given database, working on the default schema.
+     *
+     * @param dbc
+     *            JDBC database connection
+     */
     public DatabaseModelBuilder(Connection dbc) {
         this(dbc, null, null);
     }
 
+    /**
+     * Constructs a model builder for the given database, working on the given catalog and schema.
+     *
+     * @param dbc
+     *            JDBC database connection
+     * @param catalog
+     *            database catalog
+     * @param schema
+     *            database schema
+     */
     public DatabaseModelBuilder(Connection dbc, String catalog, String schema) {
         this.dbc = dbc;
         this.catalog = catalog;
         this.schema = schema;
     }
 
+    /**
+     * Builds a model of the given database.
+     *
+     * @return database model
+     */
     public DatabaseModel buildDatabaseModel() {
         database = new DatabaseModel();
         try {

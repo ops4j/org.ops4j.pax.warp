@@ -17,13 +17,24 @@
  */
 package org.ops4j.pax.warp.cli;
 
-
 /**
+ * Interface to be implemented by all Pax Warp commands. Each command objects wraps the command line
+ * arguments accepted by the given command.
+ * <p>
+ * The {{@link #run()} method is invoked when the command line arguments have been parsed
+ * successfully.
+ *
  * @author Harald Wellmann
  *
  */
 public interface Command extends Runnable {
 
+    /**
+     * Gets the command name. This is the argument which must precede all options and other
+     * arguments.
+     *
+     * @return command name
+     */
     String getCommandName();
 
 }

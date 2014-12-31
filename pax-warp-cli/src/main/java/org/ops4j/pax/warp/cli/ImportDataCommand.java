@@ -31,6 +31,8 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 /**
+ * Import data command.
+ *
  * @author Harald Wellmann
  *
  */

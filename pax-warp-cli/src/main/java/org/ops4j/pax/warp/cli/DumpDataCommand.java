@@ -31,11 +31,13 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 /**
+ * Dump data command.
+ *
  * @author Harald Wellmann
  *
  */
 @Dependent
-@Parameters(commandDescription = "dumps a database")
+@Parameters(commandDescription = "dumps all data from a database")
 public class DumpDataCommand implements Command {
 
     @Inject
