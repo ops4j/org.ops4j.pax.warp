@@ -37,7 +37,7 @@ import javax.xml.bind.Marshaller;
 
 import org.ops4j.pax.warp.core.changelog.impl.BaseSqlGenerator;
 import org.ops4j.pax.warp.core.history.ChangeLogHistory;
-import org.ops4j.pax.warp.core.util.Exceptions;
+import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.AddPrimaryKey;
@@ -147,7 +147,7 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
             dbc.commit();
         }
         catch (SQLException exc) {
-            throw Exceptions.unchecked(exc);
+            throw new WarpException(exc);
         }
         return VisitorAction.CONTINUE;
     }
@@ -175,7 +175,7 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
             consumer.accept(st);
         }
         catch (SQLException exc) {
-            throw Exceptions.unchecked(exc);
+            throw new WarpException(exc);
         }
         return VisitorAction.SKIP;
     }
@@ -223,7 +223,7 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
             return new BigInteger(1, checksum).toString(16);
         }
         catch (JAXBException | NoSuchAlgorithmException exc) {
-            throw Exceptions.unchecked(exc);
+            throw new WarpException(exc);
         }
     }
 

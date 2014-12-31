@@ -40,8 +40,7 @@ import org.ops4j.pax.warp.core.history.ChangeLogHistoryService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.core.update.UpdateService;
-import org.ops4j.pax.warp.core.util.Exceptions;
-import org.ops4j.pax.warp.core.util.WarpException;
+import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
@@ -157,7 +156,7 @@ public class UpdateServiceImpl implements UpdateService {
             st.executeUpdate();
         }
         catch (SQLException exc) {
-            throw Exceptions.unchecked(exc);
+            throw new WarpException(exc);
         }
     }
 

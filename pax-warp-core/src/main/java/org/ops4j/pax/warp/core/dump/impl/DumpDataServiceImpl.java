@@ -34,7 +34,7 @@ import org.ops4j.pax.warp.core.changelog.impl.ChangeLogService;
 import org.ops4j.pax.warp.core.dump.DumpDataService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
-import org.ops4j.pax.warp.core.util.Exceptions;
+import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
 import org.ops4j.pax.warp.jaxb.gen.Column;
@@ -141,7 +141,7 @@ public class DumpDataServiceImpl implements DumpDataService {
             }
         }
         catch (SQLException exc) {
-            throw Exceptions.unchecked(exc);
+            throw new WarpException(exc);
         }
     }
 

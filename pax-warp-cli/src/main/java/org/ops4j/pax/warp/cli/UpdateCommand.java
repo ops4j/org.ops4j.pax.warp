@@ -26,7 +26,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.ops4j.pax.warp.core.command.CommandRunner;
-import org.ops4j.pax.warp.core.util.WarpException;
+import org.ops4j.pax.warp.exc.WarpException;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;

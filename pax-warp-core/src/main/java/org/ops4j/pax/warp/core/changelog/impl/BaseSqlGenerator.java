@@ -23,7 +23,7 @@ import java.sql.SQLException;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import org.ops4j.pax.warp.core.util.Exceptions;
+import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
 import org.ops4j.pax.warp.jaxb.gen.visitor.BaseVisitor;
 import org.ops4j.pax.warp.jaxb.gen.visitor.VisitorAction;
@@ -68,7 +68,7 @@ public class BaseSqlGenerator extends BaseVisitor {
             consumer.accept(st);
         }
         catch (SQLException exc) {
-            throw Exceptions.unchecked(exc);
+            throw new WarpException(exc);
         }
 
         return VisitorAction.CONTINUE;

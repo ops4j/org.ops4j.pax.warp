@@ -28,7 +28,7 @@ import javax.inject.Named;
 
 import org.ops4j.pax.warp.core.history.ChangeLogHistory;
 import org.ops4j.pax.warp.core.history.ChangeLogHistoryService;
-import org.ops4j.pax.warp.core.util.Exceptions;
+import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.Column;
 import org.ops4j.pax.warp.jaxb.gen.Constraints;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
@@ -124,7 +124,7 @@ public class ChangeLogHistoryServiceImpl implements ChangeLogHistoryService {
             }
         }
         catch (SQLException exc) {
-            throw Exceptions.unchecked(exc);
+            throw new WarpException(exc);
         }
         return history;
     }

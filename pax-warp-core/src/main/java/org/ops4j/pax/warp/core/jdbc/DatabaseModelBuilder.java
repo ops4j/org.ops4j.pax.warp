@@ -28,7 +28,7 @@ import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.ops4j.pax.warp.core.util.Exceptions;
+import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.AddPrimaryKey;
 import org.ops4j.pax.warp.jaxb.gen.Column;
@@ -72,7 +72,7 @@ public class DatabaseModelBuilder {
             return database;
         }
         catch (SQLException exc) {
-            throw Exceptions.unchecked(exc);
+            throw new WarpException(exc);
         }
     }
 

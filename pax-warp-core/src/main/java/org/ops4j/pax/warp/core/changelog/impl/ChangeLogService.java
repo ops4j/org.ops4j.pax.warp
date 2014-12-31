@@ -30,7 +30,7 @@ import javax.inject.Named;
 
 import org.ops4j.pax.warp.core.changelog.ChangeLogWriter;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
-import org.ops4j.pax.warp.core.util.WarpException;
+import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;

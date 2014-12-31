@@ -38,7 +38,7 @@ import org.ops4j.pax.warp.core.dump.DumpDataService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.core.update.UpdateService;
-import org.ops4j.pax.warp.core.util.WarpException;
+import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
 import org.ops4j.pax.warp.scope.CdiDependent;

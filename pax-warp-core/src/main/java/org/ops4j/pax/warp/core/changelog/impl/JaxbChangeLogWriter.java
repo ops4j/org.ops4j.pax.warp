@@ -25,7 +25,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.ops4j.pax.warp.core.changelog.ChangeLogWriter;
-import org.ops4j.pax.warp.core.util.Exceptions;
+import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.scope.CdiDependent;
@@ -49,7 +49,7 @@ public class JaxbChangeLogWriter implements ChangeLogWriter {
             marshaller.marshal(changeLog, writer);
         }
         catch (JAXBException exc) {
-            throw Exceptions.unchecked(exc);
+            throw new WarpException(exc);
         }
     }
 
