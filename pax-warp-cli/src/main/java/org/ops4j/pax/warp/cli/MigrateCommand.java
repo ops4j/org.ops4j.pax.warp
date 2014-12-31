@@ -20,7 +20,6 @@ package org.ops4j.pax.warp.cli;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -36,8 +35,8 @@ import com.beust.jcommander.Parameters;
  *
  */
 @Dependent
-@Parameters(commandDescription = "updates a database from a changelog")
-public class UpdateCommand implements Runnable {
+@Parameters(commandDescription = "migrates a database, applying change sets from a change log")
+public class MigrateCommand implements Runnable {
 
     @Inject
     private CommandRunner commandRunner;
@@ -51,8 +50,8 @@ public class UpdateCommand implements Runnable {
     @Parameter(names = "--password", description = "JDBC password")
     private String password;
 
-    @Parameter(description = "<change log file>")
-    private List<String> changelogs;
+    @Parameter(names = "--change-log", description = "change log file")
+    private String changeLog;
 
     /**
      * @return the url
@@ -76,23 +75,21 @@ public class UpdateCommand implements Runnable {
     }
 
     /**
-     * @return the changelogs
+     * @return the change log
      */
-    public List<String> getChangelogs() {
-        return changelogs;
+    public String getChangeLog() {
+        return changeLog;
     }
 
     @Override
     public void run() {
         try {
-            String changeLog = changelogs.get(0);
             InputStream is = new FileInputStream(changeLog);
-            commandRunner.update(url, username, password, is);
+            commandRunner.migrate(url, username, password, is);
             is.close();
         }
         catch (IOException exc) {
             throw new WarpException(exc);
         }
     }
-
 }

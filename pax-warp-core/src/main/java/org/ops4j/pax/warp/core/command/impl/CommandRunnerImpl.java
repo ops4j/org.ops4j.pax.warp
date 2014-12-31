@@ -85,7 +85,7 @@ public class CommandRunnerImpl implements CommandRunner {
 
     @Override
     public void dump(Connection dbc, OutputStream os) {
-        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
+        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
         DatabaseModel database = inspector.buildDatabaseModel();
 
         ChangeLog changeLog = new ChangeLog();
@@ -145,10 +145,10 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     @Override
-    public void update(String jdbcUrl, String username, String password, InputStream is) {
+    public void migrate(String jdbcUrl, String username, String password, InputStream is) {
         try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
             String dbms = getDbms(jdbcUrl);
-            update(dbc, is, dbms);
+            migrate(dbc, is, dbms);
         }
         catch (SQLException exc) {
             throw new WarpException(exc);
@@ -156,10 +156,10 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     @Override
-    public void update(DataSource ds, InputStream is, String dbms)  {
+    public void migrate(DataSource ds, InputStream is, String dbms)  {
         try (Connection dbc = ds.getConnection()) {
             dbc.setAutoCommit(false);
-            update(dbc, is, dbms);
+            migrate(dbc, is, dbms);
         }
         catch (SQLException exc) {
             throw new WarpException(exc);
@@ -167,18 +167,18 @@ public class CommandRunnerImpl implements CommandRunner {
     }
 
     @Override
-    public void update(Connection dbc, InputStream is, String dbms)  {
-        updateService.update(dbc, is, dbms);
+    public void migrate(Connection dbc, InputStream is, String dbms)  {
+        updateService.migrate(dbc, is, dbms);
     }
 
     @Override
     public void insertData(Connection dbc, InputStream is, String dbms) {
-        updateService.insertData(dbc, is, dbms, Collections.emptyList());
+        updateService.importData(dbc, is, dbms, Collections.emptyList());
     }
 
     @Override
     public void insertData(Connection dbc, InputStream is, String dbms, List<String> excludedTables) {
-        updateService.insertData(dbc, is, dbms, excludedTables);
+        updateService.importData(dbc, is, dbms, excludedTables);
     }
 
     /**

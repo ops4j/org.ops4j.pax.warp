@@ -32,9 +32,9 @@ import com.beust.jcommander.ParameterException;
  *
  */
 @Dependent
-public class PaxWarp {
+public class CommandLineExecutor {
 
-    private static Logger log = LoggerFactory.getLogger(PaxWarp.class);
+    private static Logger log = LoggerFactory.getLogger(CommandLineExecutor.class);
 
     private JCommander commander;
 
@@ -45,14 +45,14 @@ public class PaxWarp {
     private DumpDataCommand dumpDataCommand;
 
     @Inject
-    private UpdateCommand updateCommand;
+    private MigrateCommand migrateCommand;
 
     @PostConstruct
     public void init() {
         commander = new JCommander();
         commander.addCommand("dump", dumpCommand);
         commander.addCommand("dumpData", dumpDataCommand);
-        commander.addCommand("update", updateCommand);
+        commander.addCommand("migrate", migrateCommand);
     }
 
     public void execute(String[] args) {
@@ -72,10 +72,4 @@ public class PaxWarp {
             log.error("exception running command", exc);
         }
     }
-
-    public static void main(String[] args) {
-        PaxWarp paxWarp = new PaxWarp();
-        paxWarp.execute(args);
-    }
-
 }

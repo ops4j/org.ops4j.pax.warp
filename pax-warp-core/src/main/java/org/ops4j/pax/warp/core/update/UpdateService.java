@@ -28,6 +28,6 @@ import java.util.List;
  */
 public interface UpdateService {
 
-    void update(Connection dbc, InputStream is, String dbms);
-    void insertData(Connection dbc, InputStream is, String dbms, List<String> excludedTables);
+    void migrate(Connection dbc, InputStream is, String dbms);
+    void importData(Connection dbc, InputStream is, String dbms, List<String> excludedTables);
 }

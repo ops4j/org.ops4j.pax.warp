@@ -60,7 +60,7 @@ public abstract class AbstractCommandRunnerTest {
     protected void updateStructure(String jdbcUrl, String dbms) throws JAXBException, SQLException, IOException {
         InputStream is = getClass().getResourceAsStream("/changelogs/changelog1.xml");
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
-        commandRunner.update(dbc, is, dbms);
+        commandRunner.migrate(dbc, is, dbms);
         dbc.close();
         is.close();
     }
@@ -68,7 +68,7 @@ public abstract class AbstractCommandRunnerTest {
     protected void updateData(String jdbcUrl, String dbms) throws JAXBException, SQLException, IOException {
         InputStream is = getClass().getResourceAsStream("/changelogs/data1.xml");
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
-        commandRunner.update(dbc, is, dbms);
+        commandRunner.migrate(dbc, is, dbms);
         dbc.close();
         is.close();
     }

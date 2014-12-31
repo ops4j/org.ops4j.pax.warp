@@ -63,7 +63,7 @@ public class DatabaseModelBuilderTest {
         Connection dbc = DriverManager.getConnection(jdbcUrl, null, null);
         Files.lines(Paths.get("src/test/resources/sql", scriptName)).forEach(s -> runUpdate(dbc, s));
 
-        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
+        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
         DatabaseModel database = inspector.buildDatabaseModel();
         assertThat(database, is(notNullValue()));
 

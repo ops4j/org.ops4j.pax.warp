@@ -25,7 +25,7 @@ public class MigrateMojo extends AbstractWarpMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try (InputStream is = new FileInputStream(changeLog)) {
-            commandRunner.update(url, username, password, is);
+            commandRunner.migrate(url, username, password, is);
         }
         catch (IOException exc) {
             throw new MojoExecutionException("error reading change log", exc);

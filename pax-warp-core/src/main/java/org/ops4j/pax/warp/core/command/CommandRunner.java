@@ -32,11 +32,11 @@ public interface CommandRunner {
 
     void dumpDataOnly(Connection dbc, OutputStream os);
 
-    void update(String jdbcUrl, String username, String password, InputStream is);
+    void migrate(String jdbcUrl, String username, String password, InputStream is);
 
-    void update(DataSource ds, InputStream is, String dbms);
+    void migrate(DataSource ds, InputStream is, String dbms);
 
-    void update(Connection dbc, InputStream is, String dbms);
+    void migrate(Connection dbc, InputStream is, String dbms);
 
     void insertData(Connection dbc, InputStream is, String dbms);
     void insertData(Connection dbc, InputStream is, String dbms, List<String> excludedTables);

@@ -19,7 +19,7 @@ package org.ops4.pax.warp.weld;
 
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.ops4j.pax.warp.cli.PaxWarp;
+import org.ops4j.pax.warp.cli.CommandLineExecutor;
 
 
 
@@ -43,7 +43,7 @@ public class PaxWarpWeld {
         System.setProperty("org.jboss.logging.provider", "slf4j");
         Weld weld = new Weld();
         WeldContainer container = weld.initialize();
-        PaxWarp warp = container.instance().select(PaxWarp.class).get();
+        CommandLineExecutor warp = container.instance().select(CommandLineExecutor.class).get();
         warp.execute(args);
         weld.shutdown();
     }

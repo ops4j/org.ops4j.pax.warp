@@ -72,7 +72,7 @@ public class UpdateServiceImpl implements UpdateService {
     private WarpJaxbContext context;
 
     @Override
-    public void update(Connection dbc, InputStream is, String dbms) {
+    public void migrate(Connection dbc, InputStream is, String dbms) {
         boolean autoCommit = false;
         try {
             autoCommit = dbc.getAutoCommit();
@@ -97,8 +97,8 @@ public class UpdateServiceImpl implements UpdateService {
     }
 
     @Override
-    public void insertData(Connection dbc, InputStream is, String dbms, List<String> excludedTables) {
-        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
+    public void importData(Connection dbc, InputStream is, String dbms, List<String> excludedTables) {
+        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
         DatabaseModel database = inspector.buildDatabaseModel();
         excludedTables.forEach(t -> database.removeTable(t));
 
@@ -129,7 +129,7 @@ public class UpdateServiceImpl implements UpdateService {
         changeLogService.writeChangeLog(postChangeLog, postInsertFile);
 
         update(dbc, preInsertFile, dbms);
-        update(dbc, is, dbms);
+        migrate(dbc, is, dbms);
         update(dbc, postInsertFile, dbms);
     }
 
@@ -144,7 +144,7 @@ public class UpdateServiceImpl implements UpdateService {
 
     private void update(Connection dbc, File changeLogFile, String dbms) {
         try (InputStream preIs = new FileInputStream(changeLogFile)) {
-            update(dbc, preIs, dbms);
+            migrate(dbc, preIs, dbms);
         }
         catch (IOException exc) {
             throw new WarpException(exc);

@@ -55,6 +55,10 @@ public class DatabaseModelBuilder {
 
     private DatabaseModel database;
 
+    public DatabaseModelBuilder(Connection dbc) {
+        this(dbc, null, null);
+    }
+
     public DatabaseModelBuilder(Connection dbc, String catalog, String schema) {
         this.dbc = dbc;
         this.catalog = catalog;

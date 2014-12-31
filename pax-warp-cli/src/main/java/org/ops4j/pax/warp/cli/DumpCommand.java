@@ -50,8 +50,8 @@ public class DumpCommand implements Runnable {
     @Parameter(names = "--password", description = "JDBC password")
     private String password;
 
-    @Parameter(names = "--output", description = "output file path")
-    private String output;
+    @Parameter(names = "--change-log", description = "change log file")
+    private String changeLog;
 
     /**
      * @return the url
@@ -101,11 +101,11 @@ public class DumpCommand implements Runnable {
     @Override
     public void run() {
         try {
-            if (output == null) {
+            if (changeLog == null) {
                 commandRunner.dump(url, username, password, System.out);
             }
             else {
-                OutputStream os = new FileOutputStream(output);
+                OutputStream os = new FileOutputStream(changeLog);
                 commandRunner.dump(url, username, password, os);
                 os.close();
             }

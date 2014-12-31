@@ -98,7 +98,7 @@ public class CommandRunnerTest {
     public void test02ShouldUpdateStructure() throws SQLException, JAXBException, IOException {
         Connection dbc = createConnection();
         InputStream is = getClass().getResourceAsStream("/changelogs/changelog1.xml");
-        commandRunner.update(dbc, is, "h2");
+        commandRunner.migrate(dbc, is, "h2");
         is.close();
         dbc.close();
     }
@@ -107,7 +107,7 @@ public class CommandRunnerTest {
     public void test03ShouldUpdateData() throws SQLException, JAXBException, IOException {
         Connection dbc = createConnection();
         InputStream is = getClass().getResourceAsStream("/changelogs/data1.xml");
-        commandRunner.update(dbc, is, "h2");
+        commandRunner.migrate(dbc, is, "h2");
         is.close();
         dbc.close();
     }

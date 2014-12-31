@@ -59,7 +59,7 @@ public class DumpDataServiceImpl implements DumpDataService {
 
     @Override
     public void dumpData(Connection dbc, OutputStream os) {
-        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
+        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
         DatabaseModel database = inspector.buildDatabaseModel();
 
         ChangeLog changeLog = new ChangeLog();
@@ -80,7 +80,7 @@ public class DumpDataServiceImpl implements DumpDataService {
 
     @Override
     public void dumpDataOnly(Connection dbc, OutputStream os) {
-        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, null);
+        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
         DatabaseModel database = inspector.buildDatabaseModel();
 
         ChangeLog changeLog = new ChangeLog();
