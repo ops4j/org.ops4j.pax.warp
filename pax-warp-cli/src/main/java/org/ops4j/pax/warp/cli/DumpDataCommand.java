@@ -36,7 +36,7 @@ import com.beust.jcommander.Parameters;
  */
 @Dependent
 @Parameters(commandDescription = "dumps a database")
-public class DumpDataCommand implements Runnable {
+public class DumpDataCommand implements Command {
 
     @Inject
     private CommandRunner commandRunner;
@@ -113,6 +113,11 @@ public class DumpDataCommand implements Runnable {
         catch (IOException exc) {
             throw new WarpException(exc);
         }
+    }
+
+    @Override
+    public String getCommandName() {
+        return "dumpData";
     }
 
 }

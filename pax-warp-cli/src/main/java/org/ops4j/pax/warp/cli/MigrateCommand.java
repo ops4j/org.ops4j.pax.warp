@@ -36,7 +36,7 @@ import com.beust.jcommander.Parameters;
  */
 @Dependent
 @Parameters(commandDescription = "migrates a database, applying change sets from a change log")
-public class MigrateCommand implements Runnable {
+public class MigrateCommand implements Command {
 
     @Inject
     private CommandRunner commandRunner;
@@ -92,4 +92,10 @@ public class MigrateCommand implements Runnable {
             throw new WarpException(exc);
         }
     }
+
+    @Override
+    public String getCommandName() {
+        return "migrate";
+    }
+
 }

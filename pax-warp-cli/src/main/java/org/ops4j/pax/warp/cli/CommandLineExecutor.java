@@ -17,8 +17,13 @@
  */
 package org.ops4j.pax.warp.cli;
 
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -38,25 +43,15 @@ public class CommandLineExecutor {
 
     private JCommander commander;
 
-    @Inject
-    private DumpStructureCommand dumpStructureCommand;
-
-    @Inject
-    private DumpDataCommand dumpDataCommand;
-
-    @Inject
-    private ImportDataCommand importDataCommand;
-
-    @Inject
-    private MigrateCommand migrateCommand;
+    @Inject @Any
+    private Instance<Command> commands;
 
     @PostConstruct
     public void init() {
+        SortedMap<String, Command> commandMap = new TreeMap<>();
+        commands.forEach(c -> commandMap.put(c.getCommandName(), c));
         commander = new JCommander();
-        commander.addCommand("dumpStructure", dumpStructureCommand);
-        commander.addCommand("dumpData", dumpDataCommand);
-        commander.addCommand("importData", importDataCommand);
-        commander.addCommand("migrate", migrateCommand);
+        commandMap.forEach((k, v) -> commander.addCommand(k, v));
     }
 
     public void execute(String[] args) {

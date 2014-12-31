@@ -36,7 +36,7 @@ import com.beust.jcommander.Parameters;
  */
 @Parameters(commandDescription = "dumps a database structure, including tables, indexes and constraints, but no data")
 @Dependent
-public class DumpStructureCommand implements Runnable {
+public class DumpStructureCommand implements Command {
 
     @Inject
     private CommandRunner commandRunner;
@@ -113,5 +113,10 @@ public class DumpStructureCommand implements Runnable {
         catch (IOException exc) {
             throw new WarpException(exc);
         }
+    }
+
+    @Override
+    public String getCommandName() {
+        return "dumpStructure";
     }
 }

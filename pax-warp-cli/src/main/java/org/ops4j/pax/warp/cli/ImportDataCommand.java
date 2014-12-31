@@ -36,7 +36,7 @@ import com.beust.jcommander.Parameters;
  */
 @Dependent
 @Parameters(commandDescription = "imports data from from a change log")
-public class ImportDataCommand implements Runnable {
+public class ImportDataCommand implements Command {
 
     @Inject
     private CommandRunner commandRunner;
@@ -92,4 +92,10 @@ public class ImportDataCommand implements Runnable {
             throw new WarpException(exc);
         }
     }
+
+    @Override
+    public String getCommandName() {
+        return "importData";
+    }
+
 }
