@@ -34,7 +34,6 @@ import org.ops4j.pax.warp.jaxb.gen.AddPrimaryKey;
 import org.ops4j.pax.warp.jaxb.gen.Column;
 import org.ops4j.pax.warp.jaxb.gen.ColumnPair;
 import org.ops4j.pax.warp.jaxb.gen.ColumnReference;
-import org.ops4j.pax.warp.jaxb.gen.Constraints;
 import org.ops4j.pax.warp.jaxb.gen.CreateIndex;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 import org.ops4j.pax.warp.jaxb.gen.SqlType;
@@ -131,9 +130,7 @@ public class DatabaseModelBuilder {
                     column.setScale(decimalDigits);
                 }
                 if (nullable == DatabaseMetaData.columnNoNulls) {
-                    Constraints constraints = new Constraints();
-                    constraints.setNullable(false);
-                    column.setConstraints(constraints);
+                    column.setNullable(false);
                 }
                 if ("YES".equals(autoIncrement)) {
                     column.setAutoIncrement(true);

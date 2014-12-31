@@ -104,11 +104,11 @@ public class UpdateServiceImpl implements UpdateService {
 
         ChangeLog changeLog = new ChangeLog();
         changeLog.setVersion("0.1");
-        changeLog.getChangeSetOrInclude();
+        changeLog.getChangeSet();
 
         ChangeSet changeSet = new ChangeSet();
         changeSet.setId(UUID.randomUUID().toString());
-        changeLog.getChangeSetOrInclude().add(changeSet);
+        changeLog.getChangeSet().add(changeSet);
         List<Object> changes = changeSet.getChanges();
         changeLogService.dropForeignKeys(changes, database);
         changeLogService.truncateTables(changes, database);
@@ -118,10 +118,10 @@ public class UpdateServiceImpl implements UpdateService {
 
         ChangeLog postChangeLog = new ChangeLog();
         postChangeLog.setVersion("0.1");
-        postChangeLog.getChangeSetOrInclude();
+        postChangeLog.getChangeSet();
         ChangeSet postChangeSet = new ChangeSet();
         postChangeSet.setId(UUID.randomUUID().toString());
-        postChangeLog.getChangeSetOrInclude().add(postChangeSet);
+        postChangeLog.getChangeSet().add(postChangeSet);
         List<Object> postChanges = postChangeSet.getChanges();
         postChanges.addAll(database.getForeignKeys());
 

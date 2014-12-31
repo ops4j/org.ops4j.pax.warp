@@ -90,7 +90,7 @@ public class CommandRunnerImpl implements CommandRunner {
 
         ChangeLog changeLog = new ChangeLog();
         changeLog.setVersion("0.1");
-        changeLog.getChangeSetOrInclude();
+        changeLog.getChangeSet();
         database.getTables().forEach(t -> addChangeSet(changeLog, t));
         database.getPrimaryKeys().forEach(t -> addChangeSet(changeLog, t));
         database.getForeignKeys().forEach(t -> addChangeSet(changeLog, t));
@@ -106,7 +106,7 @@ public class CommandRunnerImpl implements CommandRunner {
         List<Object> changes = changeSet.getChanges();
         changes.add(action);
         assert !changeSet.getChanges().isEmpty();
-        changeLog.getChangeSetOrInclude().add(changeSet);
+        changeLog.getChangeSet().add(changeSet);
     }
 
     @Override

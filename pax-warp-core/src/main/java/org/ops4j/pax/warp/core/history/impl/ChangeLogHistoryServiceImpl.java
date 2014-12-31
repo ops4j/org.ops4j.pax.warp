@@ -30,7 +30,6 @@ import org.ops4j.pax.warp.core.history.ChangeLogHistory;
 import org.ops4j.pax.warp.core.history.ChangeLogHistoryService;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.Column;
-import org.ops4j.pax.warp.jaxb.gen.Constraints;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 import org.ops4j.pax.warp.jaxb.gen.SqlType;
 import org.ops4j.pax.warp.scope.CdiDependent;
@@ -59,16 +58,14 @@ public class ChangeLogHistoryServiceImpl implements ChangeLogHistoryService {
         id.setName("id");
         id.setType(SqlType.VARCHAR);
         id.setLength(40);
-        Constraints constraints = new Constraints();
-        constraints.setNullable(false);
-        id.setConstraints(constraints);
+        id.setNullable(false);
         columns.add(id);
 
         Column checksum = new Column();
         checksum.setName("checksum");
         checksum.setType(SqlType.CHAR);
         checksum.setLength(64);
-        checksum.setConstraints(constraints);
+        checksum.setNullable(false);
         columns.add(checksum);
 
         Column executed = new Column();

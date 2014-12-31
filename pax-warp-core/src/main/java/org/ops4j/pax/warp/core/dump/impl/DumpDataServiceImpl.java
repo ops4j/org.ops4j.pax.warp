@@ -64,11 +64,11 @@ public class DumpDataServiceImpl implements DumpDataService {
 
         ChangeLog changeLog = new ChangeLog();
         changeLog.setVersion("0.1");
-        changeLog.getChangeSetOrInclude();
+        changeLog.getChangeSet();
 
         ChangeSet changeSet = new ChangeSet();
         changeSet.setId("1");
-        changeLog.getChangeSetOrInclude().add(changeSet);
+        changeLog.getChangeSet().add(changeSet);
         List<Object> changes = changeSet.getChanges();
         insertData(changes, database, dbc);
 

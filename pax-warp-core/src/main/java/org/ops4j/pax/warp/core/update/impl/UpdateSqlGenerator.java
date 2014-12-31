@@ -215,6 +215,9 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
                 return Short.parseShort(value);
             case TINYINT:
                 return Byte.parseByte(value);
+            case TIMESTAMP:
+            case TIMESTAMP_WITH_TIMEZONE:
+                return Timestamp.valueOf(value);
             default:
                 return null;
         }

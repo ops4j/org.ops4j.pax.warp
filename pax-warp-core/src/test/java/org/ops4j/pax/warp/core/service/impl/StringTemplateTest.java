@@ -19,7 +19,6 @@ package org.ops4j.pax.warp.core.service.impl;
 
 import org.junit.Test;
 import org.ops4j.pax.warp.jaxb.gen.Column;
-import org.ops4j.pax.warp.jaxb.gen.Constraints;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 import org.ops4j.pax.warp.jaxb.gen.SqlType;
 import org.stringtemplate.v4.ST;
@@ -98,9 +97,7 @@ public class StringTemplateTest {
         Column firstName = new Column();
         firstName.setName("first_name");
         firstName.setType(SqlType.VARCHAR);
-        Constraints notNull = new Constraints();
-        notNull.setNullable(false);
-        firstName.getConstraints();
+        firstName.setNullable(false);
         Column lastName = new Column();
         lastName.setName("last_name");
         lastName.setType(SqlType.VARCHAR);

@@ -69,7 +69,7 @@ public class DatabaseModelBuilderTest {
 
         ChangeLog changeLog = new ChangeLog();
         changeLog.setVersion("0.1");
-        changeLog.getChangeSetOrInclude();
+        changeLog.getChangeSet();
 
         ChangeSet changeSet = new ChangeSet();
         changeSet.setId("1");
@@ -77,7 +77,7 @@ public class DatabaseModelBuilderTest {
         changes.addAll(database.getTables());
         changes.addAll(database.getPrimaryKeys());
         changes.addAll(database.getForeignKeys());
-        changeLog.getChangeSetOrInclude().add(changeSet);
+        changeLog.getChangeSet().add(changeSet);
 
         OutputStreamWriter writer = new OutputStreamWriter(System.out, StandardCharsets.UTF_8);
         changeLogWriter.write(changeLog, writer);
