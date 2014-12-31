@@ -1,8 +1,8 @@
 org.ops4j.pax.warp.core.command.impl.CommandRunnerImpl
-org.ops4j.pax.warp.core.dump.impl.DumpDataServiceImpl
+org.ops4j.pax.warp.core.dump.impl.DumpServiceImpl
 org.ops4j.pax.warp.core.update.impl.UpdateServiceImpl
 org.ops4j.pax.warp.core.changelog.impl.JaxbChangeLogWriter
 org.ops4j.pax.warp.core.changelog.impl.JaxbChangeLogReader
 org.ops4j.pax.warp.jaxb.WarpJaxbContext
 org.ops4j.pax.warp.core.changelog.impl.ChangeLogService
-org.ops4j.pax.warp.core.history.impl.ChangeLogHistoryServiceImpl
+org.ops4j.pax.warp.core.history.impl.ChangeSetHistoryServiceImpl
