@@ -30,6 +30,8 @@ import javax.inject.Named;
 import javax.sql.DataSource;
 
 import org.ops4j.pax.warp.core.command.CommandRunner;
+import org.ops4j.pax.warp.core.dbms.DbmsProfile;
+import org.ops4j.pax.warp.core.dbms.DbmsProfileSelector;
 import org.ops4j.pax.warp.core.dump.DumpService;
 import org.ops4j.pax.warp.core.update.UpdateService;
 import org.ops4j.pax.warp.exc.WarpException;
@@ -53,6 +55,9 @@ public class CommandRunnerImpl implements CommandRunner {
 
     @Inject
     private UpdateService updateService;
+
+    @Inject
+    private DbmsProfileSelector profileSelector;
 
     @Override
     public void dumpStructure(String jdbcUrl, String username, String password, OutputStream os) {
@@ -181,9 +186,10 @@ public class CommandRunnerImpl implements CommandRunner {
         return words[1];
     }
 
-    private String getDbms(Connection dbc) {
+    private DbmsProfile getDbms(Connection dbc) {
         try {
-            return getDbms(dbc.getMetaData().getURL());
+            String subprotocol = getDbms(dbc.getMetaData().getURL());
+            return profileSelector.selectProfile(subprotocol);
         }
         catch (SQLException exc) {
             throw new WarpException(exc);
@@ -207,4 +213,15 @@ public class CommandRunnerImpl implements CommandRunner {
     public void setUpdateService(UpdateService updateService) {
         this.updateService = updateService;
     }
+
+
+    /**
+     * @param profileSelector the profileSelector to set
+     */
+    @Reference
+    public void setProfileSelector(DbmsProfileSelector profileSelector) {
+        this.profileSelector = profileSelector;
+    }
+
+
 }

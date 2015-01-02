@@ -36,6 +36,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.ops4j.pax.warp.core.changelog.impl.BaseSqlGenerator;
+import org.ops4j.pax.warp.core.dbms.DbmsProfile;
 import org.ops4j.pax.warp.core.history.ChangeSetHistory;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
@@ -60,7 +61,7 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
     private Set<String> autoIncrementColumns;
     private boolean changeSetSkipped;
 
-    public UpdateSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer,
+    public UpdateSqlGenerator(DbmsProfile dbms, Connection dbc, Consumer<PreparedStatement> consumer,
         WarpJaxbContext context) {
         super(dbms, dbc, consumer);
         this.context = context;
@@ -69,7 +70,7 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
 
     @Override
     public VisitorAction enter(CreateTable action) {
-        if ("mysql".equals(dbms)) {
+        if (dbms.getAutoIncrementIsPrimaryKey()) {
             action.getColumn().stream().filter(c -> isAutoIncrement(c))
                 .forEach(c -> autoIncrementColumns.add(action.getTableName() + "." + c.getName()));
         }
@@ -85,7 +86,7 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
 
     @Override
     public VisitorAction enter(AddPrimaryKey action) {
-        if ("mysql".equals(dbms)) {
+        if (dbms.getAutoIncrementIsPrimaryKey()) {
             String columnKey = action.getTableName() + "." + action.getColumn().get(0);
             if (autoIncrementColumns.contains(columnKey)) {
                 return VisitorAction.SKIP;

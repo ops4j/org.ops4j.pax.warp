@@ -36,6 +36,7 @@ import javax.xml.bind.JAXBException;
 import org.ops4j.pax.warp.core.changelog.ChangeLogReader;
 import org.ops4j.pax.warp.core.changelog.ChangeLogWriter;
 import org.ops4j.pax.warp.core.changelog.impl.ChangeLogService;
+import org.ops4j.pax.warp.core.dbms.DbmsProfile;
 import org.ops4j.pax.warp.core.history.ChangeSetHistory;
 import org.ops4j.pax.warp.core.history.ChangeSetHistoryService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
@@ -77,7 +78,7 @@ public class UpdateServiceImpl implements UpdateService {
     private WarpJaxbContext context;
 
     @Override
-    public void migrate(Connection dbc, InputStream is, String dbms) {
+    public void migrate(Connection dbc, InputStream is, DbmsProfile dbms) {
         boolean autoCommit = false;
         try {
             autoCommit = dbc.getAutoCommit();
@@ -103,7 +104,7 @@ public class UpdateServiceImpl implements UpdateService {
     }
 
     @Override
-    public void importData(Connection dbc, InputStream is, String dbms, List<String> excludedTables) {
+    public void importData(Connection dbc, InputStream is, DbmsProfile dbms, List<String> excludedTables) {
         DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
         DatabaseModel database = inspector.buildDatabaseModel();
         excludedTables.forEach(t -> database.removeTable(t));
@@ -148,7 +149,7 @@ public class UpdateServiceImpl implements UpdateService {
         }
     }
 
-    private void update(Connection dbc, File changeLogFile, String dbms) {
+    private void update(Connection dbc, File changeLogFile, DbmsProfile dbms) {
         try (InputStream preIs = new FileInputStream(changeLogFile)) {
             migrate(dbc, preIs, dbms);
         }

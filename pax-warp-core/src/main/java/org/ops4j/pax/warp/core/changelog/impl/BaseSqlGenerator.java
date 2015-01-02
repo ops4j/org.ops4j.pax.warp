@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import org.ops4j.pax.warp.core.dbms.DbmsProfile;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
 import org.ops4j.pax.warp.jaxb.gen.visitor.BaseVisitor;
@@ -38,17 +39,17 @@ public class BaseSqlGenerator extends BaseVisitor {
 
     protected Logger log = LoggerFactory.getLogger(BaseSqlGenerator.class);
 
-    protected String dbms;
+    protected DbmsProfile dbms;
     protected Connection dbc;
     protected Consumer<PreparedStatement> consumer;
     protected STGroupFile templateGroup;
     protected Predicate<ChangeSet> changeSetFilter = x -> true;
 
-    protected BaseSqlGenerator(String dbms, Connection dbc, Consumer<PreparedStatement> consumer) {
+    protected BaseSqlGenerator(DbmsProfile dbms, Connection dbc, Consumer<PreparedStatement> consumer) {
         this.dbms = dbms;
         this.dbc = dbc;
         this.consumer = consumer;
-        String templateGroupName = String.format("template/%s.stg", dbms);
+        String templateGroupName = String.format("template/%s.stg", dbms.getSubprotocol());
         templateGroup = new STGroupFile(templateGroupName);
     }
 

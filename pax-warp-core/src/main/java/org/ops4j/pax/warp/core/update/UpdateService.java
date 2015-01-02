@@ -21,6 +21,8 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.util.List;
 
+import org.ops4j.pax.warp.core.dbms.DbmsProfile;
+
 /**
  * Updates a database with information from a change log.
  *
@@ -42,9 +44,9 @@ public interface UpdateService {
      * @param is
      *            change log input stream
      * @param dbms
-     *            JDBC subprotocol, identifying a database management system
+     *            profile identifying a database management system
      */
-    void migrate(Connection dbc, InputStream is, String dbms);
+    void migrate(Connection dbc, InputStream is, DbmsProfile dbms);
 
     /**
      * Imports all data from the given change log into the given database. The data may come in any
@@ -60,9 +62,9 @@ public interface UpdateService {
      * @param is
      *            change log input stream
      * @param dbms
-     *            JDBC subprotocol, identifying a database management system
+     *            profile identifying a database management system
      * @param excludedTables
      *            list of names of tables which will not be truncated
      */
-    void importData(Connection dbc, InputStream is, String dbms, List<String> excludedTables);
+    void importData(Connection dbc, InputStream is, DbmsProfile dbms, List<String> excludedTables);
 }

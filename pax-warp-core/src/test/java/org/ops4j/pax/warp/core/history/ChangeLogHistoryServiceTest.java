@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.warp.core.dbms.impl.DerbyProfile;
 import org.ops4j.pax.warp.core.update.impl.UpdateSqlGenerator;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
 import org.ops4j.pax.warp.jaxb.gen.AddPrimaryKey;
@@ -42,7 +43,7 @@ public class ChangeLogHistoryServiceTest {
 
     @Test
     public void shouldComputeChecksum() {
-        UpdateSqlGenerator generator = new UpdateSqlGenerator("derby", null, c -> {}, context);
+        UpdateSqlGenerator generator = new UpdateSqlGenerator(new DerbyProfile(), null, c -> {}, context);
         AddPrimaryKey addPk = new AddPrimaryKey();
         addPk.getColumn().add("id");
         ChangeSet changeSet = new ChangeSet();
