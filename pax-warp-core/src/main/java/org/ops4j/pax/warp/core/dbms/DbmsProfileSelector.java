@@ -20,10 +20,6 @@ package org.ops4j.pax.warp.core.dbms;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.ops4j.pax.warp.core.dbms.impl.DerbyProfile;
-import org.ops4j.pax.warp.core.dbms.impl.H2Profile;
-import org.ops4j.pax.warp.core.dbms.impl.MysqlProfile;
-import org.ops4j.pax.warp.core.dbms.impl.PostgresProfile;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.scope.CdiDependent;
 import org.osgi.service.component.annotations.Component;

@@ -15,9 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.warp.core.dbms.impl;
+package org.ops4j.pax.warp.core.dbms;
 
-import org.ops4j.pax.warp.core.dbms.DbmsProfile;
 
 
 
