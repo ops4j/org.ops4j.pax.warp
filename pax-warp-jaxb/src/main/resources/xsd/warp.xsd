@@ -66,7 +66,10 @@
                 <xsd:element name="truncateTable" type="TruncateTable" />
                 <xsd:element name="dropTable" type="DropTable" />
                 <xsd:element name="insert" type="Insert" />
+                <xsd:element name="addColumn" type="AddColumn" />
+                <xsd:element name="dropColumn" type="DropColumn" />
                 <xsd:element ref="createIndex" />
+                <xsd:element name="dropIndex" type="DropIndex" />
             </xsd:choice>
         </xsd:sequence>
         <xsd:attribute name="id" type="xsd:string" use="required" />
@@ -76,6 +79,13 @@
 
     <xsd:element name="comment" type="xsd:string" />
 
+
+    <xsd:complexType name="AddColumn">
+        <xsd:sequence>
+            <xsd:element name="column" type="Column"/>
+        </xsd:sequence>
+        <xsd:attributeGroup ref="tableNameAttributes" />
+    </xsd:complexType>
 
     <xsd:complexType name="AddForeignKey">
         <xsd:sequence>
@@ -91,6 +101,16 @@
             <xsd:element name="baseTable" type="TableReference" />
         </xsd:sequence>
         <xsd:attribute name="constraintName" type="xsd:string" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="DropColumn">
+        <xsd:attributeGroup ref="tableNameAttributes" />
+        <xsd:attribute name="columnName" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="DropIndex">
+        <xsd:attributeGroup ref="tableNameAttributes" />
+        <xsd:attribute name="indexName" type="xsd:string" />
     </xsd:complexType>
 
     <xsd:complexType name="DropPrimaryKey">
@@ -141,8 +161,6 @@
             <xsd:element name="column" type="Column" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attributeGroup ref="tableNameAttributes" />
-        <xsd:attribute name="tablespace" type="xsd:string" />
-        <xsd:attribute name="remarks" type="xsd:string" />
     </xsd:complexType>
 
     <xsd:complexType name="DropTable">

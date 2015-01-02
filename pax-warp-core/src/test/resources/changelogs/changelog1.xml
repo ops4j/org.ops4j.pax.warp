@@ -48,5 +48,12 @@
                 <referenced columnName="id"/>
             </columnPair>
         </addForeignKey>
+        <createIndex tableName="numbers" indexName="ix_i32_i64">
+            <column name="i32"/>
+            <column name="i64"/>
+        </createIndex>
+        <addColumn tableName="numbers">
+            <column name="n16" type="int16" nullable="true"/>
+        </addColumn>
     </changeSet>
 </changeLog>

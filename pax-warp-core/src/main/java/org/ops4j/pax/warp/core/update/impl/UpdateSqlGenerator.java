@@ -40,6 +40,7 @@ import org.ops4j.pax.warp.core.dbms.DbmsProfile;
 import org.ops4j.pax.warp.core.history.ChangeSetHistory;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
+import org.ops4j.pax.warp.jaxb.gen.AddColumn;
 import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.AddPrimaryKey;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
@@ -47,7 +48,9 @@ import org.ops4j.pax.warp.jaxb.gen.Column;
 import org.ops4j.pax.warp.jaxb.gen.ColumnValue;
 import org.ops4j.pax.warp.jaxb.gen.CreateIndex;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
+import org.ops4j.pax.warp.jaxb.gen.DropColumn;
 import org.ops4j.pax.warp.jaxb.gen.DropForeignKey;
+import org.ops4j.pax.warp.jaxb.gen.DropIndex;
 import org.ops4j.pax.warp.jaxb.gen.DropPrimaryKey;
 import org.ops4j.pax.warp.jaxb.gen.Insert;
 import org.ops4j.pax.warp.jaxb.gen.TruncateTable;
@@ -116,6 +119,21 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
     }
 
     @Override
+    public VisitorAction enter(DropIndex action) {
+        return produceStatement("dropIndex", action);
+    }
+
+    @Override
+    public VisitorAction enter(AddColumn action) {
+        return produceStatement("addColumn", action);
+    }
+
+    @Override
+    public VisitorAction enter(DropColumn action) {
+        return produceStatement("dropColumn", action);
+    }
+
+    @Override
     public VisitorAction enter(Insert action) {
         return generateInsert(action);
     }
@@ -124,6 +142,7 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
     public VisitorAction enter(TruncateTable action) {
         return produceStatement("truncateTable", action);
     }
+
 
     @Override
     public VisitorAction enter(ChangeSet changeSet) {

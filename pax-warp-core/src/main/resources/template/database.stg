@@ -35,6 +35,14 @@ CREATE TABLE <action.tableName> (
 )
 >>
 
+addColumn(action) ::= <<
+ALTER TABLE <action.tableName> ADD COLUMN <createColumn(action.column)>
+>>
+
+dropColumn(action) ::= <<
+ALTER TABLE <action.tableName> DROP COLUMN <action.columnName>
+>>
+
 addPrimaryKey(action) ::= <<
 ALTER TABLE <action.tableName> ADD PRIMARY KEY (<action.column; separator=", ">)
 >>
@@ -88,4 +96,8 @@ indexColumn(column) ::= "<column.name><keyLength(column)>"
 uniqueIndex(action) ::= "<if(action.unique)> UNIQUE<endif>"
 
 keyLength(column) ::= ""
+
+dropIndex(action) ::= <<
+DROP INDEX <action.indexName>
+>>
 

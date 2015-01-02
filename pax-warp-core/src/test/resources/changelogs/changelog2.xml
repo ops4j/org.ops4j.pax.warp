@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<changeLog xmlns="urn:org.ops4j.pax.warp:changelog:0.1" version="0.1">
+    <changeSet id="3">
+        <dropIndex tableName="numbers" indexName="ix_i32_i64"/>
+        <dropColumn tableName="numbers" columnName="n16"/>
+    </changeSet>
+</changeLog>

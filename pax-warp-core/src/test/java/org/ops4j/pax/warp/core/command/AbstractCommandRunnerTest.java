@@ -81,6 +81,14 @@ public abstract class AbstractCommandRunnerTest {
         dbc.close();
     }
 
+    private void runDropChangeSet(String jdbcUrl) throws JAXBException, SQLException, IOException {
+        InputStream is = getClass().getResourceAsStream("/changelogs/changelog2.xml");
+        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
+        commandRunner.migrate(dbc, is);
+        dbc.close();
+        is.close();
+    }
+
     protected abstract String getJdbcUrl();
 
     protected abstract String getJdbcAdminUrl();
@@ -107,5 +115,10 @@ public abstract class AbstractCommandRunnerTest {
     @Test
     public void test06ShouldInsertData() throws JAXBException, SQLException, IOException {
         insertData(getJdbcUrl());
+    }
+
+    @Test
+    public void test07ShouldDropColumnAndIndex() throws JAXBException, SQLException, IOException {
+        runDropChangeSet(getJdbcUrl());
     }
 }

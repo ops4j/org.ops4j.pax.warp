@@ -30,6 +30,9 @@ ALTER TABLE <action.baseTable.tableName> DROP FOREIGN KEY <action.constraintName
 
 keyLength(column) ::= "<if(column.length)>(<column.length>)<endif>"
 
+dropIndex(action) ::= <<
+DROP INDEX <action.indexName> ON <action.tableName>
+>>
 
 
 
