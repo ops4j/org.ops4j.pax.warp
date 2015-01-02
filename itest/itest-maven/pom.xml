@@ -6,8 +6,12 @@
         <artifactId>itest</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
+    
     <groupId>org.ops4j.pax.warp.itest</groupId>
     <artifactId>itest-maven</artifactId>
+    
+    <name>OPS4J Pax Warp Maven Plugin Integration Tests</name>
+    
     <build>
         <plugins>
             <plugin>
