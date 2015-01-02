@@ -20,6 +20,8 @@ package org.ops4j.pax.warp.core.dbms;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Named;
+
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.scope.CdiDependent;
 import org.osgi.service.component.annotations.Component;
@@ -32,6 +34,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @CdiDependent
 @Component(service = DbmsProfileSelector.class)
+@Named
 public class DbmsProfileSelector {
 
     private static Map<String, DbmsProfile> profileMap = new HashMap<>();

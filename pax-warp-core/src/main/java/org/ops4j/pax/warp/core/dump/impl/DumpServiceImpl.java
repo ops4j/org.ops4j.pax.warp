@@ -110,16 +110,12 @@ public class DumpServiceImpl implements DumpService {
         }
     }
 
-    /**
-     * @param changes
-     * @param createTable
-     * @param dbc
-     */
     private void insertData(List<Object> changes, CreateTable createTable, Connection dbc) {
         String columns = createTable.getColumn().stream().map(c -> c.getName())
             .collect(Collectors.joining(", "));
         String sql = String.format("select %s from %s", columns, createTable.getTableName());
-        try (Statement st = dbc.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+        try (Statement st = dbc.createStatement(); //
+            ResultSet rs = st.executeQuery(sql)) {
             ResultSetMetaData metaData = rs.getMetaData();
             while (rs.next()) {
                 Insert insert = new Insert();
@@ -152,6 +148,12 @@ public class DumpServiceImpl implements DumpService {
         }
     }
 
+    /**
+     * Sets the change log writer.
+     *
+     * @param changeLogWriter
+     *            change log writer
+     */
     @Reference
     public void setChangeLogWriter(ChangeLogWriter changeLogWriter) {
         this.changeLogWriter = changeLogWriter;
