@@ -24,8 +24,9 @@ import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.scope.CdiDependent;
 import org.osgi.service.component.annotations.Component;
 
-
 /**
+ * Selects the appropriate {@link DbmsProfile} for a database.
+ *
  * @author Harald Wellmann
  *
  */
@@ -35,13 +36,22 @@ public class DbmsProfileSelector {
 
     private static Map<String, DbmsProfile> profileMap = new HashMap<>();
 
-    static  {
+    static {
         addProfile(new DerbyProfile());
         addProfile(new H2Profile());
         addProfile(new MysqlProfile());
         addProfile(new PostgresProfile());
     }
 
+    /**
+     * Selects the DBMS profile for the given JDBC subprotocol.
+     *
+     * @param subprotocol
+     *            JDBC subprotocol
+     * @return profile
+     * @throws WarpException
+     *             if no profile is found
+     */
     public DbmsProfile selectProfile(String subprotocol) {
         DbmsProfile profile = profileMap.get(subprotocol);
         if (profile == null) {
@@ -52,9 +62,6 @@ public class DbmsProfileSelector {
         }
     }
 
-    /**
-     * @param derbyProfile
-     */
     private static void addProfile(DbmsProfile profile) {
         profileMap.put(profile.getSubprotocol(), profile);
     }
