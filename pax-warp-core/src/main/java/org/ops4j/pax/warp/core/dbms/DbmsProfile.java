@@ -38,5 +38,7 @@ public interface DbmsProfile {
      * @return true if a primary is automatically generated for an auto-increment column
      */
     boolean getAutoIncrementIsPrimaryKey();
+    
+    boolean requiresLowerCaseTableNames();
 
 }

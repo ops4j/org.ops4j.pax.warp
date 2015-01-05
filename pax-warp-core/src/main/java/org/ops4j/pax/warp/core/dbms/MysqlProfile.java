@@ -35,4 +35,9 @@ public class MysqlProfile implements DbmsProfile {
     public boolean getAutoIncrementIsPrimaryKey() {
         return true;
     }
+
+    @Override
+    public boolean requiresLowerCaseTableNames() {
+        return true;
+    }
 }

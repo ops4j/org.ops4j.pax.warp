@@ -35,4 +35,9 @@ public class DerbyProfile implements DbmsProfile {
     public boolean getAutoIncrementIsPrimaryKey() {
         return false;
     }
+
+    @Override
+    public boolean requiresLowerCaseTableNames() {
+        return false;
+    }
 }

@@ -24,9 +24,11 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -189,6 +191,9 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
     }
 
     protected VisitorAction generateInsert(Insert action) {
+        if (dbms.requiresLowerCaseTableNames()) {
+            action.setTableName(action.getTableName().toLowerCase());
+        }
         String rawSql = renderTemplate("insert", action);
         try (PreparedStatement st = dbc.prepareStatement(rawSql)) {
             int i = 1;
@@ -220,12 +225,15 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
             case BIGINT:
                 return Long.parseLong(value);
             case BIT:
+            case BOOLEAN:
                 return Boolean.parseBoolean(value);
             case CHAR:
             case CLOB:
             case VARCHAR:
             case LONGVARCHAR:
                 return value;
+            case DATE:
+                return Date.valueOf(value);
             case DECIMAL:
             case NUMERIC:
                 return new BigDecimal(value);
@@ -233,6 +241,8 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
                 return Integer.parseInt(value);
             case SMALLINT:
                 return Short.parseShort(value);
+            case TIME:
+                return Time.valueOf(value);
             case TINYINT:
                 return Byte.parseByte(value);
             case TIMESTAMP:
