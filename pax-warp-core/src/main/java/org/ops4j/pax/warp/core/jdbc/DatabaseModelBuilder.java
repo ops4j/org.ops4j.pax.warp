@@ -375,6 +375,8 @@ public class DatabaseModelBuilder {
             case DECIMAL:
             case NUMERIC:
                 return SqlType.DECIMAL;
+            case DOUBLE:
+                return SqlType.DOUBLE;
             case INTEGER:
                 return SqlType.INT_32;
             case SMALLINT:

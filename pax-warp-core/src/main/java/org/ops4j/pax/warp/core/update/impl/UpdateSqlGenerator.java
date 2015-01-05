@@ -237,6 +237,8 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
             case DECIMAL:
             case NUMERIC:
                 return new BigDecimal(value);
+            case DOUBLE:
+                return Double.parseDouble(value);
             case INTEGER:
                 return Integer.parseInt(value);
             case SMALLINT:
@@ -249,7 +251,7 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
             case TIMESTAMP_WITH_TIMEZONE:
                 return Timestamp.valueOf(value);
             default:
-                return null;
+                throw new IllegalArgumentException("cannot convert JDBCType " + jdbcType.toString());
         }
     }
 
