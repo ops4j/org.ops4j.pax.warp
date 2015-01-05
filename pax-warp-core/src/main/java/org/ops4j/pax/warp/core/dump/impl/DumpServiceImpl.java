@@ -45,6 +45,8 @@ import org.ops4j.pax.warp.jaxb.gen.Insert;
 import org.ops4j.pax.warp.scope.CdiDependent;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implements {@link DumpService}.
@@ -56,6 +58,8 @@ import org.osgi.service.component.annotations.Reference;
 @CdiDependent
 @Named
 public class DumpServiceImpl implements DumpService {
+
+    private static Logger log = LoggerFactory.getLogger(DumpServiceImpl.class);
 
     @Inject
     private ChangeLogWriter changeLogWriter;
@@ -93,24 +97,24 @@ public class DumpServiceImpl implements DumpService {
 
         ChangeLog changeLog = new ChangeLog();
         changeLog.setVersion("0.1");
-        changeLog.getChangeSet();
 
-        ChangeSet changeSet = new ChangeSet();
-        changeSet.setId("1");
-        changeLog.getChangeSet().add(changeSet);
-        List<Object> changes = changeSet.getChanges();
-        insertData(changes, database, dbc);
+        insertData(changeLog, database, dbc);
 
         changeLogWriter.writeChangeLog(changeLog, os);
     }
 
-    private void insertData(List<Object> changes, DatabaseModel database, Connection dbc) {
+    private void insertData(ChangeLog changeLog, DatabaseModel database, Connection dbc) {
+        ChangeSet changeSet = new ChangeSet();
+        changeSet.setId(UUID.randomUUID().toString());
+        changeLog.getChangeSet().add(changeSet);
+        List<Object> changes = changeSet.getChanges();
         for (CreateTable createTable : database.getTables()) {
             insertData(changes, createTable, dbc);
         }
     }
 
     private void insertData(List<Object> changes, CreateTable createTable, Connection dbc) {
+        log.info("selecting data from {}", createTable.getTableName());
         String columns = createTable.getColumn().stream().map(c -> c.getName())
             .collect(Collectors.joining(", "));
         String sql = String.format("select %s from %s", columns, createTable.getTableName());
@@ -142,6 +146,7 @@ public class DumpServiceImpl implements DumpService {
                 }
                 changes.add(insert);
             }
+            dbc.commit();
         }
         catch (SQLException exc) {
             throw new WarpException(exc);
