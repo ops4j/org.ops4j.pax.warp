@@ -146,6 +146,7 @@ public class DumpServiceImpl implements DumpService {
                 }
                 changes.add(insert);
             }
+            dbc.setAutoCommit(false);
             dbc.commit();
         }
         catch (SQLException exc) {
