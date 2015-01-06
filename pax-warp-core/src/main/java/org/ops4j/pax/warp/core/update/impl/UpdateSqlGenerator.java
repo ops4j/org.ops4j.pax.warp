@@ -241,6 +241,8 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
                 return Double.parseDouble(value);
             case INTEGER:
                 return Integer.parseInt(value);
+            case NULL:
+                return null;
             case SMALLINT:
                 return Short.parseShort(value);
             case TIME:
