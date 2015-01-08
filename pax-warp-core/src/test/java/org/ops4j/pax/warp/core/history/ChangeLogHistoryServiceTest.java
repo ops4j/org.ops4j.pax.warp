@@ -50,6 +50,6 @@ public class ChangeLogHistoryServiceTest {
         changeSet.setId("123");
         changeSet.getChanges().add(addPk);
         assertThat(generator.computeChecksum(changeSet),
-            is("9e872d1c84fe80cc7ae87ac04d7c9e522dee8d3372384203c9e95833e3cf789"));
+            is("9604e481f9710d27926e6022aa4fc2a4ebd676d97f59bf9f7c7ae42f74911ece"));
     }
 }
