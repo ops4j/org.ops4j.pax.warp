@@ -11,5 +11,4 @@ test-output
 .idea
 *.iml
 
-# settings for running TCK in Eclipse
-org.ops4j.pax.cdi.properties
+pax-warp-spring
