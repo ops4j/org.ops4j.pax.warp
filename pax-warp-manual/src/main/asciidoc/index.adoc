@@ -70,7 +70,158 @@ SQL templates and a new DBMS profile.
 
 = Getting Started
 
-bla bla bla foo
+== Stand-alone usage
+
+Download the `pax-warp-dist` ZIP artifact from Maven Central and unpack it in a local directory
+of your choice. The top-level directory of the unpacked archive is called `pax-warp-x.y.z`, where
+`x.y.z` denotes the release version. We will refer to this installation directory as 
+`PAX_WARP_HOME`.
+
+The `bin` subdirectory contains launch scripts `warp` for Linux/Unix and `warp.cmd` for Windows.
+
+Pax Warp requires a Java 8 Runtime Environment. The launch scripts will use the JAVA_HOME 
+environment variable to locate the `java` command, falling back to the `PATH` variable if 
+`JAVA_HOME` is not set.
+
+All runtime dependencies of Pax Warp are contained in the `lib` and `drivers` subdirectories. The
+`drivers` directory contains JDBC drivers for the supported databases. You can replace a driver JAR
+by a different version if needed.
+
+Running `${PAX_WARP_HOME}/bin/warp` without arguments prints a synopsis of the command-line syntax 
+and the supported commands:
+
+ Usage: warp [options] [command] [command options]                                                                                                                                                                                            
+   Options:                                                                                                                                                                                                                                   
+         --help                                                                                                                                                                                                                               
+        prints help                                                                                                                                                                                                                           
+         --version                                                                                                                                                                                                                            
+        prints version                                                                                                                                                                                                                        
+   Commands:                                                                                                                                                                                                                                  
+     dumpData      dumps all data from a database                                                                                                                                                                                             
+       Usage: dumpData [options]                                                                                                                                                                                                              
+         Options:                                                                                                                                                                                                                             
+               --output                                                                                                                                                                                                                       
+              output file path                                                                                                                                                                                                                
+               --password                                                                                                                                                                                                                     
+              JDBC password                                                                                                                                                                                                                   
+         *     --url                                                                                                                                                                                                                          
+              JDBC URL                                                                                                                                                                                                                        
+               --username                                                                                                                                                                                                                     
+              JDBC username                                                                                                                                                                                                                   
+
+     dumpStructure      dumps a database structure, including tables, indexes and constraints, but no data                                                                                                                                    
+       Usage: dumpStructure [options]                                                                                                                                                                                                         
+         Options:                                                                                                                                                                                                                             
+               --change-log                                                                                                                                                                                                                   
+              change log file                                                                                                                                                                                                                 
+               --password
+              JDBC password
+         *     --url
+              JDBC URL
+               --username
+              JDBC username
+
+     importData      imports data from from a change log
+       Usage: importData [options]
+         Options:
+               --change-log
+              change log file
+               --password
+              JDBC password
+               --url
+              JDBC URL
+               --username
+              JDBC username
+
+     migrate      migrates a database, applying change sets from a change log
+       Usage: migrate [options]
+         Options:
+               --change-log
+              change log file
+               --password
+              JDBC password
+               --url
+              JDBC URL
+               --username
+              JDBC username
+
+== Embedded usage in Java EE
+
+You can embed Pax Warp into your Java EE application, e.g. to run database migrations automatically
+when deploying your application.
+
+To do so, simply include the following Maven dependency
+
+    <dependency>
+        <groupId>org.ops4j.pax.warp</groupId>
+        <artifactId>pax-warp-core</artifactId>
+        <version>${pax.warp.version}</version>
+    </dependency>
+
+in your build and inject `org.ops4j.pax.warp.core.command.CommandRunner` into one of your own
+beans.
+
+The `CommandRunner` interface has several overloaded methods corresponding to the commands of
+the stand-alone application.
+
+You can invoke Pax Warp methods with a JDBC URL, a `Connection` or a `DataSource`. Working with
+a data source, you can simply inject a corresponding `@Resource` defined in the container.
+
+Since Pax Warp uses resource-local JDBC transactions, you cannot invoke `CommandRunner` methods
+in the context of a container-managed transaction. Annotate the calling method with 
+`@Transactional(NOT_SUPPORTED)` if needed.
+
+== Embedded usage in OSGi
+
+You can embed Pax Warp in your OSGi application by provisioning `pax-warp-core`, `pax-warp-jaxb`
+and a number of dependent bundles. Pax Warp requires Declarative Services for dependency injection.
+It will register a `CommandRunner` service in the service registry.
+
+For more details about bundle dependencies and configuration, have a look at the Pax Exam 
+integration tests in the `itest-osgi` module, e.g. `org.ops4j.pax.warp.itest.CommandRunnerTest`.
+
+== Maven plugin
+
+Pax Warp provides a Maven plugin, with goals and parameters matching the command-line syntax
+of the stand-alone application.
+
+This is an example configuration:
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.ops4j.pax.maven</groupId>
+                <artifactId>warp-maven-plugin</artifactId>
+                <version>${pax.warp.version}</version>
+                <configuration>
+                    <url>jdbc:mysql://localhost/warp</url>
+                    <username>warp</username>
+                    <password>warp</password>
+                    <changeLog>${project.build.directory}/warp.xml</changeLog>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>dump</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>dump-structure</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>5.1.34</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+ 
+ 
+
 
 // Return to normal title levels 
 :leveloffset: 0
