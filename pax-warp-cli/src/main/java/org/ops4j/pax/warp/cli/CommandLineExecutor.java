@@ -34,7 +34,7 @@ import com.beust.jcommander.ParameterException;
 
 /**
  * Parses the command line and invokes the appropriate command. Each command must implement the
- * {@link Command} interfaces and contain JCommander annotations for the accepted options and
+ * {@link Command} interface and contain JCommander annotations for the accepted options and
  * arguments.
  *
  * @author Harald Wellmann
@@ -47,6 +47,8 @@ public class CommandLineExecutor {
 
     private JCommander commander;
 
+    private MainCommand mainCommand;
+
     @Inject
     @Any
     private Instance<Command> commands;
@@ -55,7 +57,9 @@ public class CommandLineExecutor {
     private void init() {
         SortedMap<String, Command> commandMap = new TreeMap<>();
         commands.forEach(c -> commandMap.put(c.getCommandName(), c));
-        commander = new JCommander();
+        mainCommand = new MainCommand();
+        commander = new JCommander(mainCommand);
+        commander.setProgramName("warp");
         commandMap.forEach((k, v) -> commander.addCommand(k, v));
     }
 
@@ -69,6 +73,10 @@ public class CommandLineExecutor {
         try {
             commander.parse(args);
             String commandName = commander.getParsedCommand();
+            if (commandName == null || mainCommand.isHelp()) {
+                commander.usage();
+                return;
+            }
             JCommander subCommander = commander.getCommands().get(commandName);
             Runnable command = (Runnable) subCommander.getObjects().get(0);
             command.run();
