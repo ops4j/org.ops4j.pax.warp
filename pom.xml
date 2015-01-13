@@ -39,10 +39,11 @@
         <module>pax-warp-jaxb</module>
         <module>pax-warp-core</module>
         <module>pax-warp-cli</module>
-        <module>itest</module>
         <module>pax-warp-weld</module>
+        <module>itest</module>
         <module>maven</module>
         <module>pax-warp-dist</module>
+        <module>pax-warp-manual</module>
     </modules>
 
     <dependencyManagement>
