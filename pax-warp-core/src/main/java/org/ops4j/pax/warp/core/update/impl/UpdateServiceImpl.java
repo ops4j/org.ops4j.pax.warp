@@ -1,19 +1,17 @@
 /*
  * Copyright 2014 Harald Wellmann.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- * implied.
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied.
+ * 
+ * See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package org.ops4j.pax.warp.core.update.impl;
 
@@ -104,7 +102,8 @@ public class UpdateServiceImpl implements UpdateService {
     }
 
     @Override
-    public void importData(Connection dbc, InputStream is, DbmsProfile dbms, List<String> excludedTables) {
+    public void importData(Connection dbc, InputStream is, DbmsProfile dbms,
+        List<String> excludedTables) {
         DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
         DatabaseModel database = inspector.buildDatabaseModel();
         excludedTables.forEach(t -> database.removeTable(t));
@@ -120,9 +119,8 @@ public class UpdateServiceImpl implements UpdateService {
         changeLogService.dropForeignKeys(changes, database);
         changeLogService.truncateTables(changes, database);
 
-        File preInsertFile = createTempFile();
-        changeLogWriter.writeChangeLog(changeLog, preInsertFile);
-
+        boolean hasPreChanges = !changes.isEmpty();
+        
         ChangeLog postChangeLog = new ChangeLog();
         postChangeLog.setVersion("0.1");
         postChangeLog.getChangeSet();
@@ -132,12 +130,23 @@ public class UpdateServiceImpl implements UpdateService {
         List<Object> postChanges = postChangeSet.getChanges();
         postChanges.addAll(database.getForeignKeys());
 
-        File postInsertFile = createTempFile();
-        changeLogWriter.writeChangeLog(postChangeLog, postInsertFile);
+        boolean hasPostChanges = !postChanges.isEmpty();
 
-        update(dbc, preInsertFile, dbms);
-        migrate(dbc, is, dbms);
-        update(dbc, postInsertFile, dbms);
+        if (hasPreChanges) {
+            File preInsertFile = createTempFile();
+            changeLogWriter.writeChangeLog(changeLog, preInsertFile);
+            update(dbc, preInsertFile, dbms);
+        }
+        try {
+            migrate(dbc, is, dbms);
+        }
+        finally {
+            if (hasPostChanges) {
+                File postInsertFile = createTempFile();
+                changeLogWriter.writeChangeLog(postChangeLog, postInsertFile);
+                update(dbc, postInsertFile, dbms);
+            }
+        }
     }
 
     private File createTempFile() {
