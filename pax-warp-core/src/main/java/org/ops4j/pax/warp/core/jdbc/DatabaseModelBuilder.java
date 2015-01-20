@@ -128,6 +128,14 @@ public class DatabaseModelBuilder {
         log.debug("columns of table {}", table.getTableName());
         try (ResultSet rs = metaData.getColumns(catalog, schema, table.getTableName(), null)) {
             while (rs.next()) {
+                String tableName = rs.getString("TABLE_NAME");
+
+                // H2 treats underscores in table names as single-character wildcard,
+                // so the result set might contain columns from another table.
+                if (!tableName.equalsIgnoreCase(table.getTableName())) {
+                    continue;
+                }
+
                 int ordinal = rs.getInt("ORDINAL_POSITION");
                 String columnName = rs.getString("COLUMN_NAME");
                 int dataType = rs.getInt("DATA_TYPE");

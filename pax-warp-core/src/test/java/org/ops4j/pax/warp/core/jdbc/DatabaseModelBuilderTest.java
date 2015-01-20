@@ -42,6 +42,7 @@ import org.ops4j.pax.warp.core.changelog.ChangeLogWriter;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
+import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 
 @RunWith(PaxExam.class)
 public class DatabaseModelBuilderTest {
@@ -55,18 +56,20 @@ public class DatabaseModelBuilderTest {
     }
 
     @Test
+    public void shouldNotTreatUnderscoreAsWildcard() throws SQLException, JAXBException, IOException {
+        DatabaseModel database = buildDatabaseModel("jdbc:h2:mem:test", "user_.sql");
+        CreateTable table = database.getTable("USER_");
+        assertThat(table, is(notNullValue()));
+        assertThat(table.getColumn().size(), is(2));
+    }
+
+    @Test
     public void shouldGenerateChangeLogDerby() throws SQLException, JAXBException, IOException {
         shouldGenerateChangeLog("jdbc:derby:memory:test;create=true", "derby.sql");
     }
 
     private void shouldGenerateChangeLog(String jdbcUrl, String scriptName) throws SQLException, JAXBException, IOException {
-        Connection dbc = DriverManager.getConnection(jdbcUrl, null, null);
-        Files.lines(Paths.get("src/test/resources/sql", scriptName)).forEach(s -> runUpdate(dbc, s));
-
-        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
-        DatabaseModel database = inspector.buildDatabaseModel();
-        assertThat(database, is(notNullValue()));
-
+        DatabaseModel database = buildDatabaseModel(jdbcUrl, scriptName);
         ChangeLog changeLog = new ChangeLog();
         changeLog.setVersion("0.1");
         changeLog.getChangeSet();
@@ -81,6 +84,17 @@ public class DatabaseModelBuilderTest {
 
         OutputStreamWriter writer = new OutputStreamWriter(System.out, StandardCharsets.UTF_8);
         changeLogWriter.write(changeLog, writer);
+    }
+
+    private DatabaseModel buildDatabaseModel(String jdbcUrl, String scriptName) throws SQLException, IOException {
+        Connection dbc = DriverManager.getConnection(jdbcUrl, null, null);
+        Files.lines(Paths.get("src/test/resources/sql", scriptName)).forEach(s -> runUpdate(dbc, s));
+
+        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
+        DatabaseModel database = inspector.buildDatabaseModel();
+        assertThat(database, is(notNullValue()));
+        return database;
+
     }
 
     private void runUpdate(Connection dbc, String sql) {
