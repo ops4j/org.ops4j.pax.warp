@@ -1,0 +1,8 @@
+{{#trim}}
+{{#if length}}
+{{#switch type.name}}
+  {{#case "CHAR"}}{{/case}}
+  {{#case "VARCHAR"}}({{length}}){{/case}}
+{{/switch}}
+{{/if}}
+{{/trim}}

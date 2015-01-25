@@ -1,0 +1,3 @@
+{{#action}}
+ALTER TABLE {{tableName}} ADD PRIMARY KEY ({{#column}}{{.}}{{#iter.hasNext}}, {{/iter.hasNext}}{{/column}})
+{{/action}}

@@ -1,0 +1,9 @@
+{{#trim}}
+{{#if precision}}
+{{#switch type.name}}
+  {{#case "DECIMAL"}}
+  ({{precision}}{{#if scale}}, {{scale}}{{/if}})
+  {{/case}}
+{{/switch}}
+{{/if}}
+{{/trim}}

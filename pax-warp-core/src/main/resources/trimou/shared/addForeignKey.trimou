@@ -1,0 +1,4 @@
+{{#action}}
+ALTER TABLE {{baseTable.tableName}} ADD CONSTRAINT {{constraintName}}  
+FOREIGN KEY ({{#each columnPair}}{{>baseColumns}}{{/each}}) REFERENCES {{referencedTable.tableName}} ({{#each columnPair}}{{>referencedColumns}}{{/each}})
+{{/action}}

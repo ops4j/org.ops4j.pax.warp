@@ -31,8 +31,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>ST4</artifactId>
+            <groupId>org.trimou</groupId>
+            <artifactId>trimou-core</artifactId>
         </dependency>
 
         <dependency>
@@ -88,6 +88,12 @@
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-junit4</artifactId>
             <version>${version.pax.exam}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
             <scope>test</scope>
         </dependency>
 

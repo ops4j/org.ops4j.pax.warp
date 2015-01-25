@@ -1,0 +1,3 @@
+{{#action}}
+CREATE {{#if unique}}UNIQUE {{/if}}INDEX {{indexName}} ON {{tableName}} ({{#each column}}{{name}}{{>keyLength}}{{#if iter.hasNext}}, {{/if}}{{/each}})
+{{/action}}

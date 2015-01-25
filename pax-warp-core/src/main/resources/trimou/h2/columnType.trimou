@@ -1,0 +1,19 @@
+{{#trim}}
+{{#switch type.name}}
+  {{#case "INT_8"     break="true"}}tinyint{{/case}}
+  {{#case "INT_16"    break="true"}}smallint{{/case}}
+  {{#case "INT_32"    break="true"}}int{{/case}}
+  {{#case "INT_64"    break="true"}}bigint{{/case}}
+  {{#case "DECIMAL"   break="true"}}decimal{{/case}}
+  {{#case "FLOAT"     break="true"}}real{{/case}}
+  {{#case "DOUBLE"    break="true"}}double precision{{/case}}
+  {{#case "CHAR"      break="true"}}char{{/case}}
+  {{#case "VARCHAR"   break="true"}}varchar{{/case}}
+  {{#case "BLOB"      break="true"}}blob{{/case}}
+  {{#case "CLOB"      break="true"}}text{{/case}}
+  {{#case "BOOLEAN"   break="true"}}boolean{{/case}}
+  {{#case "DATE"      break="true"}}date{{/case}}
+  {{#case "TIME"      break="true"}}time{{/case}}
+  {{#case "TIMESTAMP" break="true"}}datetime{{/case}}
+{{/switch}}
+{{/trim}}

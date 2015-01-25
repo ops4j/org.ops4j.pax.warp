@@ -1,0 +1,3 @@
+{{#action}}
+ALTER TABLE {{tableName}} DROP PRIMARY KEY  
+{{/action}}

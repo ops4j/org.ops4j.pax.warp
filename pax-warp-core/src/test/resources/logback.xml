@@ -38,6 +38,8 @@
     <appender-ref ref="STDOUT"/>
     <appender-ref ref="TEST_LOG"/>
   </root>
+
   <logger name="org.ops4j.pax.warp" level="INFO"/> 
+  <logger name="org.trimou" level="WARN"/> 
   
 </configuration>

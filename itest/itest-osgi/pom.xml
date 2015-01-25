@@ -82,6 +82,13 @@
 
         <dependency>
             <groupId>org.ops4j.pax.url</groupId>
+            <artifactId>pax-url-wrap</artifactId>
+            <version>${version.pax.url}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ops4j.pax.url</groupId>
             <artifactId>pax-url-classpath</artifactId>
             <version>${version.pax.url}</version>
             <scope>test</scope>
@@ -148,20 +155,6 @@
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
             <version>3.0.0</version>
-            <scope>provided</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.ops4j.pax.tipi</groupId>
-            <artifactId>org.ops4j.pax.tipi.antlr.runtime</artifactId>
-            <version>3.5.2.1</version>
-            <scope>provided</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.ops4j.pax.tipi</groupId>
-            <artifactId>org.ops4j.pax.tipi.stringtemplate</artifactId>
-            <version>4.0.8.1</version>
             <scope>provided</scope>
         </dependency>
         

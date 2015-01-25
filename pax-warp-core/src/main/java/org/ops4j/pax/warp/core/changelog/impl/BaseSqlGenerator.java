@@ -24,14 +24,24 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.ops4j.pax.warp.core.dbms.DbmsProfile;
+import org.ops4j.pax.warp.core.trimou.JarClassPathTemplateLocator;
+import org.ops4j.pax.warp.core.trimou.TrimmingLambda;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
 import org.ops4j.pax.warp.jaxb.gen.visitor.BaseVisitor;
 import org.ops4j.pax.warp.jaxb.gen.visitor.VisitorAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.stringtemplate.v4.ST;
-import org.stringtemplate.v4.STGroupFile;
+import org.trimou.Mustache;
+import org.trimou.engine.MustacheEngine;
+import org.trimou.engine.MustacheEngineBuilder;
+import org.trimou.engine.resolver.CombinedIndexResolver;
+import org.trimou.engine.resolver.MapResolver;
+import org.trimou.engine.resolver.ReflectionResolver;
+import org.trimou.engine.resolver.ThisResolver;
+import org.trimou.handlebars.HelpersBuilder;
+
+import com.google.common.collect.ImmutableMap;
 
 
 
@@ -42,15 +52,24 @@ public class BaseSqlGenerator extends BaseVisitor {
     protected DbmsProfile dbms;
     protected Connection dbc;
     protected Consumer<PreparedStatement> consumer;
-    protected STGroupFile templateGroup;
     protected Predicate<ChangeSet> changeSetFilter = x -> true;
+
+    private MustacheEngine engine;
 
     protected BaseSqlGenerator(DbmsProfile dbms, Connection dbc, Consumer<PreparedStatement> consumer) {
         this.dbms = dbms;
         this.dbc = dbc;
         this.consumer = consumer;
-        String templateGroupName = String.format("template/%s.stg", dbms.getSubprotocol());
-        templateGroup = new STGroupFile(templateGroupName);
+        engine = MustacheEngineBuilder.newBuilder()
+            .addTemplateLocator(new JarClassPathTemplateLocator(100, "trimou/shared", "trimou"))
+            .addTemplateLocator(new JarClassPathTemplateLocator(200, "trimou/" + dbms.getSubprotocol(), "trimou"))
+            .omitServiceLoaderConfigurationExtensions()
+            .addResolver(new ReflectionResolver())
+            .addResolver(new ThisResolver()).addResolver(new MapResolver())
+            .addResolver(new CombinedIndexResolver())
+            .registerHelpers(HelpersBuilder.builtin().addSwitch().build())
+            .addGlobalData("trim", new TrimmingLambda())
+            .build();
     }
 
     protected VisitorAction produceStatement(String templateName, Object action) {
@@ -66,10 +85,8 @@ public class BaseSqlGenerator extends BaseVisitor {
     }
 
     protected String renderTemplate(String templateName, Object action) {
-        ST template = templateGroup.getInstanceOf(templateName);
-        template.add("action", action);
-
-        String result = template.render();
+        Mustache mustache = engine.getMustache(templateName);
+        String result = mustache.render(ImmutableMap.of("action", action));
         log.info(result);
         return result;
     }
@@ -89,6 +106,4 @@ public class BaseSqlGenerator extends BaseVisitor {
     public void setChangeSetFilter(Predicate<ChangeSet> changeSetFilter) {
         this.changeSetFilter = changeSetFilter;
     }
-
-
 }

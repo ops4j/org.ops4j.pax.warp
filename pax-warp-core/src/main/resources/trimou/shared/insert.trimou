@@ -1,0 +1,5 @@
+{{#action}}
+INSERT INTO {{tableName}}
+  ({{#each column}}{{name}}{{#if iter.hasNext}}, {{/if}}{{/each}})
+  VALUES ({{#each column}}?{{#if iter.hasNext}}, {{/if}}{{/each}})
+{{/action}}

@@ -1,0 +1,7 @@
+{{#action}}
+CREATE TABLE {{tableName}} (
+{{#column}}
+  {{>createColumn}}{{#iter.hasNext}}, {{/iter.hasNext}}
+{{/column}}  
+)
+{{/action}}

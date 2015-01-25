@@ -1,0 +1,3 @@
+{{#action}}
+ALTER TABLE {{baseTable.tableName}} DROP CONSTRAINT {{constraintName}}  
+{{/action}}

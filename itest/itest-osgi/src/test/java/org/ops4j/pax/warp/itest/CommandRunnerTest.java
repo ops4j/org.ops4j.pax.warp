@@ -22,7 +22,9 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.linkBundle;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
 import static org.ops4j.pax.warp.itest.TestConfiguration.logbackBundles;
 import static org.ops4j.pax.warp.itest.TestConfiguration.workspaceBundle;
 
@@ -81,9 +83,9 @@ public class CommandRunnerTest {
             linkBundle("javax.enterprise.cdi-api"),
             linkBundle("javax.interceptor-api"),
             linkBundle("javax.el-api"),
-            linkBundle("org.ops4j.pax.tipi.antlr.runtime"),
-            linkBundle("org.ops4j.pax.tipi.stringtemplate"),
-
+            linkBundle("com.google.guava"),
+            linkBundle("org.apache.commons.lang3"),
+            wrappedBundle(mavenBundle("org.trimou", "trimou-core", "1.7.1.Final")),
             workspaceBundle("pax-warp-core"),
             workspaceBundle("pax-warp-jaxb"));
 
