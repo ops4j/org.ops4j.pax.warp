@@ -16,6 +16,7 @@
     <modules>
         <module>itest-osgi</module>
         <module>itest-maven</module>
+        <module>itest-templates</module>
     </modules>
 
 </project>

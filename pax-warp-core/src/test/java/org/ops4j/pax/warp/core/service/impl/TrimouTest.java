@@ -17,6 +17,17 @@
  */
 package org.ops4j.pax.warp.core.service.impl;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.io.IOException;
+import java.net.JarURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.ops4j.pax.warp.core.trimou.JarClassPathTemplateLocator;
@@ -197,6 +208,19 @@ public class TrimouTest {
         action.getColumn().add(cv2);
         System.out.println(mustache.render(ImmutableMap.of("action", action)));
 
+    }
+
+    @Test
+    public void shouldResolveJarUrl() throws URISyntaxException, IOException {
+        URL resource = org.h2.Driver.class.getResource("Driver.class");
+        System.out.println(resource);
+        URI parent = resource.toURI().resolve(".");
+        System.out.println(parent);
+
+        URLConnection connection = resource.openConnection();
+        assertThat(connection, instanceOf(JarURLConnection.class));
+        JarURLConnection jarConnection = (JarURLConnection) connection;
+        assertThat(jarConnection.getEntryName(), is("org/h2/Driver.class"));
     }
 
 
