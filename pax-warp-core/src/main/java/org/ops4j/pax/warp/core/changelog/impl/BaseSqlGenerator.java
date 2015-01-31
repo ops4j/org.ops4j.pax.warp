@@ -56,19 +56,28 @@ public class BaseSqlGenerator extends BaseVisitor {
 
     private MustacheEngine engine;
 
-    protected BaseSqlGenerator(DbmsProfile dbms, Connection dbc, Consumer<PreparedStatement> consumer) {
+    protected BaseSqlGenerator(DbmsProfile dbms, Connection dbc,
+        Consumer<PreparedStatement> consumer) {
         this.dbms = dbms;
         this.dbc = dbc;
         this.consumer = consumer;
+        // generic SQL template
+        JarClassPathTemplateLocator genericLocator
+            = new JarClassPathTemplateLocator(100, "trimou/shared", "trimou");
+        // DBMS specific templates, loaded with higher priority
+        JarClassPathTemplateLocator dbmsLocator
+            = new JarClassPathTemplateLocator(200, "trimou/" + dbms.getSubprotocol(), "trimou");
         engine = MustacheEngineBuilder.newBuilder()
-            .addTemplateLocator(new JarClassPathTemplateLocator(100, "trimou/shared", "trimou"))
-            .addTemplateLocator(new JarClassPathTemplateLocator(200, "trimou/" + dbms.getSubprotocol(), "trimou"))
+            .addTemplateLocator(genericLocator)
+            .addTemplateLocator(dbmsLocator)
+            .registerHelpers(HelpersBuilder.builtin().addSwitch().build())
+            .addGlobalData("trim", new TrimmingLambda())
+            // manually add default extension to avoid META-INF/service classloader issues
+            // when running under OSGi
             .omitServiceLoaderConfigurationExtensions()
             .addResolver(new ReflectionResolver())
             .addResolver(new ThisResolver()).addResolver(new MapResolver())
             .addResolver(new CombinedIndexResolver())
-            .registerHelpers(HelpersBuilder.builtin().addSwitch().build())
-            .addGlobalData("trim", new TrimmingLambda())
             .build();
     }
 
