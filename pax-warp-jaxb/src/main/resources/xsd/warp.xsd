@@ -7,7 +7,7 @@
     <xsd:element name="changeLog">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element ref="changeSet" minOccurs="1" maxOccurs="unbounded"/>
+                <xsd:element name="changeSet" type="ChangeSet" minOccurs="1" maxOccurs="unbounded" />
             </xsd:sequence>
             <xsd:attribute name="version" type="xsd:string" use="required" />
         </xsd:complexType>
@@ -41,20 +41,13 @@
         </xsd:restriction>
     </xsd:simpleType>
 
-    <xsd:attributeGroup name="createIndex">
-        <xsd:attributeGroup ref="tableNameAttributes" />
-        <xsd:attribute name="indexName" type="xsd:string" use="required" />
-        <xsd:attribute name="unique" type="xsd:boolean" />
-    </xsd:attributeGroup>
-
     <xsd:attributeGroup name="tableNameAttributes">
         <xsd:attribute name="catalogName" type="xsd:string" />
         <xsd:attribute name="schemaName" type="xsd:string" />
         <xsd:attribute name="tableName" type="xsd:string" use="required" />
     </xsd:attributeGroup>
 
-    <xsd:element name="changeSet">
-    <xsd:complexType>
+    <xsd:complexType name="ChangeSet">
         <xsd:sequence>
             <xsd:element ref="comment" minOccurs="0" />
             <xsd:choice maxOccurs="unbounded">
@@ -68,21 +61,21 @@
                 <xsd:element name="insert" type="Insert" />
                 <xsd:element name="addColumn" type="AddColumn" />
                 <xsd:element name="dropColumn" type="DropColumn" />
-                <xsd:element ref="createIndex" />
+                <xsd:element name="createIndex" type="CreateIndex" />
                 <xsd:element name="dropIndex" type="DropIndex" />
             </xsd:choice>
         </xsd:sequence>
         <xsd:attribute name="id" type="xsd:string" use="required" />
         <xsd:attribute name="dbms" type="xsd:string" />
     </xsd:complexType>
-    </xsd:element>
 
+    <xsd:element name="changeSet" type="ChangeSet" />
     <xsd:element name="comment" type="xsd:string" />
 
 
     <xsd:complexType name="AddColumn">
         <xsd:sequence>
-            <xsd:element name="column" type="Column"/>
+            <xsd:element name="column" type="Column" />
         </xsd:sequence>
         <xsd:attributeGroup ref="tableNameAttributes" />
     </xsd:complexType>
@@ -144,17 +137,17 @@
         <xsd:attribute name="scale" type="xsd:int" />
         <xsd:attribute name="defaultValue" type="xsd:string" />
         <xsd:attribute name="autoIncrement" type="xsd:boolean" />
-        <xsd:attribute name="nullable" type="xsd:boolean" default="true"/>
+        <xsd:attribute name="nullable" type="xsd:boolean" default="true" />
     </xsd:complexType>
 
-    <xsd:element name="createIndex">
-        <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element name="column" type="Column" maxOccurs="unbounded" />
-            </xsd:sequence>
-            <xsd:attributeGroup ref="createIndex" />
-        </xsd:complexType>
-    </xsd:element>
+    <xsd:complexType name="CreateIndex">
+        <xsd:sequence>
+            <xsd:element name="column" type="Column" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attributeGroup ref="tableNameAttributes" />
+        <xsd:attribute name="indexName" type="xsd:string" use="required" />
+        <xsd:attribute name="unique" type="xsd:boolean" />
+    </xsd:complexType>
 
     <xsd:complexType name="CreateTable">
         <xsd:sequence>

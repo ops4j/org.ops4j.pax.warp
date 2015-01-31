@@ -3,7 +3,7 @@
     xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
     version="2.1">
     <jxb:bindings schemaLocation="warp.xsd">
-        <jxb:bindings node="/xs:schema/xs:element[@name='changeSet']//xs:choice">
+        <jxb:bindings node="/xs:schema/xs:complexType[@name='ChangeSet']//xs:choice">
             <jxb:property name="Changes"/>
         </jxb:bindings>
     </jxb:bindings>

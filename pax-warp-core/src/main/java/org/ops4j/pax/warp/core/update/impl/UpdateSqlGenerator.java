@@ -55,6 +55,7 @@ import org.ops4j.pax.warp.jaxb.gen.DropForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.DropIndex;
 import org.ops4j.pax.warp.jaxb.gen.DropPrimaryKey;
 import org.ops4j.pax.warp.jaxb.gen.Insert;
+import org.ops4j.pax.warp.jaxb.gen.ObjectFactory;
 import org.ops4j.pax.warp.jaxb.gen.TruncateTable;
 import org.ops4j.pax.warp.jaxb.gen.visitor.VisitorAction;
 
@@ -261,7 +262,7 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
         try {
             Marshaller marshaller = context.createFragmentMarshaller();
             StringWriter writer = new StringWriter();
-            marshaller.marshal(changeSet, writer);
+            marshaller.marshal(new ObjectFactory().createChangeSet(changeSet), writer);
 
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             digest.update(writer.toString().getBytes(StandardCharsets.UTF_8));
