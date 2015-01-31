@@ -30,12 +30,12 @@ of the given platform (i.e. CDI or Declarative Services).
 == Managing stuctural changes
 
 The central concept of Pax Warp is a *change log*, representing a sequence of *change sets*, each
-containing a number of *actions* applied to a given database.
+containing a number of *changes* applied to a given database.
 
-Starting from an empty database, you can set up the initial schema by elementary actions such as
+Starting from an empty database, you can set up the initial schema by elementary changes such as
 `createTable, addForeignKey, createIndex` etc.
 
-As the schema evolves, you create additional change sets with actions like `addColumn, dropTable`
+As the schema evolves, you create additional change sets with changes like `addColumn, dropTable`
 etc. to transform the database schema into the desired state.
 
 Thus, a change log captures the version history of a given database schema. When applying a change
@@ -49,7 +49,7 @@ to the database.
 == Managing data sets
 
 Besides representing structural changes, a change log can also represent a data set as a sequence
-of `insert` actions in a system independent way. Using Pax Warp, you can export data from a given
+of `insert` changes in a system independent way. Using Pax Warp, you can export data from a given
 database and import them into another database, even on a different database management system.
 
 This is mainly intended to manage small data sets as fixtures for integration or system
