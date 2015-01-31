@@ -79,7 +79,7 @@ of your choice. The top-level directory of the unpacked archive is called `pax-w
 
 The `bin` subdirectory contains launch scripts `warp` for Linux/Unix and `warp.cmd` for Windows.
 
-Pax Warp requires a Java 8 Runtime Environment. The launch scripts will use the JAVA_HOME 
+Pax Warp requires a Java 8 Runtime Environment. The launch scripts will use the `JAVA_HOME` 
 environment variable to locate the `java` command, falling back to the `PATH` variable if 
 `JAVA_HOME` is not set.
 
@@ -221,6 +221,69 @@ This is an example configuration:
 
  
  
+
+= Change Log Reference
+
+== Overview
+
+A change log is an XML document with namespace `urn:org.ops4j.pax.warp:changelog` defined in 
+the XML schema `xsd/warp.xsd` located in the `pax-warp-jaxb` JAR. 
+
+A change log has a root element `changeLog` which contains any number of `changeSet` elements, 
+each witha unique identity. Each change set contains a number of changes of different types. 
+Change sets can be used to group related changes. Each change set is executed in a new transaction.
+
+Note that some databases do not support transactions for DDL statements (or implicitly wrap each 
+DDL statement in an auto-commit transaction, which amounts to the same thing). 
+ 
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<changeLog xmlns="urn:org.ops4j.pax.warp:changelog" version="0.1">
+    <changeSet id="1">
+        <createTable tableName="strings">
+            <column name="id" type="varchar" length="255" nullable="false"/>
+            <column name="c4" type="char" length="4"/>
+            <column name="c254" type="char" length="254"/>
+            <column name="v4" type="varchar" length="4"/>
+            <column name="v255" type="varchar" length="255"/>
+            <column name="t" type="clob"/>
+            <column name="enabled" type="boolean"/>            
+        </createTable>
+    </changeSet>
+</changeLog>
+----
+
+== Shared types
+
+=== Table attributes
+
+=== Column types
+
+== Changes
+
+=== Add column
+
+=== Add foreign key
+
+=== Add primary key
+
+=== Create index
+
+=== Create table
+
+=== Drop foreign key
+
+=== Drop index
+
+=== Drop primary key
+
+=== Drop table
+
+=== Insert
+
+=== Truncate table
 
 
 // Return to normal title levels 
