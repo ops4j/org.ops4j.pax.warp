@@ -152,6 +152,7 @@ when deploying your application.
 
 To do so, simply include the following Maven dependency
 
+[source,xml]
     <dependency>
         <groupId>org.ops4j.pax.warp</groupId>
         <artifactId>pax-warp-core</artifactId>
@@ -187,6 +188,7 @@ of the stand-alone application.
 
 This is an example configuration:
 
+[source,xml]
     <build>
         <plugins>
             <plugin>
@@ -230,7 +232,7 @@ A change log is an XML document with namespace `urn:org.ops4j.pax.warp:changelog
 the XML schema `xsd/warp.xsd` located in the `pax-warp-jaxb` JAR. 
 
 A change log has a root element `changeLog` which contains any number of `changeSet` elements, 
-each witha unique identity. Each change set contains a number of changes of different types. 
+each with a unique identity. Each change set contains a number of changes of different types. 
 Change sets can be used to group related changes. Each change set is executed in a new transaction.
 
 Note that some databases do not support transactions for DDL statements (or implicitly wrap each 
