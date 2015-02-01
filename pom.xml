@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.ops4j</groupId>
         <artifactId>master</artifactId>
-        <version>4.1.0</version>
+        <version>4.2.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.ops4j.pax</groupId>
@@ -233,21 +233,11 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.jvnet.jaxb2.maven2</groupId>
-                    <artifactId>maven-jaxb2-plugin</artifactId>
-                    <version>0.12.2</version>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
                         <argLine>${jacoco.argLine}</argLine>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.sonar</groupId>
-                    <artifactId>sonar-maven-plugin</artifactId>
-                    <version>4.5.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>
