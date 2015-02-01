@@ -11,12 +11,13 @@
     <artifactId>pax-warp-manual</artifactId>
     <packaging>war</packaging>
     
+    <name>OPS4J Pax Warp Manual</name>
+    
     <build>
         <plugins>
             <plugin>
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>1.5.0</version>
                 <executions>
                     <execution>
                         <id>output-html</id>
