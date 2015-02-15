@@ -30,7 +30,6 @@ import java.net.URLConnection;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.ops4j.pax.warp.core.trimou.JarClassPathTemplateLocator;
 import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.AddPrimaryKey;
 import org.ops4j.pax.warp.jaxb.gen.Column;
@@ -46,6 +45,7 @@ import org.ops4j.pax.warp.jaxb.gen.TableReference;
 import org.trimou.Mustache;
 import org.trimou.engine.MustacheEngine;
 import org.trimou.engine.MustacheEngineBuilder;
+import org.trimou.engine.locator.ClassPathTemplateLocator;
 import org.trimou.handlebars.HelpersBuilder;
 import org.trimou.lambda.InputProcessingLambda;
 import org.trimou.lambda.Lambda;
@@ -71,8 +71,8 @@ public class TrimouTest {
             }
         };
         engine = MustacheEngineBuilder.newBuilder()
-            .addTemplateLocator(new JarClassPathTemplateLocator(100, "trimou/shared", "trimou"))
-            .addTemplateLocator(new JarClassPathTemplateLocator(200, "trimou/h2", "trimou"))
+            .addTemplateLocator(new ClassPathTemplateLocator(100, "trimou/shared", "trimou"))
+            .addTemplateLocator(new ClassPathTemplateLocator(200, "trimou/h2", "trimou"))
             .registerHelpers(HelpersBuilder.empty().addSwitch().build())
             .addGlobalData("trim", trim)
             .build();

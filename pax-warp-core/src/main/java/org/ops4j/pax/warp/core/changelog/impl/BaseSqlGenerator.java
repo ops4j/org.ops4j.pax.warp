@@ -24,7 +24,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.ops4j.pax.warp.core.dbms.DbmsProfile;
-import org.ops4j.pax.warp.core.trimou.JarClassPathTemplateLocator;
 import org.ops4j.pax.warp.core.trimou.TrimmingLambda;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
@@ -35,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.trimou.Mustache;
 import org.trimou.engine.MustacheEngine;
 import org.trimou.engine.MustacheEngineBuilder;
+import org.trimou.engine.locator.ClassPathTemplateLocator;
 import org.trimou.engine.resolver.CombinedIndexResolver;
 import org.trimou.engine.resolver.MapResolver;
 import org.trimou.engine.resolver.ReflectionResolver;
@@ -62,11 +62,11 @@ public class BaseSqlGenerator extends BaseVisitor {
         this.dbc = dbc;
         this.consumer = consumer;
         // generic SQL template
-        JarClassPathTemplateLocator genericLocator
-            = new JarClassPathTemplateLocator(100, "trimou/shared", "trimou");
+        ClassPathTemplateLocator genericLocator
+            = new ClassPathTemplateLocator(100, "trimou/shared", "trimou");
         // DBMS specific templates, loaded with higher priority
-        JarClassPathTemplateLocator dbmsLocator
-            = new JarClassPathTemplateLocator(200, "trimou/" + dbms.getSubprotocol(), "trimou");
+        ClassPathTemplateLocator dbmsLocator
+            = new ClassPathTemplateLocator(200, "trimou/" + dbms.getSubprotocol(), "trimou");
         engine = MustacheEngineBuilder.newBuilder()
             .addTemplateLocator(genericLocator)
             .addTemplateLocator(dbmsLocator)

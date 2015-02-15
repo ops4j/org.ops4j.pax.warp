@@ -1,19 +1,17 @@
 /*
  * Copyright 2015 Harald Wellmann.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- * implied.
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied.
+ * 
+ * See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package org.ops4j.pax.warp.itest;
 
@@ -32,12 +30,10 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.ops4j.pax.warp.core.trimou.JarClassPathTemplateLocator;
 import org.trimou.engine.MustacheEngineBuilder;
 import org.trimou.engine.config.EngineConfigurationKey;
 import org.trimou.engine.locator.ClassPathTemplateLocator;
 import org.trimou.engine.locator.TemplateLocator;
-import org.trimou.exception.MustacheException;
 import org.trimou.util.Checker;
 
 /**
@@ -58,16 +54,8 @@ public class JarClassPathTemplateLocatorTest {
     }
 
     @Test
-    public void classPathLocatorShouldFail() {
-        thrown.expect(MustacheException.class);
-        thrown.expectMessage("TEMPLATE_LOCATOR_INVALID_CONFIGURATION");
-
-        new ClassPathTemplateLocator(1, "locator/file", "foo");
-    }
-
-    @Test
     public void testLocator() throws IOException {
-        TemplateLocator locator = new JarClassPathTemplateLocator(1, "locator/file", "foo");
+        TemplateLocator locator = new ClassPathTemplateLocator(1, "locator/file", "foo");
 
         // Just to init the locator
         MustacheEngineBuilder.newBuilder().addTemplateLocator(locator).build();
@@ -82,7 +70,7 @@ public class JarClassPathTemplateLocatorTest {
     @Test
     public void testLocatorNoSuffix() throws IOException {
 
-        TemplateLocator locator = new JarClassPathTemplateLocator(1, "locator/file");
+        TemplateLocator locator = new ClassPathTemplateLocator(1, "locator/file");
 
         // Just to init the locator
         MustacheEngineBuilder.newBuilder().addTemplateLocator(locator).build();
@@ -97,7 +85,7 @@ public class JarClassPathTemplateLocatorTest {
 
     @Test
     public void testEncoding() throws IOException {
-        TemplateLocator locator = new JarClassPathTemplateLocator(1, "locator/file", "html");
+        TemplateLocator locator = new ClassPathTemplateLocator(1, "locator/file", "html");
         // Just to init the locator
         MustacheEngineBuilder.newBuilder()
             .setProperty(EngineConfigurationKey.DEFAULT_FILE_ENCODING, "windows-1250")
@@ -108,7 +96,7 @@ public class JarClassPathTemplateLocatorTest {
     @Test
     public void testLocatorClasspathNoRootPath() throws IOException {
 
-        TemplateLocator locator = new JarClassPathTemplateLocator(1, null, "foo");
+        TemplateLocator locator = new ClassPathTemplateLocator(1, null, "foo");
 
         // Just to init the locator
         MustacheEngineBuilder.newBuilder().addTemplateLocator(locator).build();
