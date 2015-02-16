@@ -15,7 +15,7 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.ops4j.pax.maven</groupId>
+                <groupId>org.ops4j.pax.warp.maven</groupId>
                 <artifactId>warp-maven-plugin</artifactId>
                 <version>${project.version}</version>
                 <configuration>
