@@ -220,6 +220,9 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
      * @return
      */
     private Object convertValue(ColumnValue columnValue) {
+        if (columnValue.isNull()) {
+            return null;
+        }
         JDBCType jdbcType = JDBCType.valueOf(columnValue.getType());
         String value = columnValue.getValue();
         switch (jdbcType) {

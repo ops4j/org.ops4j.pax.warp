@@ -182,11 +182,11 @@ public class DumpServiceImpl implements DumpService {
 
         ColumnValue columnValue = new ColumnValue();
         columnValue.setName(column.getName());
+        columnValue.setType(jdbcType.toString());
         if (rs.wasNull()) {
-            columnValue.setType("NULL");
+            columnValue.setNull(true);
         }
         else {
-            columnValue.setType(jdbcType.toString());
             columnValue.setValue(value.toString());
         }
         return columnValue;
