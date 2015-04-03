@@ -17,6 +17,9 @@
  */
 package org.ops4j.pax.warp.core.command;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,6 +27,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -69,15 +73,28 @@ public abstract class AbstractCommandRunnerTest {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         OutputStream os = new FileOutputStream("target/dataOnly1.xml");
         commandRunner.dumpData(dbc, os);
-        os.close();
+        os.close(); 
         dbc.close();
     }
 
     private void insertData(String jdbcUrl) throws JAXBException, SQLException, IOException {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
+        InputStream is = getClass().getResourceAsStream("/changelogs/data2.xml");
+        commandRunner.importData(dbc, is);
+        is.close();
+        dbc.close();
+    }
+
+    private void reinsertData(String jdbcUrl) throws JAXBException, SQLException, IOException {
+        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         InputStream is = new FileInputStream("target/dataOnly1.xml");
         commandRunner.importData(dbc, is);
         is.close();
+       
+        Statement st = dbc.createStatement();
+        ResultSet rs = st.executeQuery("SELECT t FROM strings WHERE id = 'id4711'");
+        assertThat(rs.next(), is(true));
+        assertThat(rs.getString(1), is("This is a CLOB column."));
         dbc.close();
     }
 
@@ -103,8 +120,13 @@ public abstract class AbstractCommandRunnerTest {
     }
 
     @Test
-    public void test04UpdateStructureShouldBeIdempotent() throws JAXBException, SQLException, IOException {
+    public void test02UpdateStructureShouldBeIdempotent() throws JAXBException, SQLException, IOException {
         updateStructure(getJdbcUrl());
+    }
+
+    @Test
+    public void test03ShouldInsertData() throws JAXBException, SQLException, IOException {
+        insertData(getJdbcUrl());
     }
 
     @Test
@@ -114,7 +136,7 @@ public abstract class AbstractCommandRunnerTest {
 
     @Test
     public void test06ShouldInsertData() throws JAXBException, SQLException, IOException {
-        insertData(getJdbcUrl());
+        reinsertData(getJdbcUrl());
     }
 
     @Test

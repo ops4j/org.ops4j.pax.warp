@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<changeLog xmlns="urn:org.ops4j.pax.warp:changelog" version="0.1">
+    <changeSet id="data2">
+        <insert tableName="numbers">
+            <column name="id" type="INTEGER">1</column>
+            <column name="i8" type="SMALLINT">2</column>
+            <column name="i16" type="SMALLINT">3</column>
+            <column name="i32" type="INTEGER">4</column>
+            <column name="i64" type="BIGINT">5</column>
+            <column name="d" type="NUMERIC">6</column>
+        </insert>
+        <insert tableName="numbers">
+            <column name="id" type="INTEGER">2</column>
+            <column name="i8" type="SMALLINT">3</column>
+            <column name="i16" type="SMALLINT">4</column>
+            <column name="i32" type="INTEGER">5</column>
+            <column name="i64" type="BIGINT">6</column>
+            <column name="d" type="NUMERIC">7</column>
+        </insert>
+        <insert tableName="numbers">
+            <column name="id" type="INTEGER">3</column>
+            <column name="i8" type="SMALLINT">4</column>
+            <column name="i16" type="SMALLINT">5</column>
+            <column name="i32" type="INTEGER">6</column>
+            <column name="i64" type="BIGINT">7</column>
+            <column name="d" type="NUMERIC">8</column>
+        </insert>
+        <insert tableName="strings">
+            <column name="id" type="VARCHAR">id4711</column>
+            <column name="c4" type="CHAR">abcd</column>
+            <column name="c254" type="CHAR">This is a longer string.</column>
+            <column name="v4" type="CHAR">uvwx</column>
+            <column name="v255" type="VARCHAR">This is a longer VARCHAR column.</column>
+            <column name="t" type="CLOB">This is a CLOB column.</column>
+            <column name="enabled" type="BOOLEAN">true</column>
+        </insert>
+    </changeSet>
+</changeLog>
