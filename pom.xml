@@ -208,7 +208,7 @@
             <dependency>
                 <groupId>org.trimou</groupId>
                 <artifactId>trimou-core</artifactId>
-                <version>1.7.2.Final</version>
+                <version>1.7.3.Final</version>
             </dependency>
 
         </dependencies>
