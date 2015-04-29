@@ -34,5 +34,9 @@
             <column name="t" type="CLOB">This is a CLOB column.</column>
             <column name="enabled" type="BOOLEAN">true</column>
         </insert>
+        <insert tableName="binaries">
+            <column name="id" type="INTEGER">4</column>
+            <column name="b" type="BLOB">SGVsbG8gd29ybGQh</column>
+        </insert>
     </changeSet>
 </changeLog>

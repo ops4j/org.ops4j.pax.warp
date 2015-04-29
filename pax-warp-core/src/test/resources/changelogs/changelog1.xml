@@ -18,6 +18,10 @@
             <column name="t" type="clob"/>
             <column name="enabled" type="boolean"/>            
         </createTable>
+        <createTable tableName="binaries">
+            <column name="id" type="int32" nullable="false"/>
+            <column name="b" type="blob"/>            
+        </createTable>
         <createTable tableName="numbers_strings">
             <column name="number_id" type="int32" nullable="false"/>
             <column name="string_id" type="varchar" length="255" nullable="false"/>

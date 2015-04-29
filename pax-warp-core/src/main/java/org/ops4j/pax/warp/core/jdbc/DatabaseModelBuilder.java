@@ -371,6 +371,7 @@ public class DatabaseModelBuilder {
                 return SqlType.BOOLEAN;
             case BINARY:
             case BLOB:
+            case LONGVARBINARY:
             case VARBINARY:
                 return SqlType.BLOB;
             case CHAR:

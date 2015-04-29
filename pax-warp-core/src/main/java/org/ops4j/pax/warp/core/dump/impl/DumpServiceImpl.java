@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -168,7 +169,7 @@ public class DumpServiceImpl implements DumpService {
     private ColumnValue readColumnValue(ResultSet rs, ResultSetMetaData metaData, int col,
         Column column) throws SQLException {
 
-        Object value;
+        Object value = null;
         JDBCType jdbcType = JDBCType.valueOf(metaData.getColumnType(col));
         switch (jdbcType) {
             case CLOB:
@@ -176,6 +177,17 @@ public class DumpServiceImpl implements DumpService {
             case VARCHAR:
                 value = rs.getString(col);
                 break;
+                
+            case BLOB:
+            case BINARY:
+            case VARBINARY:
+            case LONGVARBINARY:
+                byte[] bytes = rs.getBytes(col);
+                if (bytes != null) {
+                    value = Base64.getEncoder().encodeToString(bytes);
+                }
+                break;
+                
             default:
                 value = rs.getObject(col);
         }
