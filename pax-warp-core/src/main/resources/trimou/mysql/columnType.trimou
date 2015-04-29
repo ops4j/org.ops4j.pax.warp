@@ -9,7 +9,7 @@
   {{#case "DOUBLE"    break="true"}}DOUBLE PRECISION{{/case}}
   {{#case "CHAR"      break="true"}}CHAR{{/case}}
   {{#case "VARCHAR"   break="true"}}VARCHAR{{/case}}
-  {{#case "BLOB"      break="true"}}BYTEA{{/case}}
+  {{#case "BLOB"      break="true"}}BLOB{{/case}}
   {{#case "CLOB"      break="true"}}TEXT{{/case}}
   {{#case "BOOLEAN"   break="true"}}BOOLEAN{{/case}}
   {{#case "DATE"      break="true"}}DATE{{/case}}
