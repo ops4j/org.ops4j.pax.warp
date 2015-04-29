@@ -30,16 +30,16 @@ import com.beust.jcommander.Parameters;
 public class MainCommand {
 
     @Parameter(names = "--version", description = "prints version")
-    private Boolean version;
+    private boolean version;
 
     @Parameter(names = "--help", description = "prints help", help = true)
-    private Boolean help;
+    private boolean help;
 
 
     /**
      * @return the version
      */
-    public Boolean isVersion() {
+    public boolean isVersion() {
         return version;
     }
 
@@ -47,7 +47,7 @@ public class MainCommand {
     /**
      * @return the help
      */
-    public Boolean isHelp() {
+    public boolean isHelp() {
         return help;
     }
 }
