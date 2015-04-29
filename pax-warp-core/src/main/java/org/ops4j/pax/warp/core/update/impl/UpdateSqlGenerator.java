@@ -30,6 +30,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -151,8 +152,9 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
     public VisitorAction enter(ChangeSet changeSet) {
         actualChecksum = computeChecksum(changeSet);
         String id = changeSet.getId();
+        // expectedChecksum may be padded with spaces due to CHAR column - should we use VARCHAR?
         String expectedChecksum = changeLogHistory.get(id);
-        if (expectedChecksum != null && !expectedChecksum.equals(actualChecksum)) {
+        if (expectedChecksum != null && !expectedChecksum.trim().equals(actualChecksum)) {
             String msg = String.format("checksum mismatch for change set [id=%s]", id);
             throw new IllegalArgumentException(msg);
         }
@@ -245,6 +247,11 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
                 return Double.parseDouble(value);
             case INTEGER:
                 return Integer.parseInt(value);
+            case BINARY:
+            case BLOB:    
+            case LONGVARBINARY:
+            case VARBINARY:
+                return Base64.getDecoder().decode(value);
             case NULL:
                 return null;
             case SMALLINT:
