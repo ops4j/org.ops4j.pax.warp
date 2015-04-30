@@ -67,7 +67,7 @@ public class CommandRunnerTest {
     private CommandRunner commandRunner;
 
     @Inject
-    @Filter("(osgi.jdbc.driver.name=h2)")
+    @Filter("(osgi.jdbc.driver.class=org.h2.Driver)")
     private DataSourceFactory dsf;
 
     @Configuration
@@ -76,7 +76,6 @@ public class CommandRunnerTest {
             logbackBundles(),
             junitBundles(),
 
-            linkBundle("org.ops4j.pax.jdbc.h2"),
             linkBundle("org.h2"),
 
             linkBundle("org.apache.felix.scr"),

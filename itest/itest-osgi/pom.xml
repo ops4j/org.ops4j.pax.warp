@@ -28,13 +28,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.ops4j.pax.jdbc</groupId>
-            <artifactId>pax-jdbc-h2</artifactId>
-            <version>${version.pax.jdbc}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>provided</scope>
