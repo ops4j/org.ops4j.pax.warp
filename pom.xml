@@ -28,7 +28,7 @@
         <!-- keep sorted alphabetically -->
         <version.ops4j.base>1.5.0</version.ops4j.base>
         <version.pax.exam>4.5.0</version.pax.exam>
-        <version.pax.jdbc>0.3.0</version.pax.jdbc>
+        <version.pax.jdbc>0.5.0</version.pax.jdbc>
         <version.pax.url>2.4.1</version.pax.url>
         <version.weld>2.2.11.Final</version.weld>
         <version.weld.api>2.2.Final</version.weld.api>
