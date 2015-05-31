@@ -57,6 +57,7 @@ import org.ops4j.pax.warp.jaxb.gen.DropIndex;
 import org.ops4j.pax.warp.jaxb.gen.DropPrimaryKey;
 import org.ops4j.pax.warp.jaxb.gen.Insert;
 import org.ops4j.pax.warp.jaxb.gen.ObjectFactory;
+import org.ops4j.pax.warp.jaxb.gen.RunSql;
 import org.ops4j.pax.warp.jaxb.gen.TruncateTable;
 import org.ops4j.pax.warp.jaxb.gen.visitor.VisitorAction;
 
@@ -145,6 +146,13 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
     @Override
     public VisitorAction enter(TruncateTable action) {
         return produceStatement("truncateTable", action);
+    }
+
+    @Override
+    public VisitorAction enter(RunSql action) {
+        String sql = action.getValue();
+        runStatement(sql);
+        return VisitorAction.CONTINUE;
     }
 
 
@@ -248,7 +256,7 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
             case INTEGER:
                 return Integer.parseInt(value);
             case BINARY:
-            case BLOB:    
+            case BLOB:
             case LONGVARBINARY:
             case VARBINARY:
                 return Base64.getDecoder().decode(value);

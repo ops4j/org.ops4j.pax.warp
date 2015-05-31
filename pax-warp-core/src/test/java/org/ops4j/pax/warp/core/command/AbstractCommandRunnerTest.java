@@ -73,7 +73,7 @@ public abstract class AbstractCommandRunnerTest {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         OutputStream os = new FileOutputStream("target/dataOnly1.xml");
         commandRunner.dumpData(dbc, os);
-        os.close(); 
+        os.close();
         dbc.close();
     }
 
@@ -90,11 +90,13 @@ public abstract class AbstractCommandRunnerTest {
         InputStream is = new FileInputStream("target/dataOnly1.xml");
         commandRunner.importData(dbc, is);
         is.close();
-       
+
         Statement st = dbc.createStatement();
         ResultSet rs = st.executeQuery("SELECT t FROM strings WHERE id = 'id4711'");
         assertThat(rs.next(), is(true));
         assertThat(rs.getString(1), is("This is a CLOB column."));
+        rs.close();
+        st.close();
         dbc.close();
     }
 
@@ -127,6 +129,15 @@ public abstract class AbstractCommandRunnerTest {
     @Test
     public void test03ShouldInsertData() throws JAXBException, SQLException, IOException {
         insertData(getJdbcUrl());
+
+        Connection dbc = DriverManager.getConnection(getJdbcUrl(), "warp", "warp");
+        Statement st = dbc.createStatement();
+        ResultSet rs = st.executeQuery("SELECT i8 FROM numbers WHERE id = 3");
+        assertThat(rs.next(), is(true));
+        assertThat(rs.getInt(1), is(44));
+        rs.close();
+        st.close();
+        dbc.close();
     }
 
     @Test

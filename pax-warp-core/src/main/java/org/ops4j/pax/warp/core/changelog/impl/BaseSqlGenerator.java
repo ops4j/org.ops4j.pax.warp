@@ -83,14 +83,18 @@ public class BaseSqlGenerator extends BaseVisitor {
 
     protected VisitorAction produceStatement(String templateName, Object action) {
         String sql = renderTemplate(templateName, action);
+        runStatement(sql);
+
+        return VisitorAction.CONTINUE;
+    }
+
+    protected void runStatement(String sql) {
         try (PreparedStatement st = dbc.prepareStatement(sql)) {
             consumer.accept(st);
         }
         catch (SQLException exc) {
             throw new WarpException(exc);
         }
-
-        return VisitorAction.CONTINUE;
     }
 
     protected String renderTemplate(String templateName, Object action) {

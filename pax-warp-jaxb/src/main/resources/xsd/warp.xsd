@@ -63,6 +63,7 @@
                 <xsd:element name="dropColumn" type="DropColumn" />
                 <xsd:element name="createIndex" type="CreateIndex" />
                 <xsd:element name="dropIndex" type="DropIndex" />
+                <xsd:element name="runSql" type="RunSql" />
             </xsd:choice>
         </xsd:sequence>
         <xsd:attribute name="id" type="xsd:string" use="required" />
@@ -191,5 +192,14 @@
             <xsd:enumeration value="NO ACTION" />
         </xsd:restriction>
     </xsd:simpleType>
+    
+    <xsd:complexType name="RunSql">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="dbms" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
 
 </xsd:schema>
