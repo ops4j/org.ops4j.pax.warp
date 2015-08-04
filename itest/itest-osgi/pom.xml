@@ -160,6 +160,13 @@
     </dependencies>
 
     <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+    
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -168,6 +175,9 @@
                     <reuseForks>true</reuseForks>
                     <forkCount>1</forkCount>
                     <runOrder>alphabetical</runOrder>
+                    <systemPropertyVariables>
+                        <version.trimou>${version.trimou}</version.trimou>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <plugin>

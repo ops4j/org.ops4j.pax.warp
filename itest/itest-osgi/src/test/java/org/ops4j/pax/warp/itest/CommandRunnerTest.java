@@ -45,6 +45,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.ops4j.pax.exam.Configuration;
+import org.ops4j.pax.exam.ConfigurationManager;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
@@ -72,6 +73,8 @@ public class CommandRunnerTest {
 
     @Configuration
     public Option[] config() {
+        ConfigurationManager cm = new ConfigurationManager();
+        String trimouVersion = cm.getProperty("version.trimou");
         return options(
             logbackBundles(),
             junitBundles(),
@@ -84,7 +87,7 @@ public class CommandRunnerTest {
             linkBundle("javax.el-api"),
             linkBundle("com.google.guava"),
             linkBundle("org.apache.commons.lang3"),
-            wrappedBundle(mavenBundle("org.trimou", "trimou-core", "1.7.2.Final")),
+            wrappedBundle(mavenBundle("org.trimou", "trimou-core", trimouVersion)),
             workspaceBundle("pax-warp-core"),
             workspaceBundle("pax-warp-jaxb"));
 

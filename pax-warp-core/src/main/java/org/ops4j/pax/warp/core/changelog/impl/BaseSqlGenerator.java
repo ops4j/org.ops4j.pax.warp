@@ -70,7 +70,7 @@ public class BaseSqlGenerator extends BaseVisitor {
         engine = MustacheEngineBuilder.newBuilder()
             .addTemplateLocator(genericLocator)
             .addTemplateLocator(dbmsLocator)
-            .registerHelpers(HelpersBuilder.builtin().addSwitch().build())
+            .registerHelpers(HelpersBuilder.empty().addSwitch().build())
             .addGlobalData("trim", new TrimmingLambda())
             // manually add default extension to avoid META-INF/service classloader issues
             // when running under OSGi

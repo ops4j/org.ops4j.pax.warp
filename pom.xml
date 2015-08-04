@@ -30,6 +30,7 @@
         <version.pax.exam>4.5.0</version.pax.exam>
         <version.pax.jdbc>0.5.0</version.pax.jdbc>
         <version.pax.url>2.4.1</version.pax.url>
+        <version.trimou>1.8.0.Final</version.trimou>
         <version.weld>2.2.11.Final</version.weld>
         <version.weld.api>2.2.Final</version.weld.api>
     </properties>
@@ -208,7 +209,7 @@
             <dependency>
                 <groupId>org.trimou</groupId>
                 <artifactId>trimou-core</artifactId>
-                <version>1.7.3.Final</version>
+                <version>${version.trimou}</version>
             </dependency>
 
         </dependencies>
