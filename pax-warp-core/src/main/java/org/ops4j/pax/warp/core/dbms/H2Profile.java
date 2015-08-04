@@ -17,9 +17,6 @@
  */
 package org.ops4j.pax.warp.core.dbms;
 
-
-
-
 /**
  * @author Harald Wellmann
  *
@@ -39,5 +36,10 @@ public class H2Profile implements DbmsProfile {
     @Override
     public boolean requiresLowerCaseTableNames() {
         return false;
+    }
+
+    @Override
+    public boolean isGeneratedIndex(String indexName) {
+        return indexName.startsWith("PRIMARY_KEY_") || indexName.startsWith("FK_");
     }
 }

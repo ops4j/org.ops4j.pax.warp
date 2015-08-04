@@ -17,8 +17,9 @@
  */
 package org.ops4j.pax.warp.core.command;
 
-
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  * @author Harald Wellmann
@@ -35,5 +36,13 @@ public class H2CommandRunnerTest extends AbstractCommandRunnerTest {
     @Override
     protected String getJdbcAdminUrl() {
         return null;
+    }
+
+    @Override
+    protected void dropAndCreateDatabase() throws SQLException {
+        Connection dbc = DriverManager.getConnection(getJdbcUrl(), "warp", "warp");
+        dbc.createStatement().execute("drop all objects");
+        dbc.commit();
+        dbc.close();
     }
 }

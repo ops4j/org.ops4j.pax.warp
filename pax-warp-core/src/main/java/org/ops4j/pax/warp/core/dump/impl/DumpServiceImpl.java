@@ -1,15 +1,15 @@
 /*
  * Copyright 2014 Harald Wellmann.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied.
- * 
+ *
  * See the License for the specific language governing permissions and limitations under the
  * License.
  */
@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.ops4j.pax.warp.core.changelog.ChangeLogWriter;
+import org.ops4j.pax.warp.core.dbms.DbmsProfile;
 import org.ops4j.pax.warp.core.dump.DumpService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
@@ -64,20 +65,26 @@ public class DumpServiceImpl implements DumpService {
     private ChangeLogWriter changeLogWriter;
 
     @Override
-    public void dumpStructure(Connection dbc, OutputStream os) {
+    public void dumpStructure(Connection dbc, OutputStream os, DbmsProfile dbms) {
         DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
         DatabaseModel database = inspector.buildDatabaseModel();
 
         ChangeLog changeLog = new ChangeLog();
         changeLog.setVersion("0.1");
         changeLog.getChangeSet();
-        database.getTables().forEach(t -> addChangeSet(changeLog, t));
+        database.getTables().stream().filter(t -> !isWarpTable(t)).
+            forEach(t -> addChangeSet(changeLog, t));
         database.getPrimaryKeys().forEach(t -> addChangeSet(changeLog, t));
         database.getForeignKeys().forEach(t -> addChangeSet(changeLog, t));
-        database.getIndexes().forEach(t -> addChangeSet(changeLog, t));
+        database.getIndexes().stream().filter(t -> !dbms.isGeneratedIndex(t.getIndexName())).
+            forEach(t -> addChangeSet(changeLog, t));
 
         changeLogWriter.writeChangeLog(changeLog, os);
 
+    }
+
+    private boolean isWarpTable(CreateTable table) {
+        return table.getTableName().equalsIgnoreCase("warp_history");
     }
 
     private void addChangeSet(ChangeLog changeLog, Object action) {
@@ -90,7 +97,7 @@ public class DumpServiceImpl implements DumpService {
     }
 
     @Override
-    public void dumpData(Connection dbc, OutputStream os) {
+    public void dumpData(Connection dbc, OutputStream os, DbmsProfile dbms) {
         DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
         DatabaseModel database = inspector.buildDatabaseModel();
 
@@ -154,7 +161,7 @@ public class DumpServiceImpl implements DumpService {
      * NOTE: {@code rs.getObject(col)} should be sufficient in theory, but at least for H2 CLOB
      * columns, it returns strings like {@code clob0: 'Foobar'}, so we switch on the type and use
      * {@code rs.getString(col)} where appropriate.
-     * 
+     *
      * @param rs
      *            result set
      * @param metaData
@@ -177,7 +184,7 @@ public class DumpServiceImpl implements DumpService {
             case VARCHAR:
                 value = rs.getString(col);
                 break;
-                
+
             case BLOB:
             case BINARY:
             case VARBINARY:
@@ -187,7 +194,7 @@ public class DumpServiceImpl implements DumpService {
                     value = Base64.getEncoder().encodeToString(bytes);
                 }
                 break;
-                
+
             default:
                 value = rs.getObject(col);
         }

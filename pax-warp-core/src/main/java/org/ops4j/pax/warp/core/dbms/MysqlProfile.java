@@ -40,4 +40,9 @@ public class MysqlProfile implements DbmsProfile {
     public boolean requiresLowerCaseTableNames() {
         return true;
     }
+
+    @Override
+    public boolean isGeneratedIndex(String indexName) {
+        return indexName.equalsIgnoreCase("PRIMARY") || indexName.toUpperCase().startsWith("FK_");
+    }
 }

@@ -52,15 +52,6 @@ public abstract class AbstractCommandRunnerTest {
     @Inject
     private CommandRunner commandRunner;
 
-    private void dropAndCreateDatabase(String jdbcAdminUrl) throws SQLException {
-        Connection dbc = DriverManager.getConnection(jdbcAdminUrl, "warp", "warp");
-        Statement st = dbc.createStatement();
-        st.executeUpdate("drop database if exists warp");
-        st.executeUpdate("create database warp");
-        st.close();
-        dbc.close();
-    }
-
     private void updateStructure(String jdbcUrl) throws JAXBException, SQLException, IOException {
         InputStream is = getClass().getResourceAsStream("/changelogs/changelog1.xml");
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
@@ -74,6 +65,22 @@ public abstract class AbstractCommandRunnerTest {
         OutputStream os = new FileOutputStream("target/dataOnly1.xml");
         commandRunner.dumpData(dbc, os);
         os.close();
+        dbc.close();
+    }
+
+    private void dumpStructure(String jdbcUrl) throws JAXBException, SQLException, IOException {
+        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
+        OutputStream os = new FileOutputStream("target/structure1.xml");
+        commandRunner.dumpStructure(dbc, os);
+        os.close();
+        dbc.close();
+    }
+
+    private void reimportStructure(String jdbcUrl) throws JAXBException, SQLException, IOException {
+        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
+        InputStream is = new FileInputStream("target/structure1.xml");
+        commandRunner.migrate(dbc, is);
+        is.close();
         dbc.close();
     }
 
@@ -112,13 +119,13 @@ public abstract class AbstractCommandRunnerTest {
 
     protected abstract String getJdbcAdminUrl();
 
+    protected abstract void dropAndCreateDatabase() throws SQLException;
+
     @Test
     public void test01ShouldUpdate() throws JAXBException, SQLException, IOException {
-        String adminUrl = getJdbcAdminUrl();
-        if (adminUrl != null) {
-            dropAndCreateDatabase(adminUrl);
-        }
+        dropAndCreateDatabase();
         updateStructure(getJdbcUrl());
+        dumpStructure(getJdbcUrl());
     }
 
     @Test
@@ -153,5 +160,11 @@ public abstract class AbstractCommandRunnerTest {
     @Test
     public void test07ShouldDropColumnAndIndex() throws JAXBException, SQLException, IOException {
         runDropChangeSet(getJdbcUrl());
+    }
+
+    @Test
+    public void test08ShouldReimportStructure() throws JAXBException, SQLException, IOException {
+        dropAndCreateDatabase();
+        reimportStructure(getJdbcUrl());
     }
 }

@@ -81,18 +81,18 @@ public class CommandRunnerImpl implements CommandRunner {
 
     @Override
     public void dumpStructure(Connection dbc, OutputStream os) {
-        dumpDataService.dumpStructure(dbc, os);
+        dumpDataService.dumpStructure(dbc, os, getDbms(dbc));
     }
 
     @Override
     public void dumpData(Connection dbc, OutputStream os) {
-        dumpDataService.dumpData(dbc, os);
+        dumpDataService.dumpData(dbc, os, getDbms(dbc));
     }
 
     @Override
     public void dumpData(DataSource ds, OutputStream os) {
         try (Connection dbc = ds.getConnection()) {
-            dumpDataService.dumpData(dbc, os);
+            dumpDataService.dumpData(dbc, os, getDbms(dbc));
         }
         catch (SQLException exc) {
             throw new WarpException(exc);
@@ -222,6 +222,4 @@ public class CommandRunnerImpl implements CommandRunner {
     public void setProfileSelector(DbmsProfileSelector profileSelector) {
         this.profileSelector = profileSelector;
     }
-
-
 }
