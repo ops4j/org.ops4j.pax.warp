@@ -120,7 +120,7 @@ public class DumpServiceImpl implements DumpService {
     }
 
     private void insertData(List<Object> changes, CreateTable createTable, Connection dbc) {
-        log.info("selecting data from {}", createTable.getTableName());
+        log.debug("selecting data from {}", createTable.getTableName());
         String columns = createTable.getColumn().stream().map(c -> c.getName())
             .collect(Collectors.joining(", "));
         String sql = String.format("select %s from %s", columns, createTable.getTableName());

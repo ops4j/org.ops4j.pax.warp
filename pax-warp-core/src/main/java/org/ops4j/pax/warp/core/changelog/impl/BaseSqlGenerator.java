@@ -100,7 +100,7 @@ public class BaseSqlGenerator extends BaseVisitor {
     protected String renderTemplate(String templateName, Object action) {
         Mustache mustache = engine.getMustache(templateName);
         String result = mustache.render(ImmutableMap.of("action", action));
-        log.info(result);
+        log.debug(result);
         return result;
     }
 
