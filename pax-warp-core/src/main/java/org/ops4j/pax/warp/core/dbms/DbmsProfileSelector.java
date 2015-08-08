@@ -17,6 +17,8 @@
  */
 package org.ops4j.pax.warp.core.dbms;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,6 +64,28 @@ public class DbmsProfileSelector {
         }
         else {
             return profile;
+        }
+    }
+
+    private String getSubprotocol(String jdbcUrl) {
+        String[] words = jdbcUrl.split(":", 3);
+        return words[1];
+    }
+
+    /**
+     * Select the profile for the given connection.
+     *
+     * @param dbc
+     *            database connection
+     * @return profile
+     */
+    public DbmsProfile selectProfile(Connection dbc) {
+        try {
+            String subprotocol = getSubprotocol(dbc.getMetaData().getURL());
+            return selectProfile(subprotocol);
+        }
+        catch (SQLException exc) {
+            throw new WarpException(exc);
         }
     }
 

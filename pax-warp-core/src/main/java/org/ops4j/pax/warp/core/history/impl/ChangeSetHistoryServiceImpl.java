@@ -24,16 +24,21 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.ops4j.pax.warp.core.dbms.DbmsProfile;
+import org.ops4j.pax.warp.core.dbms.DbmsProfileSelector;
 import org.ops4j.pax.warp.core.history.ChangeSetHistory;
 import org.ops4j.pax.warp.core.history.ChangeSetHistoryService;
+import org.ops4j.pax.warp.core.history.SchemaHandler;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.Column;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 import org.ops4j.pax.warp.jaxb.gen.SqlType;
 import org.ops4j.pax.warp.scope.CdiDependent;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * Implements {@link ChangeSetHistoryService}.
@@ -45,6 +50,9 @@ import org.osgi.service.component.annotations.Component;
 @Named
 @CdiDependent
 public class ChangeSetHistoryServiceImpl implements ChangeSetHistoryService {
+
+    @Inject
+    private DbmsProfileSelector profileSelector;
 
     @Override
     public CreateTable createHistoryTableAction() {
@@ -81,20 +89,27 @@ public class ChangeSetHistoryServiceImpl implements ChangeSetHistoryService {
             if (metaData.storesUpperCaseIdentifiers()) {
                 tableName = tableName.toUpperCase();
             }
-            return hasTable(metaData, tableName);
+            return hasTable(metaData, getSchema(dbc), tableName);
         }
         catch (SQLException exc) {
             throw new WarpException(exc);
         }
     }
 
-    private boolean hasTable(DatabaseMetaData metaData, String tableName) throws SQLException {
+    private String getSchema(Connection dbc) throws SQLException {
+        DbmsProfile dbms = profileSelector.selectProfile(dbc);
+        SchemaHandler handler = new SchemaHandler(dbms, dbc, s -> {});
+        return handler.getCurrentSchema();
+    }
+
+    private boolean hasTable(DatabaseMetaData metaData, String schemaName, String tableName)
+        throws SQLException {
         boolean result = false;
-        try (ResultSet rs = metaData.getTables(null, null, tableName, new String[] { "TABLE" })) {
+        try (ResultSet rs = metaData.getTables(null, schemaName, tableName,
+            new String[] { "TABLE" })) {
             result = rs.next();
         }
         return result;
-
     }
 
     @Override
@@ -113,4 +128,14 @@ public class ChangeSetHistoryServiceImpl implements ChangeSetHistoryService {
         }
         return history;
     }
+
+    /**
+     * @param profileSelector
+     *            the profileSelector to set
+     */
+    @Reference
+    public void setProfileSelector(DbmsProfileSelector profileSelector) {
+        this.profileSelector = profileSelector;
+    }
+
 }

@@ -177,23 +177,8 @@ public class CommandRunnerImpl implements CommandRunner {
         }
     }
 
-    /**
-     * @param jdbcUrl
-     * @return
-     */
-    private String getDbms(String jdbcUrl) {
-        String[] words = jdbcUrl.split(":", 3);
-        return words[1];
-    }
-
     private DbmsProfile getDbms(Connection dbc) {
-        try {
-            String subprotocol = getDbms(dbc.getMetaData().getURL());
-            return profileSelector.selectProfile(subprotocol);
-        }
-        catch (SQLException exc) {
-            throw new WarpException(exc);
-        }
+        return profileSelector.selectProfile(dbc);
     }
 
     /**
@@ -214,9 +199,9 @@ public class CommandRunnerImpl implements CommandRunner {
         this.updateService = updateService;
     }
 
-
     /**
-     * @param profileSelector the profileSelector to set
+     * @param profileSelector
+     *            the profileSelector to set
      */
     @Reference
     public void setProfileSelector(DbmsProfileSelector profileSelector) {
