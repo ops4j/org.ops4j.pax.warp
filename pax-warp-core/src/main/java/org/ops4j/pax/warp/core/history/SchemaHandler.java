@@ -45,19 +45,17 @@ public class SchemaHandler extends BaseSqlGenerator {
 
     public String getCurrentSchema() throws SQLException {
         String sql = renderTemplate("getCurrentSchema", new Object());
-        Statement st = dbc.createStatement();
-        ResultSet rs = st.executeQuery(sql);
-        String schema = null;
-        if (rs.next()) {
-            schema = rs.getString(1);
+        try (Statement st = dbc.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+            String schema = null;
+            if (rs.next()) {
+                schema = rs.getString(1);
+            }
+            return schema;
         }
-        rs.close();
-        st.close();
-        return schema;
     }
 
     public void setCurrentSchema(String schemaName) {
-
+        // TODO
     }
 
 }
