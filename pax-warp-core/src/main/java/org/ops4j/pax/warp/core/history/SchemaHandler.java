@@ -39,7 +39,7 @@ public class SchemaHandler {
      * @param subprotocol JDBC subprotocol
      */
     public SchemaHandler(String subprotocol) {
-       this.engine = new TemplateEngine(subprotocol);
+        this.engine = new TemplateEngine(subprotocol);
     }
 
     /**
@@ -50,7 +50,8 @@ public class SchemaHandler {
      */
     public String getCurrentSchema(Connection dbc) throws SQLException {
         String sql = engine.renderTemplate("getCurrentSchema", new Object());
-        try (Statement st = dbc.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+        try (Statement st = dbc.createStatement();
+            ResultSet rs = st.executeQuery(sql)) {
             String schema = null;
             if (rs.next()) {
                 schema = rs.getString(1);
