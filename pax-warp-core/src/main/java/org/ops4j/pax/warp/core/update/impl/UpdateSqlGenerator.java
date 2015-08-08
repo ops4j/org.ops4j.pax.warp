@@ -205,7 +205,7 @@ public class UpdateSqlGenerator extends BaseSqlGenerator {
         if (dbms.requiresLowerCaseTableNames()) {
             action.setTableName(action.getTableName().toLowerCase());
         }
-        String rawSql = renderTemplate("insert", action);
+        String rawSql = engine.renderTemplate("insert", action);
         try (PreparedStatement st = dbc.prepareStatement(rawSql)) {
             int i = 1;
             for (ColumnValue columnValue : action.getColumn()) {

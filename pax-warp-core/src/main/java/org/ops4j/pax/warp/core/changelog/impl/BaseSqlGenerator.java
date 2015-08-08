@@ -24,24 +24,13 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.ops4j.pax.warp.core.dbms.DbmsProfile;
-import org.ops4j.pax.warp.core.trimou.TrimmingLambda;
+import org.ops4j.pax.warp.core.trimou.TemplateEngine;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
 import org.ops4j.pax.warp.jaxb.gen.visitor.BaseVisitor;
 import org.ops4j.pax.warp.jaxb.gen.visitor.VisitorAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.trimou.Mustache;
-import org.trimou.engine.MustacheEngine;
-import org.trimou.engine.MustacheEngineBuilder;
-import org.trimou.engine.locator.ClassPathTemplateLocator;
-import org.trimou.engine.resolver.CombinedIndexResolver;
-import org.trimou.engine.resolver.MapResolver;
-import org.trimou.engine.resolver.ReflectionResolver;
-import org.trimou.engine.resolver.ThisResolver;
-import org.trimou.handlebars.HelpersBuilder;
-
-import com.google.common.collect.ImmutableMap;
 
 
 
@@ -53,36 +42,18 @@ public class BaseSqlGenerator extends BaseVisitor {
     protected Connection dbc;
     protected Consumer<PreparedStatement> consumer;
     protected Predicate<ChangeSet> changeSetFilter = x -> true;
-
-    private MustacheEngine engine;
+    protected TemplateEngine engine;
 
     protected BaseSqlGenerator(DbmsProfile dbms, Connection dbc,
         Consumer<PreparedStatement> consumer) {
         this.dbms = dbms;
         this.dbc = dbc;
         this.consumer = consumer;
-        // generic SQL template
-        ClassPathTemplateLocator genericLocator
-            = new ClassPathTemplateLocator(100, "trimou/shared", "trimou");
-        // DBMS specific templates, loaded with higher priority
-        ClassPathTemplateLocator dbmsLocator
-            = new ClassPathTemplateLocator(200, "trimou/" + dbms.getSubprotocol(), "trimou");
-        engine = MustacheEngineBuilder.newBuilder()
-            .addTemplateLocator(genericLocator)
-            .addTemplateLocator(dbmsLocator)
-            .registerHelpers(HelpersBuilder.empty().addSwitch().build())
-            .addGlobalData("trim", new TrimmingLambda())
-            // manually add default extension to avoid META-INF/service classloader issues
-            // when running under OSGi
-            .omitServiceLoaderConfigurationExtensions()
-            .addResolver(new ReflectionResolver())
-            .addResolver(new ThisResolver()).addResolver(new MapResolver())
-            .addResolver(new CombinedIndexResolver())
-            .build();
+        this.engine = new TemplateEngine(dbms.getSubprotocol());
     }
 
     protected VisitorAction produceStatement(String templateName, Object action) {
-        String sql = renderTemplate(templateName, action);
+        String sql = engine.renderTemplate(templateName, action);
         runStatement(sql);
 
         return VisitorAction.CONTINUE;
@@ -96,14 +67,6 @@ public class BaseSqlGenerator extends BaseVisitor {
             throw new WarpException(exc);
         }
     }
-
-    protected String renderTemplate(String templateName, Object action) {
-        Mustache mustache = engine.getMustache(templateName);
-        String result = mustache.render(ImmutableMap.of("action", action));
-        log.debug(result);
-        return result;
-    }
-
 
     /**
      * @return the changeSetFilter

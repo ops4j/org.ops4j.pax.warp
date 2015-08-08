@@ -18,33 +18,38 @@
 package org.ops4j.pax.warp.core.history;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.function.Consumer;
 
-import org.ops4j.pax.warp.core.changelog.impl.BaseSqlGenerator;
-import org.ops4j.pax.warp.core.dbms.DbmsProfile;
+import org.ops4j.pax.warp.core.trimou.TemplateEngine;
 
 /**
+ * Gets or sets the current schema on a database connection.
+ *
  * @author Harald Wellmann
  *
  */
-public class SchemaHandler extends BaseSqlGenerator {
+public class SchemaHandler {
+
+    private TemplateEngine engine;
 
     /**
-     * @param dbms
-     * @param dbc
-     * @param consumer
+     * Constructs a schema handler for the given JDBC subprotocol.
+     * @param subprotocol JDBC subprotocol
      */
-    public SchemaHandler(DbmsProfile dbms, Connection dbc,
-        Consumer<PreparedStatement> consumer) {
-        super(dbms, dbc, consumer);
+    public SchemaHandler(String subprotocol) {
+       this.engine = new TemplateEngine(subprotocol);
     }
 
-    public String getCurrentSchema() throws SQLException {
-        String sql = renderTemplate("getCurrentSchema", new Object());
+    /**
+     * Gets the current schema set on the given connection.
+     * @param dbc database connection
+     * @return current schema
+     * @throws SQLException
+     */
+    public String getCurrentSchema(Connection dbc) throws SQLException {
+        String sql = engine.renderTemplate("getCurrentSchema", new Object());
         try (Statement st = dbc.createStatement(); ResultSet rs = st.executeQuery(sql)) {
             String schema = null;
             if (rs.next()) {
@@ -54,8 +59,13 @@ public class SchemaHandler extends BaseSqlGenerator {
         }
     }
 
+    /**
+     * Sets the current schema on the given connection.
+     *
+     * @param schemaName
+     *            name of schema to be set
+     */
     public void setCurrentSchema(String schemaName) {
         // TODO
     }
-
 }

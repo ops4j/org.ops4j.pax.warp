@@ -98,8 +98,8 @@ public class ChangeSetHistoryServiceImpl implements ChangeSetHistoryService {
 
     private String getSchema(Connection dbc) throws SQLException {
         DbmsProfile dbms = profileSelector.selectProfile(dbc);
-        SchemaHandler handler = new SchemaHandler(dbms, dbc, s -> { /* noop */ });
-        return handler.getCurrentSchema();
+        SchemaHandler handler = new SchemaHandler(dbms.getSubprotocol());
+        return handler.getCurrentSchema(dbc);
     }
 
     private boolean hasTable(DatabaseMetaData metaData, String schemaName, String tableName)
