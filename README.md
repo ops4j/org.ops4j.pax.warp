@@ -9,7 +9,7 @@ It is licensed under the Apache Software License 2.0 by the OPS4J community.
 
 ## Documentation
 
-* See module `pax-warp-manual`.
+* [User Manual](http://ops4j.github.io/pax/warp/0.2.0/)
 
 ## Build
 
