@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Harald Wellmann.
+ * Copyright 2015 Harald Wellmann.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,13 +31,13 @@ import org.apache.maven.plugins.annotations.Mojo;
  * @author hwellmann
  *
  */
-@Mojo(name = "dump-structure", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
-public class DumpStructureMojo extends AbstractWarpMojo {
+@Mojo(name = "dump-data", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
+public class DumpDataMojo extends AbstractWarpMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try (OutputStream os = new FileOutputStream(changeLog)) {
-            commandRunner.dumpStructure(url, username, password, os);
+            commandRunner.dumpData(url, username, password, os);
         }
         catch (IOException exc) {
             throw new MojoExecutionException("error writing change log", exc);
