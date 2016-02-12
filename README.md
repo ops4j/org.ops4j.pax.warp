@@ -29,11 +29,7 @@ Run Build:
 
 Releases go to Maven Central.
 
-Pax Warp is incubating. The current milestone release is *Pax Warp 0.1.0*.
-
-## Issue Tracking
-
-* <http://team.ops4j.org/browse/PAXWARP>
+Pax Warp is incubating. The current milestone release is *Pax Warp 0.3.0*.
 
 ## Continuous Integration Builds
 
