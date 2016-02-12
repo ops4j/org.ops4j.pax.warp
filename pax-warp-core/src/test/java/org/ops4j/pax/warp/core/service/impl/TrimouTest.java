@@ -45,6 +45,7 @@ import org.ops4j.pax.warp.jaxb.gen.TableReference;
 import org.trimou.Mustache;
 import org.trimou.engine.MustacheEngine;
 import org.trimou.engine.MustacheEngineBuilder;
+import org.trimou.engine.config.EngineConfigurationKey;
 import org.trimou.engine.locator.ClassPathTemplateLocator;
 import org.trimou.handlebars.HelpersBuilder;
 import org.trimou.lambda.InputProcessingLambda;
@@ -71,6 +72,7 @@ public class TrimouTest {
             }
         };
         engine = MustacheEngineBuilder.newBuilder()
+            .setProperty(EngineConfigurationKey.DEFAULT_FILE_ENCODING, "UTF-8")
             .addTemplateLocator(new ClassPathTemplateLocator(100, "trimou/shared", "trimou"))
             .addTemplateLocator(new ClassPathTemplateLocator(200, "trimou/h2", "trimou"))
             .registerHelpers(HelpersBuilder.empty().addSwitch().build())

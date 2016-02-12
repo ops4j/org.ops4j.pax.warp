@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.trimou.Mustache;
 import org.trimou.engine.MustacheEngine;
 import org.trimou.engine.MustacheEngineBuilder;
+import org.trimou.engine.config.EngineConfigurationKey;
 import org.trimou.engine.locator.ClassPathTemplateLocator;
 import org.trimou.engine.resolver.CombinedIndexResolver;
 import org.trimou.engine.resolver.MapResolver;
@@ -54,6 +55,7 @@ public class TemplateEngine {
         ClassPathTemplateLocator dbmsLocator = new ClassPathTemplateLocator(200,
             "trimou/" + subprotocol, "trimou");
         engine = MustacheEngineBuilder.newBuilder()
+            .setProperty(EngineConfigurationKey.DEFAULT_FILE_ENCODING, "UTF-8")
             .addTemplateLocator(genericLocator)
             .addTemplateLocator(dbmsLocator)
             .registerHelpers(HelpersBuilder.empty().addSwitch().build())
