@@ -31,8 +31,8 @@
         <version.pax.jdbc>0.5.0</version.pax.jdbc>
         <version.pax.url>2.4.5</version.pax.url>
         <version.trimou>1.8.4.Final</version.trimou>
-        <version.weld>2.2.11.Final</version.weld>
-        <version.weld.api>2.2.Final</version.weld.api>
+        <version.weld>2.3.3.Final</version.weld>
+        <version.weld.api>2.3.Final</version.weld.api>
     </properties>
 
     <modules>
