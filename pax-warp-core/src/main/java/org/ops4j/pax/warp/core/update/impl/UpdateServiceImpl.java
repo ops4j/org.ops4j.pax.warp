@@ -1,15 +1,15 @@
 /*
  * Copyright 2014 Harald Wellmann.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied.
- * 
+ *
  * See the License for the specific language governing permissions and limitations under the
  * License.
  */
@@ -101,6 +101,24 @@ public class UpdateServiceImpl implements UpdateService {
         }
     }
 
+    private void importDataInternal(Connection dbc, InputStream is, DbmsProfile dbms) {
+        boolean autoCommit = false;
+        try {
+            autoCommit = dbc.getAutoCommit();
+            dbc.setAutoCommit(false);
+            ImportDataSqlGenerator generator = new ImportDataSqlGenerator(dbms, dbc, s -> runUpdate(s),
+                context);
+
+            ChangeLog changeLog = readChangeLog(is);
+            changeLog.accept(generator);
+            dbc.setAutoCommit(autoCommit);
+        }
+        catch (SQLException | JAXBException exc) {
+            throw new WarpException(exc);
+        }
+    }
+
+
     @Override
     public void importData(Connection dbc, InputStream is, DbmsProfile dbms,
         List<String> excludedTables) {
@@ -120,7 +138,7 @@ public class UpdateServiceImpl implements UpdateService {
         changeLogService.truncateTables(changes, database);
 
         boolean hasPreChanges = !changes.isEmpty();
-        
+
         ChangeLog postChangeLog = new ChangeLog();
         postChangeLog.setVersion("0.1");
         postChangeLog.getChangeSet();
@@ -138,7 +156,7 @@ public class UpdateServiceImpl implements UpdateService {
             update(dbc, preInsertFile, dbms);
         }
         try {
-            migrate(dbc, is, dbms);
+            importDataInternal(dbc, is, dbms);
         }
         finally {
             if (hasPostChanges) {

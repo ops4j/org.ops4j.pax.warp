@@ -136,15 +136,6 @@ public abstract class AbstractCommandRunnerTest {
     @Test
     public void test03ShouldInsertData() throws JAXBException, SQLException, IOException {
         insertData(getJdbcUrl());
-
-        Connection dbc = DriverManager.getConnection(getJdbcUrl(), "warp", "warp");
-        Statement st = dbc.createStatement();
-        ResultSet rs = st.executeQuery("SELECT i8 FROM numbers WHERE id = 3");
-        assertThat(rs.next(), is(true));
-        assertThat(rs.getInt(1), is(44));
-        rs.close();
-        st.close();
-        dbc.close();
     }
 
     @Test

@@ -38,8 +38,5 @@
             <column name="id" type="INTEGER">4</column>
             <column name="b" type="BLOB">SGVsbG8gd29ybGQh</column>
         </insert>
-        <runSql>
-            UPDATE numbers SET i8 = 44 WHERE id = 3
-        </runSql>
     </changeSet>
 </changeLog>
