@@ -206,6 +206,7 @@ public class DumpServiceImpl implements DumpService {
             columnValue.setNull(true);
         }
         else {
+            assert value != null;
             columnValue.setValue(value.toString());
         }
         return columnValue;

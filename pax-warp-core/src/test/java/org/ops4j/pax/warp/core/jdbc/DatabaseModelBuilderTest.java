@@ -86,15 +86,17 @@ public class DatabaseModelBuilderTest {
         changeLogWriter.write(changeLog, writer);
     }
 
-    private DatabaseModel buildDatabaseModel(String jdbcUrl, String scriptName) throws SQLException, IOException {
-        Connection dbc = DriverManager.getConnection(jdbcUrl, null, null);
-        Files.lines(Paths.get("src/test/resources/sql", scriptName)).forEach(s -> runUpdate(dbc, s));
+    private DatabaseModel buildDatabaseModel(String jdbcUrl, String scriptName)
+        throws SQLException, IOException {
+        try (Connection dbc = DriverManager.getConnection(jdbcUrl, null, null)) {
+            Files.lines(Paths.get("src/test/resources/sql", scriptName))
+                .forEach(s -> runUpdate(dbc, s));
 
-        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
-        DatabaseModel database = inspector.buildDatabaseModel();
-        assertThat(database, is(notNullValue()));
-        return database;
-
+            DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
+            DatabaseModel database = inspector.buildDatabaseModel();
+            assertThat(database, is(notNullValue()));
+            return database;
+        }
     }
 
     private void runUpdate(Connection dbc, String sql) {

@@ -17,7 +17,6 @@
  */
 package org.ops4j.pax.warp.core.command;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
@@ -41,12 +40,11 @@ public class DerbyCommandRunnerTest extends AbstractCommandRunnerTest {
     @Override
     protected void dropAndCreateDatabase() throws SQLException {
         try {
-            DriverManager.getConnection("jdbc:derby:memory:warp;drop=true", "warp", "warp");
+            DriverManager.getConnection("jdbc:derby:memory:warp;drop=true", "warp", "warp").close();
         }
         catch (SQLException exc) {
             // ignore
         }
-        Connection dbc = DriverManager.getConnection(getJdbcUrl(), "warp", "warp");
-        dbc.close();
+        DriverManager.getConnection(getJdbcUrl(), "warp", "warp").close();
     }
 }

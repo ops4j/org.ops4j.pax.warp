@@ -297,6 +297,8 @@ public class DatabaseModelBuilder {
                         index.setUnique(true);
                     }
                 }
+                // first result must have ordinal 1, so this assertion is true
+                assert index != null;
                 index.getColumn().add(column);
             }
         }
