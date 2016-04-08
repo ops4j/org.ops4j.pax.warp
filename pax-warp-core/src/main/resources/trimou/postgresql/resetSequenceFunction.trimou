@@ -1,0 +1,19 @@
+CREATE OR REPLACE FUNCTION public.reset_sequences(schema_name VARCHAR)
+RETURNS void AS
+$body$
+DECLARE
+  _table_name VARCHAR;
+  _column_name VARCHAR;  
+  _sequence_name VARCHAR;
+BEGIN
+  FOR _table_name IN SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = schema_name LOOP
+    FOR _column_name IN SELECT column_name FROM information_schema.columns WHERE table_name = _table_name LOOP
+        SELECT pg_get_serial_sequence(_table_name, _column_name) INTO _sequence_name;
+        IF _sequence_name IS NOT NULL THEN 
+            EXECUTE 'SELECT setval('''||_sequence_name||''', COALESCE((SELECT MAX('||quote_ident(_column_name)||')+1 FROM '||quote_ident(_table_name)||'), 1), FALSE);';
+        END IF;
+    END LOOP;   
+  END LOOP;
+END;
+$body$
+LANGUAGE 'plpgsql'

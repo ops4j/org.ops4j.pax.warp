@@ -17,6 +17,8 @@ package org.ops4j.pax.warp.core.update.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import org.ops4j.pax.warp.core.dbms.DbmsProfile;
@@ -109,5 +111,12 @@ public class ImportDataSqlGenerator extends InsertSqlGenerator {
     @Override
     public VisitorAction enter(RunSql action) {
         return notSupported(action);
+    }
+
+    protected void resetSequences(String schema) {
+        Map<String, String> params = new HashMap<>();
+        params.put("schemaName", schema);
+        produceStatement("resetSequenceFunction", params);
+        produceStatement("resetSequences", params);
     }
 }

@@ -102,23 +102,16 @@ public class UpdateServiceImpl implements UpdateService {
         }
     }
 
-    private void importDataInternal(Connection dbc, InputStream is, DbmsProfile dbms) {
-        boolean autoCommit = false;
+    private void importDataInternal(ImportDataSqlGenerator generator, InputStream is, String schema) {
         try {
-            autoCommit = dbc.getAutoCommit();
-            dbc.setAutoCommit(false);
-            ImportDataSqlGenerator generator = new ImportDataSqlGenerator(dbms, dbc, s -> runUpdate(s),
-                context);
-
             ChangeLog changeLog = readChangeLog(is);
             changeLog.accept(generator);
-            dbc.setAutoCommit(autoCommit);
+            generator.resetSequences(schema);
         }
-        catch (SQLException | JAXBException exc) {
+        catch (JAXBException exc) {
             throw new WarpException(exc);
         }
     }
-
 
     @Override
     public void importData(Connection dbc, InputStream is, DbmsProfile dbms,
@@ -158,7 +151,10 @@ public class UpdateServiceImpl implements UpdateService {
             update(dbc, preInsertFile, dbms);
         }
         try {
-            importDataInternal(dbc, is, dbms);
+            ImportDataSqlGenerator generator = new ImportDataSqlGenerator(dbms, dbc, s -> runUpdate(s),
+                context);
+
+            importDataInternal(generator, is, schema);
         }
         finally {
             if (hasPostChanges) {
@@ -189,7 +185,7 @@ public class UpdateServiceImpl implements UpdateService {
 
     private void runUpdate(PreparedStatement st) {
         try {
-            st.executeUpdate();
+            st.execute();
         }
         catch (SQLException exc) {
             throw new WarpException(exc);
