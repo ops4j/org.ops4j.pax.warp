@@ -184,7 +184,14 @@ integration tests in the `itest-osgi` module, e.g. `org.ops4j.pax.warp.itest.Com
 == Maven plugin
 
 Pax Warp provides a Maven plugin, with goals and parameters matching the command-line syntax
-of the stand-alone application.
+of the stand-alone application. The Maven plugin has the following goals:
+
+* `dump-data`
+* `dump-structure`
+* `import-data`
+* `migrate`
+
+These goals are bound to the default lifecycle phase `pre-integation-test`.
 
 This is an example configuration:
 
@@ -261,7 +268,52 @@ DDL statement in an auto-commit transaction, which amounts to the same thing).
 
 === Table attributes
 
-=== Column types
+Most changes refer to a single table referenced by a `tableName` attribute.
+
+=== Generic SQL types
+
+Pax Warp supports a number of generic SQL types which are mapped by a DBMS profile to the native
+column type of the given DBMS. The generic types are mapped as follows:
+
+[options="header"]
+|=======================
+| Pax Warp   | Derby               | H2               | MySQL            | PostgreSQL
+| blob       | blob                | blob             | BLOB             | bytea
+| boolean    | boolean             | boolean          | BOOLEAN          | boolean
+| char       | char                | char             | CHAR             | char
+| clob       | clob                | text             | TEXT             | text
+| date       | date                | date             | DATE             | date
+| decimal    | decimal             | decimal          | DECIMAL          | decimal
+| double     | double precision    | double precision | DOUBLE PRECISION | double precision
+| float      | real                | real             | REAL             | real
+| int8       | smallint            | tinyint          | TINYINT          | smallint
+| int16      | smallint            | smallint         | SMALLINT         | smallint
+| int32      | integer             | int              | INT              | int
+| int64      | bigint              | bigint           | BIGINT           | bigint
+| time       | time                | time             | TIME             | time
+| timestamp  | timestamp           | datetime         | TIMESTAMP        | timestamp
+| varchar    | varchar             | varchar          | VARCHAR          | varchar
+|=======================
+
+=== Column
+
+A table column is specified by `<column>` element with the following attributes
+
+[options="header"]
+|=======================
+| Attribute     | Type          | Meaning
+| name          | string        | Column name
+| type          | SqlType       | SQL type of column
+| primaryKey    | boolean       | Is the column part of primary key?
+| length        | int           | Length (for char, varchar)
+| precision     | int           | Precision (for decimal)
+| scale         | int           | Scale (for decimal)
+| defaultValue  | string        | Default value
+| autoIncrement | boolean       | Is this an autoincrement column?
+| nullable      | boolean       | Is this column nullable? (default: true)
+|=======================
+
+
 
 == Changes
 
@@ -275,6 +327,8 @@ DDL statement in an auto-commit transaction, which amounts to the same thing).
 
 === Create table
 
+=== Drop column
+
 === Drop foreign key
 
 === Drop index
@@ -284,6 +338,8 @@ DDL statement in an auto-commit transaction, which amounts to the same thing).
 === Drop table
 
 === Insert
+
+=== Run SQL
 
 === Truncate table
 
