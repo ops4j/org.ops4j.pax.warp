@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.ops4j.pax.warp.core.trimou.TemplateEngine;
+import org.ops4j.pax.warp.exc.WarpException;
 
 /**
  * Gets or sets the current schema on a database connection.
@@ -48,7 +49,7 @@ public class SchemaHandler {
      * @return current schema
      * @throws SQLException
      */
-    public String getCurrentSchema(Connection dbc) throws SQLException {
+    public String getCurrentSchema(Connection dbc) {
         String sql = engine.renderTemplate("getCurrentSchema", new Object());
         try (Statement st = dbc.createStatement();
             ResultSet rs = st.executeQuery(sql)) {
@@ -57,6 +58,9 @@ public class SchemaHandler {
                 schema = rs.getString(1);
             }
             return schema;
+        }
+        catch (SQLException exc) {
+            throw new WarpException(exc);
         }
     }
 

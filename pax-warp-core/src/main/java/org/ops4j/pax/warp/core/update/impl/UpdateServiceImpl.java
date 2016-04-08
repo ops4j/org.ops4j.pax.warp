@@ -37,6 +37,7 @@ import org.ops4j.pax.warp.core.changelog.impl.ChangeLogService;
 import org.ops4j.pax.warp.core.dbms.DbmsProfile;
 import org.ops4j.pax.warp.core.history.ChangeSetHistory;
 import org.ops4j.pax.warp.core.history.ChangeSetHistoryService;
+import org.ops4j.pax.warp.core.history.SchemaHandler;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
 import org.ops4j.pax.warp.core.update.UpdateService;
@@ -122,7 +123,8 @@ public class UpdateServiceImpl implements UpdateService {
     @Override
     public void importData(Connection dbc, InputStream is, DbmsProfile dbms,
         List<String> excludedTables) {
-        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
+        String schema = new SchemaHandler(dbms.getSubprotocol()).getCurrentSchema(dbc);
+        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, schema);
         DatabaseModel database = inspector.buildDatabaseModel();
         excludedTables.forEach(t -> database.removeTable(t));
 
