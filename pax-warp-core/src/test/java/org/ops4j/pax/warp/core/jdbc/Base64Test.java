@@ -17,25 +17,25 @@
  */
 package org.ops4j.pax.warp.core.jdbc;
 
-import static org.hamcrest.CoreMatchers.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.Base64;
 
 import org.junit.Test;
 
-
 /**
  * @author hwellmann
  *
  */
 public class Base64Test {
-    
+
     @Test
     public void base64RoundTrip() {
-        String encoded = Base64.getEncoder().encodeToString("Hello world!".getBytes());
+        String encoded = Base64.getEncoder().encodeToString("Hello world!".getBytes(UTF_8));
         assertThat(encoded, is("SGVsbG8gd29ybGQh"));
-        String decoded = new String(Base64.getDecoder().decode(encoded));
+        String decoded = new String(Base64.getDecoder().decode(encoded), UTF_8);
         assertThat(decoded, is("Hello world!"));
     }
 }
