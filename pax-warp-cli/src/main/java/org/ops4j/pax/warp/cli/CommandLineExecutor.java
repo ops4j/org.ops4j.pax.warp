@@ -82,7 +82,9 @@ public class CommandLineExecutor {
             command.run();
         }
         catch (ParameterException exc) {
-            log.error(exc.getMessage());
+            log.error("Invalid parameter: {}. Enable DEBUG logging for stack trace",
+                exc.getMessage());
+            log.debug("Stack trace:", exc);
             commander.usage();
         }
         // CHECKSTYLE:SKIP
