@@ -57,7 +57,8 @@ public class DatabaseModelBuilderTest {
     }
 
     @Test
-    public void shouldNotTreatUnderscoreAsWildcard() throws SQLException, JAXBException, IOException {
+    public void shouldNotTreatUnderscoreAsWildcard()
+        throws SQLException, JAXBException, IOException {
         DatabaseModel database = buildDatabaseModel("jdbc:h2:mem:test", "user_.sql");
         CreateTable table = database.getTable("USER_");
         assertThat(table, is(notNullValue()));
@@ -69,7 +70,8 @@ public class DatabaseModelBuilderTest {
         shouldGenerateChangeLog("jdbc:derby:memory:test;create=true", "derby.sql");
     }
 
-    private void shouldGenerateChangeLog(String jdbcUrl, String scriptName) throws SQLException, JAXBException, IOException {
+    private void shouldGenerateChangeLog(String jdbcUrl, String scriptName)
+        throws SQLException, JAXBException, IOException {
         DatabaseModel database = buildDatabaseModel(jdbcUrl, scriptName);
         ChangeLog changeLog = new ChangeLog();
         changeLog.setVersion("0.1");
@@ -91,7 +93,7 @@ public class DatabaseModelBuilderTest {
         throws SQLException, IOException {
 
         try (Connection dbc = DriverManager.getConnection(jdbcUrl, null, null);
-             Stream<String> lines = Files.lines(Paths.get("src/test/resources/sql", scriptName))) {
+            Stream<String> lines = Files.lines(Paths.get("src/test/resources/sql", scriptName))) {
 
             lines.forEach(s -> runUpdate(dbc, s));
 

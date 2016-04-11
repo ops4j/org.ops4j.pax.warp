@@ -127,7 +127,8 @@ public class CommandRunnerTest {
 
     private Connection createConnection() throws SQLException {
         Properties props = new Properties();
-        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME, "mem:warp;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
+        props.setProperty(DataSourceFactory.JDBC_DATABASE_NAME,
+            "mem:warp;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
         props.setProperty(DataSourceFactory.JDBC_USER, "warp");
         props.setProperty(DataSourceFactory.JDBC_PASSWORD, "warp");
         DataSource dataSource = dsf.createDataSource(props);

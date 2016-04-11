@@ -68,7 +68,8 @@ public class TestConfiguration {
     }
 
     public static Option workspaceBundle(String artifactId) {
-        String fileName = String.format("%s/../../%s/target/classes", PathUtils.getBaseDir(), artifactId);
+        String fileName = String.format("%s/../../%s/target/classes",
+            PathUtils.getBaseDir(), artifactId);
         if (new File(fileName).exists()) {
             String url = "reference:file:" + fileName;
             return bundle(url);

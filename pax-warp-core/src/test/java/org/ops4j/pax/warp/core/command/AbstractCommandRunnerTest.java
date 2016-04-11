@@ -40,7 +40,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.ops4j.pax.exam.junit.PaxExam;
 
-
 /**
  * @author Harald Wellmann
  *
@@ -129,7 +128,8 @@ public abstract class AbstractCommandRunnerTest {
     }
 
     @Test
-    public void test02UpdateStructureShouldBeIdempotent() throws JAXBException, SQLException, IOException {
+    public void test02UpdateStructureShouldBeIdempotent()
+        throws JAXBException, SQLException, IOException {
         updateStructure(getJdbcUrl());
     }
 
