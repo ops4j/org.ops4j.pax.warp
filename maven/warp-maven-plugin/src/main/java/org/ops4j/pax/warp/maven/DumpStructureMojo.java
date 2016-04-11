@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
@@ -35,7 +34,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 public class DumpStructureMojo extends AbstractWarpMojo {
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoExecutionException {
         try (OutputStream os = new FileOutputStream(changeLog)) {
             commandRunner.dumpStructure(url, username, password, os);
         }

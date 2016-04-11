@@ -53,7 +53,7 @@ public abstract class AbstractSchemaHandlerTest {
     }
 
     @Test
-    public void test01ShouldGetDefaultSchema() throws Exception {
+    public void test01ShouldGetDefaultSchema() throws SQLException {
         dropAndCreateDatabase();
         SchemaHandler schemaHandler = new SchemaHandler(getSubprotocol());
         Connection dbc = getConnection();
@@ -61,7 +61,7 @@ public abstract class AbstractSchemaHandlerTest {
     }
 
     @Test
-    public void test02ShouldCreateSchema() throws Exception {
+    public void test02ShouldCreateSchema() throws SQLException {
         SchemaHandler schemaHandler = new SchemaHandler(getSubprotocol());
         Connection dbc = getConnection();
         schemaHandler.createAndSetSchema(dbc, "foo");
@@ -69,7 +69,7 @@ public abstract class AbstractSchemaHandlerTest {
     }
 
     @Test
-    public void test03ShouldCreateSchemaIdempotent() throws Exception {
+    public void test03ShouldCreateSchemaIdempotent() throws SQLException {
         SchemaHandler schemaHandler = new SchemaHandler(getSubprotocol());
         Connection dbc = getConnection();
         schemaHandler.createAndSetSchema(dbc, "foo");
@@ -77,7 +77,7 @@ public abstract class AbstractSchemaHandlerTest {
     }
 
     @Test
-    public void test04ShouldSetSchema() throws Exception {
+    public void test04ShouldSetSchema() throws SQLException {
         SchemaHandler schemaHandler = new SchemaHandler(getSubprotocol());
         Connection dbc = getConnection();
         assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is("public"));

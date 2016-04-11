@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -44,7 +43,7 @@ public class ImportDataMojo extends AbstractWarpMojo {
     protected List<String> excludedTables;
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoExecutionException {
 
         try (InputStream is = new FileInputStream(changeLog)) {
             commandRunner.importData(url, username, password, is, excludedTables);

@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
@@ -34,7 +33,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 public class MigrateMojo extends AbstractWarpMojo {
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoExecutionException {
         try (InputStream is = new FileInputStream(changeLog)) {
             commandRunner.migrate(url, username, password, is);
         }
