@@ -264,7 +264,7 @@
                 </executions>
                 <configuration>
                     <configLocation>checkstyle/pax-exam-checks.xml</configLocation>
-                    <excludes>**/generated-sources/**</excludes>
+                    <excludes>**/generated-sources/**/*.java</excludes>
                 </configuration>
                 <dependencies>
                     <dependency>
