@@ -32,16 +32,28 @@ import org.ops4j.pax.warp.core.command.CommandRunner;
  */
 public abstract class AbstractWarpMojo extends AbstractMojo {
 
-    @Parameter(required = true)
+    /**
+     * JDBC URL of database.
+     */
+    @Parameter(required = true, property = "warp.url")
     protected String url;
 
-    @Parameter
+    /**
+     * Password for database connection.
+     */
+    @Parameter(property = "warp.password")
     protected String password;
 
-    @Parameter
+    /**
+     * User name for database connection.
+     */
+    @Parameter(property = "warp.username")
     protected String username;
 
-    @Parameter(required = true)
+    /**
+     * Change log file.
+     */
+    @Parameter(required = true, property = "warp.changeLog")
     protected File changeLog;
 
     @Inject
