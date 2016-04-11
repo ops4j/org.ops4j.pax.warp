@@ -31,6 +31,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
@@ -88,9 +89,11 @@ public class DatabaseModelBuilderTest {
 
     private DatabaseModel buildDatabaseModel(String jdbcUrl, String scriptName)
         throws SQLException, IOException {
-        try (Connection dbc = DriverManager.getConnection(jdbcUrl, null, null)) {
-            Files.lines(Paths.get("src/test/resources/sql", scriptName))
-                .forEach(s -> runUpdate(dbc, s));
+
+        try (Connection dbc = DriverManager.getConnection(jdbcUrl, null, null);
+             Stream<String> lines = Files.lines(Paths.get("src/test/resources/sql", scriptName))) {
+
+            lines.forEach(s -> runUpdate(dbc, s));
 
             DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
             DatabaseModel database = inspector.buildDatabaseModel();
