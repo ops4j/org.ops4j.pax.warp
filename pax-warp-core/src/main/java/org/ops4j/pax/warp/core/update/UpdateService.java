@@ -20,6 +20,7 @@ package org.ops4j.pax.warp.core.update;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Optional;
 
 import org.ops4j.pax.warp.core.dbms.DbmsProfile;
 
@@ -45,8 +46,11 @@ public interface UpdateService {
      *            change log input stream
      * @param dbms
      *            profile identifying a database management system
+     * @param schema
+     *            Optional database schema. If missing, the default schema will be used.
+     *            If present, the given schema will be used and created if missing.
      */
-    void migrate(Connection dbc, InputStream is, DbmsProfile dbms);
+    void migrate(Connection dbc, InputStream is, DbmsProfile dbms, Optional<String> schema);
 
     /**
      * Imports all data from the given change log into the given database. The data may come in any
@@ -63,8 +67,12 @@ public interface UpdateService {
      *            change log input stream
      * @param dbms
      *            profile identifying a database management system
+     * @param schema
+     *            Optional database schema. If missing, the default schema will be used.
+     *            If present, the given schema will be used.
      * @param excludedTables
      *            list of names of tables which will not be truncated
      */
-    void importData(Connection dbc, InputStream is, DbmsProfile dbms, List<String> excludedTables);
+    void importData(Connection dbc, InputStream is, DbmsProfile dbms, Optional<String> schema,
+        List<String> excludedTables);
 }

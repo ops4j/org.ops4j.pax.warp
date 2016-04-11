@@ -139,6 +139,20 @@ public interface CommandRunner {
     void migrate(Connection dbc, InputStream is);
 
     /**
+     * Migrates the database with the given connection by applying the change log from the given
+     * input stream.
+     *
+     * @param dbc
+     *            JDBC database connection
+     * @param is
+     *            input stream for change log
+     * @param schema
+     *            database schema which will be created if needed and will be set on the
+     *            given connection for the duration of this command
+     */
+    void migrate(Connection dbc, InputStream is, String schema);
+
+    /**
      * Deletes all existing data in the given database, except from the excluded tables, and imports
      * the data from the given change log stream. Foreign key constraints are disabled during the
      * import, so that the order of data in the change log does not matter.
@@ -184,6 +198,21 @@ public interface CommandRunner {
      *            input stream for change log
      */
     void importData(Connection dbc, InputStream is);
+
+    /**
+     * Deletes all existing data in the given database and imports the data from the given change
+     * log stream. Foreign key constraints are disabled during the import, so that the order of data
+     * in the change log does not matter.
+     *
+     * @param dbc
+     *            JDBC database connection
+     * @param is
+     *            input stream for change log
+     * @param schema
+     *            database schema which must exist and will be set on the given connection
+     *            for the duration of this command
+     */
+    void importData(Connection dbc, InputStream is, String schema);
 
     /**
      * Deletes all existing data in the given database, except from the excluded tables, and imports

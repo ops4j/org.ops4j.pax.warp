@@ -24,6 +24,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -132,7 +133,12 @@ public class CommandRunnerImpl implements CommandRunner {
 
     @Override
     public void migrate(Connection dbc, InputStream is) {
-        updateService.migrate(dbc, is, getDbms(dbc));
+        updateService.migrate(dbc, is, getDbms(dbc), Optional.empty());
+    }
+
+    @Override
+    public void migrate(Connection dbc, InputStream is, String schema) {
+        updateService.migrate(dbc, is, getDbms(dbc), Optional.of(schema));
     }
 
     @Override
@@ -158,7 +164,13 @@ public class CommandRunnerImpl implements CommandRunner {
 
     @Override
     public void importData(Connection dbc, InputStream is, List<String> excludedTables) {
-        updateService.importData(dbc, is, getDbms(dbc), excludedTables);
+        updateService.importData(dbc, is, getDbms(dbc), Optional.empty(), excludedTables);
+    }
+
+    @Override
+    public void importData(Connection dbc, InputStream is, String schema) {
+        updateService.importData(dbc, is, getDbms(dbc), Optional.of(schema),
+            Collections.emptyList());
     }
 
     @Override
@@ -170,7 +182,7 @@ public class CommandRunnerImpl implements CommandRunner {
     public void importData(DataSource ds, InputStream is, List<String> excludedTables) {
         try (Connection dbc = ds.getConnection()) {
             dbc.setAutoCommit(false);
-            updateService.importData(dbc, is, getDbms(dbc), excludedTables);
+            updateService.importData(dbc, is, getDbms(dbc), Optional.empty(), excludedTables);
         }
         catch (SQLException exc) {
             throw new WarpException(exc);

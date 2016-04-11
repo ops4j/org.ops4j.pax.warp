@@ -85,4 +85,11 @@ public class TemplateEngine {
         log.debug(result);
         return result;
     }
+
+    public String renderTemplate(String templateName, String argument) {
+        Mustache mustache = engine.getMustache(templateName);
+        String result = mustache.render(argument);
+        log.debug(result);
+        return result;
+    }
 }

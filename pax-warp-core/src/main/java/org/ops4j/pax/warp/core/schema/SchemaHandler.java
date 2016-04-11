@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.warp.core.history;
+package org.ops4j.pax.warp.core.schema;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -37,7 +37,9 @@ public class SchemaHandler {
 
     /**
      * Constructs a schema handler for the given JDBC subprotocol.
-     * @param subprotocol JDBC subprotocol
+     *
+     * @param subprotocol
+     *            JDBC subprotocol
      */
     public SchemaHandler(String subprotocol) {
         this.engine = new TemplateEngine(subprotocol);
@@ -45,7 +47,9 @@ public class SchemaHandler {
 
     /**
      * Gets the current schema set on the given connection.
-     * @param dbc database connection
+     *
+     * @param dbc
+     *            database connection
      * @return current schema
      * @throws SQLException
      */
@@ -67,10 +71,34 @@ public class SchemaHandler {
     /**
      * Sets the current schema on the given connection.
      *
+     * @param dbc
+     *            database connection
      * @param schemaName
      *            name of schema to be set
      */
-    public void setCurrentSchema(String schemaName) {
-        // TODO
+    public void setCurrentSchema(Connection dbc, String schemaName) {
+        runSql(dbc, engine.renderTemplate("setCurrentSchema", schemaName));
+    }
+
+    private void runSql(Connection dbc, String sql) {
+        try (Statement st = dbc.createStatement()) {
+            st.execute(sql);
+        }
+        catch (SQLException exc) {
+            throw new WarpException(exc);
+        }
+    }
+
+    /**
+     * Creates the given schema if it does not exist and sets it on the given connection.
+     *
+     * @param dbc
+     *            database connection
+     * @param schemaName
+     *            name of schema to be set
+     */
+    public void createAndSetSchema(Connection dbc, String schemaName) {
+        runSql(dbc, engine.renderTemplate("createSchema", schemaName));
+        setCurrentSchema(dbc, schemaName);
     }
 }

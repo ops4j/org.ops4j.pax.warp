@@ -31,7 +31,7 @@ import org.ops4j.pax.warp.core.dbms.DbmsProfile;
 import org.ops4j.pax.warp.core.dbms.DbmsProfileSelector;
 import org.ops4j.pax.warp.core.history.ChangeSetHistory;
 import org.ops4j.pax.warp.core.history.ChangeSetHistoryService;
-import org.ops4j.pax.warp.core.history.SchemaHandler;
+import org.ops4j.pax.warp.core.schema.SchemaHandler;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.Column;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;

@@ -25,6 +25,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -37,9 +38,9 @@ import org.ops4j.pax.warp.core.changelog.impl.ChangeLogService;
 import org.ops4j.pax.warp.core.dbms.DbmsProfile;
 import org.ops4j.pax.warp.core.history.ChangeSetHistory;
 import org.ops4j.pax.warp.core.history.ChangeSetHistoryService;
-import org.ops4j.pax.warp.core.history.SchemaHandler;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
+import org.ops4j.pax.warp.core.schema.SchemaHandler;
 import org.ops4j.pax.warp.core.update.UpdateService;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.WarpJaxbContext;
@@ -77,29 +78,40 @@ public class UpdateServiceImpl implements UpdateService {
     private WarpJaxbContext context;
 
     @Override
-    public void migrate(Connection dbc, InputStream is, DbmsProfile dbms) {
+    public void migrate(Connection dbc, InputStream is, DbmsProfile dbms, Optional<String> schema) {
         boolean autoCommit = false;
         try {
             autoCommit = dbc.getAutoCommit();
             dbc.setAutoCommit(false);
-            UpdateSqlGenerator generator = new UpdateSqlGenerator(dbms, dbc, s -> runUpdate(s),
-                context);
-            if (!historyService.hasMetaDataTable(dbc)) {
-                CreateTable action = historyService.createHistoryTableAction();
-                action.accept(generator);
-            }
-
-            ChangeSetHistory history = historyService.readChangeSetHistory(dbc);
-            generator.setChangeLogHistory(history);
-            generator.setChangeSetFilter(c -> !history.containsKey(c.getId()));
-
-            ChangeLog changeLog = readChangeLog(is);
-            changeLog.accept(generator);
+            migrateInternal(dbc, is, dbms);
             dbc.setAutoCommit(autoCommit);
         }
         catch (SQLException | JAXBException exc) {
             throw new WarpException(exc);
         }
+    }
+
+    /**
+     * @param dbc
+     * @param is
+     * @param dbms
+     * @throws JAXBException
+     */
+    private void migrateInternal(Connection dbc, InputStream is, DbmsProfile dbms)
+        throws JAXBException {
+        UpdateSqlGenerator generator = new UpdateSqlGenerator(dbms, dbc, s -> runUpdate(s),
+            context);
+        if (!historyService.hasMetaDataTable(dbc)) {
+            CreateTable action = historyService.createHistoryTableAction();
+            action.accept(generator);
+        }
+
+        ChangeSetHistory history = historyService.readChangeSetHistory(dbc);
+        generator.setChangeLogHistory(history);
+        generator.setChangeSetFilter(c -> !history.containsKey(c.getId()));
+
+        ChangeLog changeLog = readChangeLog(is);
+        changeLog.accept(generator);
     }
 
     private void importDataInternal(ImportDataSqlGenerator generator, InputStream is, String schema) {
@@ -114,10 +126,10 @@ public class UpdateServiceImpl implements UpdateService {
     }
 
     @Override
-    public void importData(Connection dbc, InputStream is, DbmsProfile dbms,
+    public void importData(Connection dbc, InputStream is, DbmsProfile dbms, Optional<String> schema,
         List<String> excludedTables) {
-        String schema = new SchemaHandler(dbms.getSubprotocol()).getCurrentSchema(dbc);
-        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, schema);
+        String schemaName = schema.orElse(new SchemaHandler(dbms.getSubprotocol()).getCurrentSchema(dbc));
+        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, schemaName);
         DatabaseModel database = inspector.buildDatabaseModel();
         excludedTables.forEach(t -> database.removeTable(t));
 
@@ -154,7 +166,7 @@ public class UpdateServiceImpl implements UpdateService {
             ImportDataSqlGenerator generator = new ImportDataSqlGenerator(dbms, dbc, s -> runUpdate(s),
                 context);
 
-            importDataInternal(generator, is, schema);
+            importDataInternal(generator, is, schemaName);
         }
         finally {
             if (hasPostChanges) {
@@ -176,7 +188,7 @@ public class UpdateServiceImpl implements UpdateService {
 
     private void update(Connection dbc, File changeLogFile, DbmsProfile dbms) {
         try (InputStream preIs = new FileInputStream(changeLogFile)) {
-            migrate(dbc, preIs, dbms);
+            migrate(dbc, preIs, dbms, Optional.empty());
         }
         catch (IOException exc) {
             throw new WarpException(exc);
@@ -229,4 +241,5 @@ public class UpdateServiceImpl implements UpdateService {
     public void setContext(WarpJaxbContext context) {
         this.context = context;
     }
+
 }
