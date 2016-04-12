@@ -188,4 +188,8 @@ public class UpdateSqlGenerator extends InsertSqlGenerator {
             preparedStatement.setObject(i + 1, values[i]);
         }
     }
+
+    public void setChangeLogHistory(ChangeSetHistory history) {
+        this.changeLogHistory = history;
+    }
 }
