@@ -26,7 +26,8 @@ import java.util.Base64;
 import org.junit.Test;
 
 /**
- * @author hwellmann
+ * Demonstrates usage of {@link Base64}.
+ * @author Harald Wellmann
  *
  */
 public class Base64Test {

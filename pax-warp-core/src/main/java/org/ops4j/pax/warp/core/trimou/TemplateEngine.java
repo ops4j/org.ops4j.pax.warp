@@ -86,6 +86,16 @@ public class TemplateEngine {
         return result;
     }
 
+    /**
+     * Renders a template of the given name with the given string argument. The argument
+     * is referenced in the template as {@code {{this}}}.
+     *
+     * @param templateName
+     *            template name
+     * @param action
+     *            Warp action JAXB model
+     * @return rendered template
+     */
     public String renderTemplate(String templateName, String argument) {
         Mustache mustache = engine.getMustache(templateName);
         String result = mustache.render(argument);

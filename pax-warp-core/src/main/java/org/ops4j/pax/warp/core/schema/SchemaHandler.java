@@ -29,7 +29,7 @@ import org.ops4j.pax.warp.core.trimou.TemplateEngine;
 import org.ops4j.pax.warp.exc.WarpException;
 
 /**
- * Gets or sets the current schema on a database connection.
+ * Manages schemas on a given database connection.
  *
  * @author Harald Wellmann
  *
@@ -109,6 +109,15 @@ public class SchemaHandler {
         setCurrentSchema(dbc, schemaName);
     }
 
+    /**
+     * Checks if the database has a schema with the given name.
+     *
+     * @param dbc
+     *            database connection
+     * @param schemaName
+     *            schema name
+     * @return true if schema exists
+     */
     public boolean hasSchema(Connection dbc, String schemaName) {
         try {
             if (profile.getSchemaIsCatalog()) {
@@ -132,6 +141,15 @@ public class SchemaHandler {
         }
     }
 
+    /**
+     * Checks if the database has a catalog with the given name.
+     *
+     * @param dbc
+     *            database connection
+     * @param catalogName
+     *            catalog name
+     * @return true if catalog exists
+     */
     public boolean hasCatalog(Connection dbc, String catalogName) throws SQLException {
         DatabaseMetaData metaData = dbc.getMetaData();
         try (ResultSet rs = metaData.getCatalogs()) {

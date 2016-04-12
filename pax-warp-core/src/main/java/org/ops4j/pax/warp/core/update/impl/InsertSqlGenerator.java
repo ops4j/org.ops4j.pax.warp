@@ -46,6 +46,12 @@ import org.ops4j.pax.warp.jaxb.gen.Insert;
 import org.ops4j.pax.warp.jaxb.gen.ObjectFactory;
 import org.ops4j.pax.warp.jaxb.gen.visitor.VisitorAction;
 
+/**
+ * SQL generator for INSERT actions.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class InsertSqlGenerator extends BaseSqlGenerator {
 
     private WarpJaxbContext context;
@@ -131,7 +137,7 @@ public class InsertSqlGenerator extends BaseSqlGenerator {
         }
     }
 
-    public String computeChecksum(ChangeSet changeSet) {
+    protected String computeChecksum(ChangeSet changeSet) {
         try {
             Marshaller marshaller = context.createFragmentMarshaller();
             StringWriter writer = new StringWriter();

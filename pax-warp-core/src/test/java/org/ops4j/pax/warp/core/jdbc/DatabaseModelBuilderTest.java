@@ -45,6 +45,12 @@ import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
 import org.ops4j.pax.warp.jaxb.gen.CreateTable;
 
+/**
+ * Tests {@link DatabaseModelBuilder}.
+ *
+ * @author Harald Wellmann
+ *
+ */
 @RunWith(PaxExam.class)
 public class DatabaseModelBuilderTest {
 

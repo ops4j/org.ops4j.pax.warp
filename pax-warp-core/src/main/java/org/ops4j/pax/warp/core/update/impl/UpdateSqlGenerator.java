@@ -45,6 +45,12 @@ import org.ops4j.pax.warp.jaxb.gen.RunSql;
 import org.ops4j.pax.warp.jaxb.gen.TruncateTable;
 import org.ops4j.pax.warp.jaxb.gen.visitor.VisitorAction;
 
+/**
+ * SQL generator for DDL statements.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class UpdateSqlGenerator extends InsertSqlGenerator {
 
     private String actualChecksum;
@@ -176,14 +182,10 @@ public class UpdateSqlGenerator extends InsertSqlGenerator {
         return VisitorAction.CONTINUE;
     }
 
-    public static void setValues(PreparedStatement preparedStatement, Object... values)
+    private static void setValues(PreparedStatement preparedStatement, Object... values)
         throws SQLException {
         for (int i = 0; i < values.length; i++) {
             preparedStatement.setObject(i + 1, values[i]);
         }
-    }
-
-    public void setChangeLogHistory(ChangeSetHistory history) {
-        this.changeLogHistory = history;
     }
 }

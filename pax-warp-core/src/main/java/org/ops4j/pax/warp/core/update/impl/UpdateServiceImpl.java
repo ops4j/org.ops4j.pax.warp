@@ -107,7 +107,6 @@ public class UpdateServiceImpl implements UpdateService {
         }
 
         ChangeSetHistory history = historyService.readChangeSetHistory(dbc);
-        generator.setChangeLogHistory(history);
         generator.setChangeSetFilter(c -> !history.containsKey(c.getId()));
 
         ChangeLog changeLog = readChangeLog(is);
