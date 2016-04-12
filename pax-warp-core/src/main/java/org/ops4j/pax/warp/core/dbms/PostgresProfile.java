@@ -30,14 +30,4 @@ public class PostgresProfile implements DbmsProfile {
     public String getSubprotocol() {
         return "postgresql";
     }
-
-    @Override
-    public boolean getAutoIncrementIsPrimaryKey() {
-        return false;
-    }
-
-    @Override
-    public boolean requiresLowerCaseTableNames() {
-        return false;
-    }
 }

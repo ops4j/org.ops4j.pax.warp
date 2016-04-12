@@ -37,14 +37,33 @@ public interface DbmsProfile {
      *
      * @return true if a primary is automatically generated for an auto-increment column
      */
-    boolean getAutoIncrementIsPrimaryKey();
-
-    boolean requiresLowerCaseTableNames();
-
-    default boolean requiresUpperCaseSchemaNames() {
+    default boolean getAutoIncrementIsPrimaryKey() {
         return false;
     }
 
+    /**
+     * Are table names case sensitive?
+     *
+     * @return true if table names are case-sensitive.
+     */
+    default boolean getTableNameIsCaseSensitive() {
+        return false;
+    }
+
+    /**
+     * Are schema names case sensitive?
+     *
+     * @return true if table names are case-sensitive.
+     */
+    default boolean getSchemaNameIsCaseSensitive() {
+        return false;
+    }
+
+    /**
+     * Is a schema equivalent to a catalog?
+     *
+     * @return false if the database supports real schemas
+     */
     default boolean getSchemaIsCatalog() {
         return false;
     }

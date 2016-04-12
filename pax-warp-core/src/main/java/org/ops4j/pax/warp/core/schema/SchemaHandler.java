@@ -125,7 +125,7 @@ public class SchemaHandler {
 
     private boolean hasRealSchema(Connection dbc, String schemaName) throws SQLException {
         DatabaseMetaData metaData = dbc.getMetaData();
-        String queryName = profile.requiresUpperCaseSchemaNames() ? schemaName.toUpperCase()
+        String queryName = profile.getSchemaNameIsCaseSensitive() ? schemaName.toUpperCase()
             : schemaName;
         try (ResultSet rs = metaData.getSchemas(null, queryName)) {
             return rs.next();

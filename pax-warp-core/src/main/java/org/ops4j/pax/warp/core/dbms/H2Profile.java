@@ -29,17 +29,7 @@ public class H2Profile implements DbmsProfile {
     }
 
     @Override
-    public boolean getAutoIncrementIsPrimaryKey() {
-        return false;
-    }
-
-    @Override
-    public boolean requiresLowerCaseTableNames() {
-        return false;
-    }
-
-    @Override
-    public boolean requiresUpperCaseSchemaNames() {
+    public boolean getSchemaNameIsCaseSensitive() {
         return true;
     }
 

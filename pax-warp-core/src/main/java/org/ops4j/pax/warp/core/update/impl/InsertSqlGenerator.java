@@ -57,7 +57,7 @@ public class InsertSqlGenerator extends BaseSqlGenerator {
     }
 
     protected VisitorAction generateInsert(Insert action) {
-        if (dbms.requiresLowerCaseTableNames()) {
+        if (dbms.getTableNameIsCaseSensitive()) {
             action.setTableName(action.getTableName().toLowerCase());
         }
         String rawSql = engine.renderTemplate("insert", action);

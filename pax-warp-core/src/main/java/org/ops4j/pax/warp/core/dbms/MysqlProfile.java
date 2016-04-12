@@ -37,7 +37,7 @@ public class MysqlProfile implements DbmsProfile {
     }
 
     @Override
-    public boolean requiresLowerCaseTableNames() {
+    public boolean getTableNameIsCaseSensitive() {
         return true;
     }
 
