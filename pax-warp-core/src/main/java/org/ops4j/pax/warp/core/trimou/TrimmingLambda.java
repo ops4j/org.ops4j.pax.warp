@@ -19,8 +19,9 @@ package org.ops4j.pax.warp.core.trimou;
 
 import org.trimou.lambda.InputProcessingLambda;
 
-
 /**
+ * Trims leading and trailing whitespace from a string.
+ *
  * @author Harald Wellmann
  *
  */
