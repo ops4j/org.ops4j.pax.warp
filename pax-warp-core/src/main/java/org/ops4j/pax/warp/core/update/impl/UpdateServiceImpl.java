@@ -128,7 +128,8 @@ public class UpdateServiceImpl implements UpdateService {
     @Override
     public void importData(Connection dbc, InputStream is, DbmsProfile dbms, Optional<String> schema,
         List<String> excludedTables) {
-        String schemaName = schema.orElse(new SchemaHandler(dbms.getSubprotocol()).getCurrentSchema(dbc));
+        String currentSchema = new SchemaHandler(dbms.getSubprotocol()).getCurrentSchema(dbc);
+        String schemaName = schema.orElse(currentSchema);
         DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, schemaName);
         DatabaseModel database = inspector.buildDatabaseModel();
         excludedTables.forEach(t -> database.removeTable(t));

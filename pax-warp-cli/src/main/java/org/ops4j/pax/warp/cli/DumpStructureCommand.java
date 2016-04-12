@@ -36,7 +36,8 @@ import com.beust.jcommander.Parameters;
  * @author Harald Wellmann
  *
  */
-@Parameters(commandDescription = "dumps a database structure, including tables, indexes and constraints, but no data")
+@Parameters(commandDescription = "dumps a database structure, "
+    + "including tables, indexes and constraints, but no data")
 @Dependent
 public class DumpStructureCommand implements Command {
 
