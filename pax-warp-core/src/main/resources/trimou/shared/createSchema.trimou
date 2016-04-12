@@ -1,1 +1,1 @@
-CREATE SCHEMA IF NOT EXISTS {{this}}
+CREATE SCHEMA {{this}}

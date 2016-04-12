@@ -57,7 +57,7 @@ public abstract class AbstractSchemaHandlerTest {
         dropAndCreateDatabase();
         SchemaHandler schemaHandler = new SchemaHandler(getSubprotocol());
         Connection dbc = getConnection();
-        assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is("public"));
+        assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is("warp"));
     }
 
     @Test
@@ -80,7 +80,7 @@ public abstract class AbstractSchemaHandlerTest {
     public void test04ShouldSetSchema() throws SQLException {
         SchemaHandler schemaHandler = new SchemaHandler(getSubprotocol());
         Connection dbc = getConnection();
-        assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is("public"));
+        assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is("warp"));
         schemaHandler.setCurrentSchema(dbc, "foo");
         assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is("foo"));
     }

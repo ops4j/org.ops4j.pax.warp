@@ -18,6 +18,7 @@
 package org.ops4j.pax.warp.core.schema;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -98,7 +99,21 @@ public class SchemaHandler {
      *            name of schema to be set
      */
     public void createAndSetSchema(Connection dbc, String schemaName) {
-        runSql(dbc, engine.renderTemplate("createSchema", schemaName));
+        if (! hasSchema(dbc, schemaName)) {
+            runSql(dbc, engine.renderTemplate("createSchema", schemaName));
+        }
         setCurrentSchema(dbc, schemaName);
+    }
+
+    public boolean hasSchema(Connection dbc, String schemaName) {
+        try {
+            DatabaseMetaData metaData = dbc.getMetaData();
+            try (ResultSet rs = metaData.getSchemas(null, schemaName.toUpperCase())) {
+                return rs.next();
+            }
+        }
+        catch (SQLException exc) {
+            throw new WarpException(exc);
+        }
     }
 }
