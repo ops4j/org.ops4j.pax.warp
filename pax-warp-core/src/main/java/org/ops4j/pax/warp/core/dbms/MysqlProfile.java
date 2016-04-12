@@ -45,4 +45,9 @@ public class MysqlProfile implements DbmsProfile {
     public boolean isGeneratedIndex(String indexName) {
         return indexName.equalsIgnoreCase("PRIMARY") || indexName.toUpperCase().startsWith("FK_");
     }
+
+    @Override
+    public boolean getSchemaIsCatalog() {
+        return true;
+    }
 }

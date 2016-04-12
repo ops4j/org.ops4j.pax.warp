@@ -45,6 +45,8 @@ public abstract class AbstractSchemaHandlerTest {
 
     protected abstract String getJdbcAdminUrl();
 
+    protected abstract String getDefaultSchema();
+
     protected abstract void dropAndCreateDatabase() throws SQLException;
 
 
@@ -57,7 +59,7 @@ public abstract class AbstractSchemaHandlerTest {
         dropAndCreateDatabase();
         SchemaHandler schemaHandler = new SchemaHandler(getSubprotocol());
         Connection dbc = getConnection();
-        assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is("warp"));
+        assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is(getDefaultSchema()));
     }
 
     @Test
@@ -80,7 +82,7 @@ public abstract class AbstractSchemaHandlerTest {
     public void test04ShouldSetSchema() throws SQLException {
         SchemaHandler schemaHandler = new SchemaHandler(getSubprotocol());
         Connection dbc = getConnection();
-        assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is("warp"));
+        assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is(getDefaultSchema()));
         schemaHandler.setCurrentSchema(dbc, "foo");
         assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is("foo"));
     }

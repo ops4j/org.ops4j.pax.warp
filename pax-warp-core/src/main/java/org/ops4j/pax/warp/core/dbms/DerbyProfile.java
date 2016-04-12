@@ -40,4 +40,9 @@ public class DerbyProfile implements DbmsProfile {
     public boolean requiresLowerCaseTableNames() {
         return false;
     }
+
+    @Override
+    public boolean requiresUpperCaseSchemaNames() {
+        return true;
+    }
 }

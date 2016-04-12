@@ -23,6 +23,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.ops4j.pax.warp.core.dbms.DbmsProfile;
+import org.ops4j.pax.warp.core.dbms.DbmsProfileSelector;
 import org.ops4j.pax.warp.core.trimou.TemplateEngine;
 import org.ops4j.pax.warp.exc.WarpException;
 
@@ -35,6 +37,7 @@ import org.ops4j.pax.warp.exc.WarpException;
 public class SchemaHandler {
 
     private TemplateEngine engine;
+    private DbmsProfile profile;
 
     /**
      * Constructs a schema handler for the given JDBC subprotocol.
@@ -44,6 +47,7 @@ public class SchemaHandler {
      */
     public SchemaHandler(String subprotocol) {
         this.engine = new TemplateEngine(subprotocol);
+        this.profile = new DbmsProfileSelector().selectProfile(subprotocol);
     }
 
     /**
@@ -99,7 +103,7 @@ public class SchemaHandler {
      *            name of schema to be set
      */
     public void createAndSetSchema(Connection dbc, String schemaName) {
-        if (! hasSchema(dbc, schemaName)) {
+        if (!hasSchema(dbc, schemaName)) {
             runSql(dbc, engine.renderTemplate("createSchema", schemaName));
         }
         setCurrentSchema(dbc, schemaName);
@@ -107,13 +111,36 @@ public class SchemaHandler {
 
     public boolean hasSchema(Connection dbc, String schemaName) {
         try {
-            DatabaseMetaData metaData = dbc.getMetaData();
-            try (ResultSet rs = metaData.getSchemas(null, schemaName.toUpperCase())) {
-                return rs.next();
+            if (profile.getSchemaIsCatalog()) {
+                return hasCatalog(dbc, schemaName);
+            }
+            else {
+                return hasRealSchema(dbc, schemaName);
             }
         }
         catch (SQLException exc) {
             throw new WarpException(exc);
         }
+    }
+
+    private boolean hasRealSchema(Connection dbc, String schemaName) throws SQLException {
+        DatabaseMetaData metaData = dbc.getMetaData();
+        String queryName = profile.requiresUpperCaseSchemaNames() ? schemaName.toUpperCase()
+            : schemaName;
+        try (ResultSet rs = metaData.getSchemas(null, queryName)) {
+            return rs.next();
+        }
+    }
+
+    public boolean hasCatalog(Connection dbc, String catalogName) throws SQLException {
+        DatabaseMetaData metaData = dbc.getMetaData();
+        try (ResultSet rs = metaData.getCatalogs()) {
+            while (rs.next()) {
+                if (catalogName.equals(rs.getString("TABLE_CAT"))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

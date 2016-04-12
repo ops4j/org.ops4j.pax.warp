@@ -44,6 +44,11 @@ public class PostgresSchemaHandlerTest extends AbstractSchemaHandlerTest {
     }
 
     @Override
+    protected String getDefaultSchema() {
+        return "public";
+    }
+
+    @Override
     protected void dropAndCreateDatabase() throws SQLException {
         Connection dbc = DriverManager.getConnection(getJdbcAdminUrl(), "warp", "warp");
         Statement st = dbc.createStatement();
@@ -52,4 +57,5 @@ public class PostgresSchemaHandlerTest extends AbstractSchemaHandlerTest {
         st.close();
         dbc.close();
     }
+
 }

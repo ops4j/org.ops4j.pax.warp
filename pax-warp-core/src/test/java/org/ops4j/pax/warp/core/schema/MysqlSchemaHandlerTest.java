@@ -24,34 +24,36 @@ import java.sql.Statement;
  * @author Harald Wellmann
  *
  */
-public class H2SchemaHandlerTest extends AbstractSchemaHandlerTest {
+public class MysqlSchemaHandlerTest extends AbstractSchemaHandlerTest {
 
     @Override
     protected String getJdbcUrl() {
-        return "jdbc:h2:mem:warp;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
+        return "jdbc:mysql://localhost/warp";
     }
 
     @Override
     protected String getJdbcAdminUrl() {
-        return null;
+        return "jdbc:mysql://localhost/warp_admin";
     }
 
     @Override
     protected String getSubprotocol() {
-        return "h2";
+        return "mysql";
     }
 
     @Override
     protected String getDefaultSchema() {
-        return "public";
+        return "warp";
     }
 
     @Override
     protected void dropAndCreateDatabase() throws SQLException {
-        try (Connection dbc = DriverManager.getConnection(getJdbcUrl(), "warp", "warp");
-            Statement st = dbc.createStatement()) {
-            st.execute("drop all objects");
-            dbc.commit();
-        }
+        Connection dbc = DriverManager.getConnection(getJdbcAdminUrl(), "warp", "warp");
+        Statement st = dbc.createStatement();
+        st.executeUpdate("drop database if exists warp");
+        st.executeUpdate("create database warp");
+        st.close();
+        dbc.close();
     }
+
 }

@@ -38,6 +38,12 @@ public class DerbySchemaHandlerTest extends AbstractSchemaHandlerTest {
     protected String getSubprotocol() {
         return "derby";
     }
+
+    @Override
+    protected String getDefaultSchema() {
+        return "warp";
+    }
+
     @Override
     protected void dropAndCreateDatabase() throws SQLException {
         try {

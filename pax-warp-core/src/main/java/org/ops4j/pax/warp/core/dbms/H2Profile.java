@@ -39,6 +39,11 @@ public class H2Profile implements DbmsProfile {
     }
 
     @Override
+    public boolean requiresUpperCaseSchemaNames() {
+        return true;
+    }
+
+    @Override
     public boolean isGeneratedIndex(String indexName) {
         return indexName.startsWith("PRIMARY_KEY_") || indexName.startsWith("FK_");
     }
