@@ -7,7 +7,7 @@
     <xsd:element name="changeLog">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element name="changeSet" type="ChangeSet" minOccurs="1" maxOccurs="unbounded" />
+                <xsd:element name="changeSet" type="ChangeSet" minOccurs="0" maxOccurs="unbounded" />
             </xsd:sequence>
             <xsd:attribute name="version" type="xsd:string" use="required" />
         </xsd:complexType>
