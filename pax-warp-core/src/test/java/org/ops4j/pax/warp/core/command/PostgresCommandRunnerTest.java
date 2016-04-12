@@ -17,10 +17,7 @@
  */
 package org.ops4j.pax.warp.core.command;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import org.ops4j.pax.warp.core.dbms.PostgresDbmsAdapter;
 
 /**
  * @author Harald Wellmann
@@ -28,23 +25,8 @@ import java.sql.Statement;
  */
 public class PostgresCommandRunnerTest extends AbstractCommandRunnerTest {
 
-    @Override
-    protected String getJdbcUrl() {
-        return "jdbc:postgresql://localhost/warp";
-    }
 
-    @Override
-    protected String getJdbcAdminUrl() {
-        return "jdbc:postgresql://localhost/warp_admin";
-    }
-
-    @Override
-    protected void dropAndCreateDatabase() throws SQLException {
-        Connection dbc = DriverManager.getConnection(getJdbcAdminUrl(), "warp", "warp");
-        Statement st = dbc.createStatement();
-        st.executeUpdate("drop database if exists warp");
-        st.executeUpdate("create database warp");
-        st.close();
-        dbc.close();
+    public PostgresCommandRunnerTest() {
+        super(new PostgresDbmsAdapter());
     }
 }

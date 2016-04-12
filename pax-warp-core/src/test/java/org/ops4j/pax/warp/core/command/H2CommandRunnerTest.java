@@ -15,10 +15,7 @@
  */
 package org.ops4j.pax.warp.core.command;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import org.ops4j.pax.warp.core.dbms.H2DbmsAdapter;
 
 /**
  * @author Harald Wellmann
@@ -26,22 +23,7 @@ import java.sql.Statement;
  */
 public class H2CommandRunnerTest extends AbstractCommandRunnerTest {
 
-    @Override
-    protected String getJdbcUrl() {
-        return "jdbc:h2:mem:warp;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
-    }
-
-    @Override
-    protected String getJdbcAdminUrl() {
-        return null;
-    }
-
-    @Override
-    protected void dropAndCreateDatabase() throws SQLException {
-        try (Connection dbc = DriverManager.getConnection(getJdbcUrl(), "warp", "warp");
-            Statement st = dbc.createStatement()) {
-            st.execute("drop all objects");
-            dbc.commit();
-        }
+    public H2CommandRunnerTest() {
+        super(new H2DbmsAdapter());
     }
 }

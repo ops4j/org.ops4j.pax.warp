@@ -39,6 +39,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.warp.core.dbms.DbmsAdapter;
 
 /**
  * @author Harald Wellmann
@@ -50,6 +51,13 @@ public abstract class AbstractCommandRunnerTest {
 
     @Inject
     private CommandRunner commandRunner;
+
+    private DbmsAdapter dbms;
+
+
+    protected AbstractCommandRunnerTest(DbmsAdapter dbms) {
+        this.dbms = dbms;
+    }
 
     private void updateStructure(String jdbcUrl) throws JAXBException, SQLException, IOException {
         InputStream is = getClass().getResourceAsStream("/changelogs/changelog1.xml");
@@ -114,11 +122,17 @@ public abstract class AbstractCommandRunnerTest {
         is.close();
     }
 
-    protected abstract String getJdbcUrl();
+    protected String getJdbcUrl() {
+        return dbms.getJdbcUrl();
+    }
 
-    protected abstract String getJdbcAdminUrl();
+    protected String getJdbcAdminUrl() {
+        return dbms.getJdbcUrl();
+    }
 
-    protected abstract void dropAndCreateDatabase() throws SQLException;
+    protected void dropAndCreateDatabase() throws SQLException {
+        dbms.dropAndCreateDatabase();
+    }
 
     @Test
     public void test01ShouldUpdate() throws JAXBException, SQLException, IOException {

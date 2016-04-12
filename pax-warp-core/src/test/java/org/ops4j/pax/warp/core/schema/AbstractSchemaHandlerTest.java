@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.warp.core.dbms.DbmsAdapter;
 
 
 /**
@@ -39,32 +40,28 @@ import org.ops4j.pax.exam.junit.PaxExam;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public abstract class AbstractSchemaHandlerTest {
 
-    protected abstract String getSubprotocol();
+    private DbmsAdapter dbms;
 
-    protected abstract String getJdbcUrl();
 
-    protected abstract String getJdbcAdminUrl();
-
-    protected abstract String getDefaultSchema();
-
-    protected abstract void dropAndCreateDatabase() throws SQLException;
-
+    protected AbstractSchemaHandlerTest(DbmsAdapter dbms) {
+        this.dbms = dbms;
+    }
 
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(getJdbcUrl(), "warp", "warp");
+        return DriverManager.getConnection(dbms.getJdbcUrl(), "warp", "warp");
     }
 
     @Test
     public void test01ShouldGetDefaultSchema() throws SQLException {
-        dropAndCreateDatabase();
-        SchemaHandler schemaHandler = new SchemaHandler(getSubprotocol());
+        dbms.dropAndCreateDatabase();
+        SchemaHandler schemaHandler = new SchemaHandler(dbms.getSubprotocol());
         Connection dbc = getConnection();
-        assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is(getDefaultSchema()));
+        assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is(dbms.getDefaultSchema()));
     }
 
     @Test
     public void test02ShouldCreateSchema() throws SQLException {
-        SchemaHandler schemaHandler = new SchemaHandler(getSubprotocol());
+        SchemaHandler schemaHandler = new SchemaHandler(dbms.getSubprotocol());
         Connection dbc = getConnection();
         schemaHandler.createAndSetSchema(dbc, "foo");
         assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is("foo"));
@@ -72,7 +69,7 @@ public abstract class AbstractSchemaHandlerTest {
 
     @Test
     public void test03ShouldCreateSchemaIdempotent() throws SQLException {
-        SchemaHandler schemaHandler = new SchemaHandler(getSubprotocol());
+        SchemaHandler schemaHandler = new SchemaHandler(dbms.getSubprotocol());
         Connection dbc = getConnection();
         schemaHandler.createAndSetSchema(dbc, "foo");
         assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is("foo"));
@@ -80,9 +77,9 @@ public abstract class AbstractSchemaHandlerTest {
 
     @Test
     public void test04ShouldSetSchema() throws SQLException {
-        SchemaHandler schemaHandler = new SchemaHandler(getSubprotocol());
+        SchemaHandler schemaHandler = new SchemaHandler(dbms.getSubprotocol());
         Connection dbc = getConnection();
-        assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is(getDefaultSchema()));
+        assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is(dbms.getDefaultSchema()));
         schemaHandler.setCurrentSchema(dbc, "foo");
         assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is("foo"));
     }

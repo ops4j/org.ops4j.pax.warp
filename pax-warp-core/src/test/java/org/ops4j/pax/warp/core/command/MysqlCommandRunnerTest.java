@@ -15,10 +15,7 @@
  */
 package org.ops4j.pax.warp.core.command;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import org.ops4j.pax.warp.core.dbms.MysqlDbmsAdapter;
 
 /**
  * @author Harald Wellmann
@@ -26,24 +23,7 @@ import java.sql.Statement;
  */
 public class MysqlCommandRunnerTest extends AbstractCommandRunnerTest {
 
-    @Override
-    protected String getJdbcUrl() {
-        return "jdbc:mysql://localhost/warp";
+    public MysqlCommandRunnerTest() {
+        super(new MysqlDbmsAdapter());
     }
-
-    @Override
-    protected String getJdbcAdminUrl() {
-        return "jdbc:mysql://localhost/warp_admin";
-    }
-
-    @Override
-    protected void dropAndCreateDatabase() throws SQLException {
-        Connection dbc = DriverManager.getConnection(getJdbcAdminUrl(), "warp", "warp");
-        Statement st = dbc.createStatement();
-        st.executeUpdate("drop database if exists warp");
-        st.executeUpdate("create database warp");
-        st.close();
-        dbc.close();
-    }
-
 }

@@ -17,10 +17,7 @@
  */
 package org.ops4j.pax.warp.core.schema;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import org.ops4j.pax.warp.core.dbms.PostgresDbmsAdapter;
 
 /**
  * @author Harald Wellmann
@@ -28,34 +25,8 @@ import java.sql.Statement;
  */
 public class PostgresSchemaHandlerTest extends AbstractSchemaHandlerTest {
 
-    @Override
-    protected String getJdbcUrl() {
-        return "jdbc:postgresql://localhost/warp";
-    }
 
-    @Override
-    protected String getJdbcAdminUrl() {
-        return "jdbc:postgresql://localhost/warp_admin";
+    public PostgresSchemaHandlerTest() {
+        super(new PostgresDbmsAdapter());
     }
-
-    @Override
-    protected String getSubprotocol() {
-        return "postgresql";
-    }
-
-    @Override
-    protected String getDefaultSchema() {
-        return "public";
-    }
-
-    @Override
-    protected void dropAndCreateDatabase() throws SQLException {
-        Connection dbc = DriverManager.getConnection(getJdbcAdminUrl(), "warp", "warp");
-        Statement st = dbc.createStatement();
-        st.executeUpdate("drop database if exists warp");
-        st.executeUpdate("create database warp");
-        st.close();
-        dbc.close();
-    }
-
 }

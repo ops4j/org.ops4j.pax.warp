@@ -17,8 +17,7 @@
  */
 package org.ops4j.pax.warp.core.command;
 
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import org.ops4j.pax.warp.core.dbms.DerbyDbmsAdapter;
 
 /**
  * @author Harald Wellmann
@@ -26,25 +25,7 @@ import java.sql.SQLException;
  */
 public class DerbyCommandRunnerTest extends AbstractCommandRunnerTest {
 
-
-    @Override
-    protected String getJdbcUrl() {
-        return "jdbc:derby:memory:warp;create=true";
-    }
-
-    @Override
-    protected String getJdbcAdminUrl() {
-        return null;
-    }
-
-    @Override
-    protected void dropAndCreateDatabase() throws SQLException {
-        try {
-            DriverManager.getConnection("jdbc:derby:memory:warp;drop=true", "warp", "warp").close();
-        }
-        catch (SQLException exc) {
-            // ignore
-        }
-        DriverManager.getConnection(getJdbcUrl(), "warp", "warp").close();
+    public DerbyCommandRunnerTest() {
+        super(new DerbyDbmsAdapter());
     }
 }
