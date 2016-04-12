@@ -33,7 +33,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-
+/**
+ * Base class for SQL generators.
+ *
+ * @author hwellmann
+ *
+ */
 public class BaseSqlGenerator extends BaseVisitor {
 
     protected Logger log = LoggerFactory.getLogger(BaseSqlGenerator.class);
