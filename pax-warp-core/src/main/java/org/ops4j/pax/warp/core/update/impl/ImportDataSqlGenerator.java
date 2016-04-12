@@ -39,8 +39,27 @@ import org.ops4j.pax.warp.jaxb.gen.TruncateTable;
 import org.ops4j.pax.warp.jaxb.gen.visitor.Visitable;
 import org.ops4j.pax.warp.jaxb.gen.visitor.VisitorAction;
 
+/**
+ * SQL generator for {@code importData} command. Only supports {@code INSERT} and throws exceptions
+ * for all other changes.
+ *
+ * @author Harald Wellmann
+ *
+ */
 public class ImportDataSqlGenerator extends InsertSqlGenerator {
 
+    /**
+     * Creates a new import SQL generator.
+     *
+     * @param dbms
+     *            DBMS profile
+     * @param dbc
+     *            database connection
+     * @param consumer
+     *            prepared statement consumer
+     * @param context
+     *            JAXB context for Warp schema
+     */
     public ImportDataSqlGenerator(DbmsProfile dbms, Connection dbc,
         Consumer<PreparedStatement> consumer,
         WarpJaxbContext context) {

@@ -56,7 +56,7 @@ public class InsertSqlGenerator extends BaseSqlGenerator {
 
     private WarpJaxbContext context;
 
-    public InsertSqlGenerator(DbmsProfile dbms, Connection dbc, Consumer<PreparedStatement> consumer,
+    protected InsertSqlGenerator(DbmsProfile dbms, Connection dbc, Consumer<PreparedStatement> consumer,
         WarpJaxbContext context) {
         super(dbms, dbc, consumer);
         this.context = context;

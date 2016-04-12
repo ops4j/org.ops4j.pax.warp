@@ -92,8 +92,8 @@ public class TemplateEngine {
      *
      * @param templateName
      *            template name
-     * @param action
-     *            Warp action JAXB model
+     * @param argument
+     *            single template argument
      * @return rendered template
      */
     public String renderTemplate(String templateName, String argument) {

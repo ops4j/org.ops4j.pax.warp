@@ -58,6 +58,18 @@ public class UpdateSqlGenerator extends InsertSqlGenerator {
     private Set<String> autoIncrementColumns;
     private boolean changeSetSkipped;
 
+    /**
+     * Creates a new update SQL generator.
+     *
+     * @param dbms
+     *            DBMS profile
+     * @param dbc
+     *            database connection
+     * @param consumer
+     *            prepared statement consumer
+     * @param context
+     *            JAXB context for Warp schema
+     */
     public UpdateSqlGenerator(DbmsProfile dbms, Connection dbc, Consumer<PreparedStatement> consumer,
         WarpJaxbContext context) {
         super(dbms, dbc, consumer, context);
