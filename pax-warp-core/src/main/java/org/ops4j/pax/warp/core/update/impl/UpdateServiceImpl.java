@@ -81,6 +81,11 @@ public class UpdateServiceImpl implements UpdateService {
     public void migrate(Connection dbc, InputStream is, DbmsProfile dbms, Optional<String> schema) {
         boolean autoCommit = false;
         try {
+            if (schema.isPresent()) {
+                SchemaHandler schemaHandler = new SchemaHandler(dbms.getSubprotocol());
+                schemaHandler.createAndSetSchema(dbc, schema.get());
+            }
+
             autoCommit = dbc.getAutoCommit();
             dbc.setAutoCommit(false);
             migrateInternal(dbc, is, dbms);
