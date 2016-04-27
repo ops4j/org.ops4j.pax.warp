@@ -41,6 +41,7 @@ public class MysqlDbmsAdapter implements DbmsAdapter {
         Connection dbc = DriverManager.getConnection(getJdbcAdminUrl(), "warp", "warp");
         Statement st = dbc.createStatement();
         st.executeUpdate("drop database if exists warp");
+        st.executeUpdate("drop database if exists foo");
         st.executeUpdate("create database warp");
         st.close();
         dbc.close();
@@ -50,5 +51,4 @@ public class MysqlDbmsAdapter implements DbmsAdapter {
     public String getSubprotocol() {
         return "mysql";
     }
-
 }
