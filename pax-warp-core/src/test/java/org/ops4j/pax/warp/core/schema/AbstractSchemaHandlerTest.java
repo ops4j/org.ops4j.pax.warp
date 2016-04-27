@@ -63,8 +63,10 @@ public abstract class AbstractSchemaHandlerTest {
     public void test02ShouldCreateSchema() throws SQLException {
         SchemaHandler schemaHandler = new SchemaHandler(dbms.getSubprotocol());
         Connection dbc = getConnection();
+        assertThat(schemaHandler.hasSchema(dbc, "foo"), is(false));
         schemaHandler.createAndSetSchema(dbc, "foo");
         assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is("foo"));
+        assertThat(schemaHandler.hasSchema(dbc, "foo"), is(true));
     }
 
     @Test
@@ -83,4 +85,5 @@ public abstract class AbstractSchemaHandlerTest {
         schemaHandler.setCurrentSchema(dbc, "foo");
         assertThat(schemaHandler.getCurrentSchema(dbc).toLowerCase(), is("foo"));
     }
+
 }

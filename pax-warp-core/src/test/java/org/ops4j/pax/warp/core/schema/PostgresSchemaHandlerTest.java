@@ -25,7 +25,6 @@ import org.ops4j.pax.warp.core.dbms.PostgresDbmsAdapter;
  */
 public class PostgresSchemaHandlerTest extends AbstractSchemaHandlerTest {
 
-
     public PostgresSchemaHandlerTest() {
         super(new PostgresDbmsAdapter());
     }
