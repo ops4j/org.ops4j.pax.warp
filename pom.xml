@@ -327,7 +327,7 @@
                 <sonar.jacoco.reportPath>${user.dir}/target/jacoco.exec</sonar.jacoco.reportPath>
                 <!-- Workaround for http://jira.codehaus.org/browse/SONARJAVA-759. -->
                 <sonar.java.binaries>${basedir}</sonar.java.binaries>
-                <sonar.exclusions>**/generated-sources/**</sonar.exclusions>
+                <sonar.exclusions>**/generated-sources/**,src/test/java/**/*</sonar.exclusions>
             </properties>
             <build>
                 <plugins>
