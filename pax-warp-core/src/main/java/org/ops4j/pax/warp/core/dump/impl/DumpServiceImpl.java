@@ -67,21 +67,21 @@ public class DumpServiceImpl implements DumpService {
     private ChangeLogWriter changeLogWriter;
 
     @Override
-    public void dumpStructure(Connection dbc, OutputStream os, DbmsProfile dbms, Optional<String> schema) {
+    public void dumpStructure(Connection dbc, OutputStream os, DbmsProfile dbms,
+        Optional<String> schema) {
         DatabaseModel database = buildDatabaseModel(dbc, dbms, schema);
 
         ChangeLog changeLog = new ChangeLog();
         changeLog.setVersion("0.1");
         changeLog.getChangeSet();
-        database.getTables().stream().filter(t -> !isWarpTable(t)).
-            forEach(t -> addChangeSet(changeLog, t));
+        database.getTables().stream().filter(t -> !isWarpTable(t))
+            .forEach(t -> addChangeSet(changeLog, t));
         database.getPrimaryKeys().forEach(t -> addChangeSet(changeLog, t));
         database.getForeignKeys().forEach(t -> addChangeSet(changeLog, t));
-        database.getIndexes().stream().filter(t -> !dbms.isGeneratedIndex(t.getIndexName())).
-            forEach(t -> addChangeSet(changeLog, t));
+        database.getIndexes().stream().filter(t -> !dbms.isGeneratedIndex(t.getIndexName()))
+            .forEach(t -> addChangeSet(changeLog, t));
 
         changeLogWriter.writeChangeLog(changeLog, os);
-
     }
 
     private DatabaseModel buildDatabaseModel(Connection dbc, DbmsProfile dbms,
@@ -89,8 +89,7 @@ public class DumpServiceImpl implements DumpService {
         String currentSchema = new SchemaHandler(dbms.getSubprotocol()).getCurrentSchema(dbc);
         String schemaName = schema.orElse(currentSchema);
         DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, schemaName);
-        DatabaseModel database = inspector.buildDatabaseModel();
-        return database;
+        return inspector.buildDatabaseModel();
     }
 
     private boolean isWarpTable(CreateTable table) {
