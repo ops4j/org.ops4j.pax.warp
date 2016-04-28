@@ -56,7 +56,6 @@ public class SchemaHandler {
      * @param dbc
      *            database connection
      * @return current schema
-     * @throws SQLException
      */
     public String getCurrentSchema(Connection dbc) {
         String sql = engine.renderTemplate("getCurrentSchema", new Object());
@@ -149,6 +148,7 @@ public class SchemaHandler {
      * @param catalogName
      *            catalog name
      * @return true if catalog exists
+     * @throws SQLException on error accessing connection metadata
      */
     public boolean hasCatalog(Connection dbc, String catalogName) throws SQLException {
         DatabaseMetaData metaData = dbc.getMetaData();
