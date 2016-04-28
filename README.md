@@ -9,7 +9,7 @@ It is licensed under the Apache Software License 2.0 by the OPS4J community.
 
 ## Documentation
 
-* [User Manual](http://ops4j.github.io/pax/warp/0.2.0/)
+* [User Manual](http://ops4j.github.io/pax/warp/0.5.0/)
 
 ## Build
 
@@ -29,7 +29,7 @@ Run Build:
 
 Releases go to Maven Central.
 
-Pax Warp is incubating. The current milestone release is *Pax Warp 0.3.0*.
+Pax Warp is incubating. The current milestone release is *Pax Warp 0.5.0*.
 
 ## Continuous Integration Builds
 
