@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,7 @@ import org.ops4j.pax.warp.core.dbms.DbmsProfile;
 import org.ops4j.pax.warp.core.dump.DumpService;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModel;
 import org.ops4j.pax.warp.core.jdbc.DatabaseModelBuilder;
+import org.ops4j.pax.warp.core.schema.SchemaHandler;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
@@ -65,9 +67,8 @@ public class DumpServiceImpl implements DumpService {
     private ChangeLogWriter changeLogWriter;
 
     @Override
-    public void dumpStructure(Connection dbc, OutputStream os, DbmsProfile dbms) {
-        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
-        DatabaseModel database = inspector.buildDatabaseModel();
+    public void dumpStructure(Connection dbc, OutputStream os, DbmsProfile dbms, Optional<String> schema) {
+        DatabaseModel database = buildDatabaseModel(dbc, dbms, schema);
 
         ChangeLog changeLog = new ChangeLog();
         changeLog.setVersion("0.1");
@@ -81,6 +82,15 @@ public class DumpServiceImpl implements DumpService {
 
         changeLogWriter.writeChangeLog(changeLog, os);
 
+    }
+
+    private DatabaseModel buildDatabaseModel(Connection dbc, DbmsProfile dbms,
+        Optional<String> schema) {
+        String currentSchema = new SchemaHandler(dbms.getSubprotocol()).getCurrentSchema(dbc);
+        String schemaName = schema.orElse(currentSchema);
+        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc, null, schemaName);
+        DatabaseModel database = inspector.buildDatabaseModel();
+        return database;
     }
 
     private boolean isWarpTable(CreateTable table) {
@@ -97,9 +107,8 @@ public class DumpServiceImpl implements DumpService {
     }
 
     @Override
-    public void dumpData(Connection dbc, OutputStream os, DbmsProfile dbms) {
-        DatabaseModelBuilder inspector = new DatabaseModelBuilder(dbc);
-        DatabaseModel database = inspector.buildDatabaseModel();
+    public void dumpData(Connection dbc, OutputStream os, DbmsProfile dbms, Optional<String> schema) {
+        DatabaseModel database = buildDatabaseModel(dbc, dbms, schema);
 
         ChangeLog changeLog = new ChangeLog();
         changeLog.setVersion("0.1");

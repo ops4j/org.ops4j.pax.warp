@@ -82,18 +82,28 @@ public class CommandRunnerImpl implements CommandRunner {
 
     @Override
     public void dumpStructure(Connection dbc, OutputStream os) {
-        dumpDataService.dumpStructure(dbc, os, getDbms(dbc));
+        dumpDataService.dumpStructure(dbc, os, getDbms(dbc), Optional.empty());
+    }
+
+    @Override
+    public void dumpStructure(Connection dbc, OutputStream os, String schema) {
+        dumpDataService.dumpStructure(dbc, os, getDbms(dbc), Optional.empty());
     }
 
     @Override
     public void dumpData(Connection dbc, OutputStream os) {
-        dumpDataService.dumpData(dbc, os, getDbms(dbc));
+        dumpDataService.dumpData(dbc, os, getDbms(dbc), Optional.empty());
+    }
+
+    @Override
+    public void dumpData(Connection dbc, OutputStream os, String schema) {
+        dumpDataService.dumpData(dbc, os, getDbms(dbc), Optional.of(schema));
     }
 
     @Override
     public void dumpData(DataSource ds, OutputStream os) {
         try (Connection dbc = ds.getConnection()) {
-            dumpDataService.dumpData(dbc, os, getDbms(dbc));
+            dumpDataService.dumpData(dbc, os, getDbms(dbc), Optional.empty());
         }
         catch (SQLException exc) {
             throw new WarpException(exc);

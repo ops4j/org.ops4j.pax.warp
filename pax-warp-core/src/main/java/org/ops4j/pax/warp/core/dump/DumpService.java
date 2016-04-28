@@ -19,6 +19,7 @@ package org.ops4j.pax.warp.core.dump;
 
 import java.io.OutputStream;
 import java.sql.Connection;
+import java.util.Optional;
 
 import org.ops4j.pax.warp.core.dbms.DbmsProfile;
 
@@ -40,8 +41,11 @@ public interface DumpService {
      *            output stream
      * @param dbms
      *            DBMS profile
+     * @param schema
+     *            Optional database schema. If missing, the current schema will be used.
+     *            If present, the given schema will be used.
      */
-    void dumpStructure(Connection dbc, OutputStream os, DbmsProfile dbms);
+    void dumpStructure(Connection dbc, OutputStream os, DbmsProfile dbms, Optional<String> schema);
 
     /**
      * Dumps all data from the given database as an XML change log to the given output stream.
@@ -52,6 +56,9 @@ public interface DumpService {
      *            output stream
      * @param dbms
      *            DBMS profile
+     * @param schema
+     *            Optional database schema. If missing, the current schema will be used.
+     *            If present, the given schema will be used.
      */
-    void dumpData(Connection dbc, OutputStream os, DbmsProfile dbms);
+    void dumpData(Connection dbc, OutputStream os, DbmsProfile dbms, Optional<String> schema);
 }

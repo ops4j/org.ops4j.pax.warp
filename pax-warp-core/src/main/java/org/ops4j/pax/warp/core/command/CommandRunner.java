@@ -62,6 +62,20 @@ public interface CommandRunner {
     void dumpStructure(Connection dbc, OutputStream os);
 
     /**
+     * Analyzes the structure of the tables of the given schema of the database with the given
+     * connection and writes a change log corresponding to the database structure to the given
+     * output stream. The change log does not contain any data records.
+     *
+     * @param dbc
+     *            JDBC database connection
+     * @param os
+     *            output stream for change log
+     * @param schema
+     *            database schema
+     */
+    void dumpStructure(Connection dbc, OutputStream os, String schema);
+
+    /**
      * Retrieves all data from the database with the given URL and writes a change log with these
      * data to the given output stream. The change log does not contain any structural information
      * like constraints or indexes.
@@ -88,6 +102,20 @@ public interface CommandRunner {
      *            output stream for change log
      */
     void dumpData(Connection dbc, OutputStream os);
+
+    /**
+     * Retrieves all data from the tables of the given schema of the database with the given
+     * connection and writes a change log with these data to the given output stream. The change log
+     * does not contain any structural information like constraints or indexes.
+     *
+     * @param dbc
+     *            JDBC database connection
+     * @param os
+     *            output stream for change log
+     * @param schema
+     *            database schema
+     */
+    void dumpData(Connection dbc, OutputStream os, String schema);
 
     /**
      * Retrieves all data from the database with the given data source and writes a change log with
