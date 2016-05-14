@@ -27,8 +27,8 @@ import org.trimou.engine.resolver.MapResolver;
 import org.trimou.engine.resolver.ReflectionResolver;
 import org.trimou.engine.resolver.ThisResolver;
 import org.trimou.handlebars.HelpersBuilder;
+import org.trimou.util.ImmutableMap;
 
-import com.google.common.collect.ImmutableMap;
 
 /**
  * Wraps and configures a Trimou template engine for rendering SQL code. Some templates depend
@@ -58,7 +58,12 @@ public class TemplateEngine {
             .setProperty(EngineConfigurationKey.DEFAULT_FILE_ENCODING, "UTF-8")
             .addTemplateLocator(genericLocator)
             .addTemplateLocator(dbmsLocator)
-            .registerHelpers(HelpersBuilder.empty().addSwitch().build())
+            .registerHelpers(HelpersBuilder.empty()
+                .addEach()
+                .addIf()
+                .addSwitch()
+                .addUnless()
+                .build())
             .addGlobalData("trim", new TrimmingLambda())
             // manually add default extension to avoid META-INF/service classloader issues
             // when running under OSGi

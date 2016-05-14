@@ -107,6 +107,7 @@ public class TrimouTest {
         Column c1 = new Column();
         c1.setName("c1");
         c1.setType(SqlType.INT_32);
+        c1.setNullable(false);
         Column c2 = new Column();
         c2.setName("c2");
         c2.setType(SqlType.INT_64);

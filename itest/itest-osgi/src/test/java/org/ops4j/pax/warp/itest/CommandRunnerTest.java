@@ -85,8 +85,6 @@ public class CommandRunnerTest {
             linkBundle("javax.enterprise.cdi-api"),
             linkBundle("javax.interceptor-api"),
             linkBundle("javax.el-api"),
-            linkBundle("com.google.guava"),
-            linkBundle("org.apache.commons.lang3"),
             wrappedBundle(mavenBundle("org.trimou", "trimou-core", trimouVersion)),
             workspaceBundle("pax-warp-core"),
             workspaceBundle("pax-warp-jaxb"));
