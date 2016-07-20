@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.ops4j</groupId>
@@ -108,6 +109,12 @@
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-atinject_1.0_spec</artifactId>
                 <version>1.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>javax.persistence</artifactId>
+                <version>2.1.1</version>
             </dependency>
 
             <dependency>
@@ -287,10 +294,10 @@
                 </repository>
             </repositories>
         </profile>
-        
+
         <!-- Profiles for "Sonar" -->
-        <!-- The sonar profile should be activated by setting property 'sonar'. That's important because 
-            we need to set an empty 'jacoco.argLine' otherwise. You can't define an empty default for that property 
+        <!-- The sonar profile should be activated by setting property 'sonar'. That's important because
+            we need to set an empty 'jacoco.argLine' otherwise. You can't define an empty default for that property
             in the global properties section because the empty value will override the value from Jacoco. -->
         <profile>
             <id>no-sonar</id>

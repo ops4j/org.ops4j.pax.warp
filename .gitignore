@@ -10,5 +10,5 @@ test-output
 *~
 .idea
 *.iml
-
+.DS_Store
 pax-warp-spring

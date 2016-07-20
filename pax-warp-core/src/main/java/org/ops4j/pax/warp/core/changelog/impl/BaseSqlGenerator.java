@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Base class for SQL generators.
  *
- * @author hwellmann
+ * @author Harald Wellmann
  *
  */
 public class BaseSqlGenerator extends BaseVisitor {
