@@ -17,6 +17,10 @@
  */
 package org.ops4j.pax.warp.core.schema;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assume.assumeThat;
+
+import org.junit.Before;
 import org.ops4j.pax.warp.core.dbms.PostgresDbmsAdapter;
 
 /**
@@ -24,6 +28,11 @@ import org.ops4j.pax.warp.core.dbms.PostgresDbmsAdapter;
  *
  */
 public class PostgresSchemaHandlerTest extends AbstractSchemaHandlerTest {
+
+    @Before
+    public void before() {
+        assumeThat(System.getProperty("postgres"), is("true"));
+    }
 
     public PostgresSchemaHandlerTest() {
         super(new PostgresDbmsAdapter());

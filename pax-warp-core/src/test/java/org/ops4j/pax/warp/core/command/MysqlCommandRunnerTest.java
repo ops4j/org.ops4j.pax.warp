@@ -15,6 +15,10 @@
  */
 package org.ops4j.pax.warp.core.command;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assume.assumeThat;
+
+import org.junit.Before;
 import org.ops4j.pax.warp.core.dbms.MysqlDbmsAdapter;
 
 /**
@@ -22,6 +26,11 @@ import org.ops4j.pax.warp.core.dbms.MysqlDbmsAdapter;
  *
  */
 public class MysqlCommandRunnerTest extends AbstractCommandRunnerTest {
+
+    @Before
+    public void before() {
+        assumeThat(System.getProperty("mysql"), is("true"));
+    }
 
     public MysqlCommandRunnerTest() {
         super(new MysqlDbmsAdapter());

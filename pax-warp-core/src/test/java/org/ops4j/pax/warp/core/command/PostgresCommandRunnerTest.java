@@ -17,6 +17,10 @@
  */
 package org.ops4j.pax.warp.core.command;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assume.assumeThat;
+
+import org.junit.Before;
 import org.ops4j.pax.warp.core.dbms.PostgresDbmsAdapter;
 
 /**
@@ -26,7 +30,12 @@ import org.ops4j.pax.warp.core.dbms.PostgresDbmsAdapter;
 public class PostgresCommandRunnerTest extends AbstractCommandRunnerTest {
 
 
-    public PostgresCommandRunnerTest() {
+    @Before
+    public void before() {
+        assumeThat(System.getProperty("postgres"), is("true"));
+    }
+
+   public PostgresCommandRunnerTest() {
         super(new PostgresDbmsAdapter());
     }
 }

@@ -15,6 +15,10 @@
  */
 package org.ops4j.pax.warp.core.schema;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assume.assumeThat;
+
+import org.junit.Before;
 import org.ops4j.pax.warp.core.dbms.MysqlDbmsAdapter;
 
 /**
@@ -23,6 +27,11 @@ import org.ops4j.pax.warp.core.dbms.MysqlDbmsAdapter;
  */
 public class MysqlSchemaHandlerTest extends AbstractSchemaHandlerTest {
 
+
+    @Before
+    public void before() {
+        assumeThat(System.getProperty("mysql"), is("true"));
+    }
 
     public MysqlSchemaHandlerTest() {
         super(new MysqlDbmsAdapter());
