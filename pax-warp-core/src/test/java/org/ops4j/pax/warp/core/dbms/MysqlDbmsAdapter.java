@@ -28,12 +28,12 @@ public class MysqlDbmsAdapter implements DbmsAdapter {
 
     @Override
     public String getJdbcUrl() {
-        return "jdbc:mysql://localhost/warp";
+        return "jdbc:mysql://localhost/warp?useSSL=false";
     }
 
     @Override
     public String getJdbcAdminUrl() {
-        return "jdbc:mysql://localhost/warp_admin";
+        return "jdbc:mysql://localhost/warp_admin?useSSL=false";
     }
 
     @Override
