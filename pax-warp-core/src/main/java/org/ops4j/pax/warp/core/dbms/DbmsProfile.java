@@ -78,4 +78,12 @@ public interface DbmsProfile {
     default boolean isGeneratedIndex(String indexName) {
         return false;
     }
+
+    default String quoteIdentifier(String identifier) {
+        StringBuilder builder = new StringBuilder();
+        builder.append('"');
+        builder.append(identifier);
+        builder.append('"');
+        return builder.toString();
+    }
 }

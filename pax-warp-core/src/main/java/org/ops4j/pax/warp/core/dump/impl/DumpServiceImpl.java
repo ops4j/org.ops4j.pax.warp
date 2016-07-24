@@ -112,26 +112,27 @@ public class DumpServiceImpl implements DumpService {
         ChangeLog changeLog = new ChangeLog();
         changeLog.setVersion("0.1");
 
-        insertData(changeLog, database, dbc);
+        insertData(changeLog, database, dbc, dbms);
 
         changeLogWriter.writeChangeLog(changeLog, os);
     }
 
-    private void insertData(ChangeLog changeLog, DatabaseModel database, Connection dbc) {
+    private void insertData(ChangeLog changeLog, DatabaseModel database, Connection dbc, DbmsProfile dbms) {
         ChangeSet changeSet = new ChangeSet();
         changeSet.setId(UUID.randomUUID().toString());
         changeLog.getChangeSet().add(changeSet);
         List<Object> changes = changeSet.getChanges();
         for (CreateTable createTable : database.getTables()) {
-            insertData(changes, createTable, dbc);
+            insertData(changes, createTable, dbc, dbms);
         }
     }
 
-    private void insertData(List<Object> changes, CreateTable createTable, Connection dbc) {
+    private void insertData(List<Object> changes, CreateTable createTable, Connection dbc, DbmsProfile dbms) {
         log.debug("selecting data from {}", createTable.getTableName());
-        String columns = createTable.getColumn().stream().map(c -> c.getName())
+        String columns = createTable.getColumn().stream().map(c -> dbms.quoteIdentifier(c.getName()))
             .collect(Collectors.joining(", "));
-        String sql = String.format("select %s from %s", columns, createTable.getTableName());
+        String sql = String.format("select %s from %s", columns, dbms.quoteIdentifier(createTable.getTableName()));
+        log.debug(sql);
         try (Statement st = dbc.createStatement();
             ResultSet rs = st.executeQuery(sql)) {
             ResultSetMetaData metaData = rs.getMetaData();

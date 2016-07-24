@@ -45,6 +45,7 @@ public class DbmsProfileSelector {
         addProfile(new DerbyProfile());
         addProfile(new H2Profile());
         addProfile(new MysqlProfile());
+        addProfile(new OracleProfile());
         addProfile(new PostgresProfile());
     }
 

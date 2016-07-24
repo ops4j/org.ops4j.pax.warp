@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Harald Wellmann.
+ * Copyright 2016 Harald Wellmann.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@ package org.ops4j.pax.warp.core.dbms;
  * @author Harald Wellmann
  *
  */
-public class MysqlProfile implements DbmsProfile {
+public class OracleProfile implements DbmsProfile {
 
     @Override
     public String getSubprotocol() {
-        return "mysql";
+        return "oracle";
     }
 
     @Override
@@ -49,14 +49,5 @@ public class MysqlProfile implements DbmsProfile {
     @Override
     public boolean getSchemaIsCatalog() {
         return true;
-    }
-
-    @Override
-    public String quoteIdentifier(String identifier) {
-        StringBuilder builder = new StringBuilder();
-        builder.append('`');
-        builder.append(identifier);
-        builder.append('`');
-        return builder.toString();
     }
 }

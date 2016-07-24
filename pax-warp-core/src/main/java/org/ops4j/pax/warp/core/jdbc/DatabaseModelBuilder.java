@@ -28,6 +28,8 @@ import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.ops4j.pax.warp.core.dbms.DbmsProfile;
+import org.ops4j.pax.warp.core.dbms.DbmsProfileSelector;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.AddForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.AddPrimaryKey;
@@ -60,6 +62,8 @@ public class DatabaseModelBuilder {
 
     private DatabaseModel database;
 
+    private DbmsProfile dbms;
+
     /**
      * Constructs a model builder for the given database, working on the default schema.
      *
@@ -84,6 +88,7 @@ public class DatabaseModelBuilder {
         this.dbc = dbc;
         this.catalog = catalog;
         this.schema = schema;
+        this.dbms = new DbmsProfileSelector().selectProfile(dbc);
     }
 
     /**
@@ -154,6 +159,10 @@ public class DatabaseModelBuilder {
                 SqlType sqlType = convertType(jdbcType);
                 if (typeName.equals("text")) {
                     sqlType = SqlType.CLOB;
+                }
+                // Oracle workaround
+                else if (typeName.equals("TIMESTAMP(0)")) {
+                    sqlType = SqlType.TIMESTAMP;
                 }
                 column.setType(sqlType);
                 if (hasLength(sqlType)) {
@@ -289,13 +298,20 @@ public class DatabaseModelBuilder {
 
     private void buildIndexes(CreateTable table) throws SQLException {
         CreateIndex index = null;
-        try (ResultSet rs = metaData.getIndexInfo(catalog, schema, table.getTableName(), false,
+        String tableName = dbms.quoteIdentifier(table.getTableName());
+        log.debug("build indexes for {}", tableName);
+        try (ResultSet rs = metaData.getIndexInfo(catalog, schema, tableName, false,
             false)) {
             while (rs.next()) {
                 boolean nonUnique = rs.getBoolean("NON_UNIQUE");
                 String indexName = rs.getString("INDEX_NAME");
                 int ordinal = rs.getShort("ORDINAL_POSITION");
                 String columnName = rs.getString("COLUMN_NAME");
+                if (ordinal == 0) {
+                    continue;
+                }
+                log.debug("indexName = {}, columnName = {}, ordinalPosition = {}, nonUnique = {}",
+                    indexName, columnName, ordinal, nonUnique);
                 Column column = new Column();
                 column.setName(columnName);
                 setKeyLength(table, column);
@@ -399,6 +415,8 @@ public class DatabaseModelBuilder {
                 return SqlType.DECIMAL;
             case DOUBLE:
                 return SqlType.DOUBLE;
+            case FLOAT:
+                return SqlType.FLOAT;
             case INTEGER:
                 return SqlType.INT_32;
             case SMALLINT:
@@ -412,6 +430,8 @@ public class DatabaseModelBuilder {
                 return SqlType.TIMESTAMP;
             case VARCHAR:
                 return SqlType.VARCHAR;
+            case OTHER:
+                return null;
             default:
                 throw new IllegalArgumentException(jdbcType.toString());
         }
