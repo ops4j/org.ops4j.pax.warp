@@ -2,6 +2,7 @@
 <changeLog xmlns="urn:org.ops4j.pax.warp:changelog" version="0.1">
     <changeSet id="3">
         <dropIndex tableName="numbers" indexName="ix_i32_i64"/>
-        <dropColumn tableName="numbers" columnName="n16"/>
+        <renameColumn tableName="numbers" currentColumnName="n16" newColumnName="n16_renamed" />
+        <dropColumn tableName="numbers" columnName="n16_renamed"/>
     </changeSet>
 </changeLog>

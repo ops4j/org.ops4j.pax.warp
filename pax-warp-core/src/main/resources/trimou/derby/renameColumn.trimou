@@ -1,0 +1,3 @@
+{{#action}}
+RENAME COLUMN {{tableName}}.{{currentColumnName}} TO {{newColumnName}}
+{{/action}}

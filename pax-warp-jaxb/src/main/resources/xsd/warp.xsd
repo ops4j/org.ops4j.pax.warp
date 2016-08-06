@@ -1,205 +1,219 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:org.ops4j.pax.warp:changelog"
-    xmlns="urn:org.ops4j.pax.warp:changelog" elementFormDefault="qualified">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="urn:org.ops4j.pax.warp:changelog" xmlns="urn:org.ops4j.pax.warp:changelog"
+	elementFormDefault="qualified">
 
 
-    <xsd:element name="changeLog">
-        <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element name="changeSet" type="ChangeSet" minOccurs="0" maxOccurs="unbounded" />
-            </xsd:sequence>
-            <xsd:attribute name="version" type="xsd:string" use="required" />
-        </xsd:complexType>
-    </xsd:element>
+	<xsd:element name="changeLog">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="changeSet" type="ChangeSet"
+					minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:attribute name="version" type="xsd:string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
 
-    <xsd:complexType name="ColumnReference">
-        <xsd:attribute name="columnName" type="xsd:string" use="required" />
-    </xsd:complexType>
+	<xsd:complexType name="ColumnReference">
+		<xsd:attribute name="columnName" type="xsd:string" use="required" />
+	</xsd:complexType>
 
-    <xsd:complexType name="TableReference">
-        <xsd:attributeGroup ref="tableNameAttributes" />
-    </xsd:complexType>
+	<xsd:complexType name="TableReference">
+		<xsd:attributeGroup ref="tableNameAttributes" />
+	</xsd:complexType>
 
-    <xsd:simpleType name="SqlType">
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="int8" />
-            <xsd:enumeration value="int16" />
-            <xsd:enumeration value="int32" />
-            <xsd:enumeration value="int64" />
-            <xsd:enumeration value="decimal" />
-            <xsd:enumeration value="float" />
-            <xsd:enumeration value="double" />
-            <xsd:enumeration value="char" />
-            <xsd:enumeration value="varchar" />
-            <xsd:enumeration value="clob" />
-            <xsd:enumeration value="blob" />
-            <xsd:enumeration value="boolean" />
-            <xsd:enumeration value="date" />
-            <xsd:enumeration value="time" />
-            <xsd:enumeration value="timestamp" />
-        </xsd:restriction>
-    </xsd:simpleType>
+	<xsd:simpleType name="SqlType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="int8" />
+			<xsd:enumeration value="int16" />
+			<xsd:enumeration value="int32" />
+			<xsd:enumeration value="int64" />
+			<xsd:enumeration value="decimal" />
+			<xsd:enumeration value="float" />
+			<xsd:enumeration value="double" />
+			<xsd:enumeration value="char" />
+			<xsd:enumeration value="varchar" />
+			<xsd:enumeration value="clob" />
+			<xsd:enumeration value="blob" />
+			<xsd:enumeration value="boolean" />
+			<xsd:enumeration value="date" />
+			<xsd:enumeration value="time" />
+			<xsd:enumeration value="timestamp" />
+		</xsd:restriction>
+	</xsd:simpleType>
 
-    <xsd:attributeGroup name="tableNameAttributes">
-        <xsd:attribute name="catalogName" type="xsd:string" />
-        <xsd:attribute name="schemaName" type="xsd:string" />
-        <xsd:attribute name="tableName" type="xsd:string" use="required" />
-    </xsd:attributeGroup>
+	<xsd:attributeGroup name="tableNameAttributes">
+		<xsd:attribute name="catalogName" type="xsd:string" />
+		<xsd:attribute name="schemaName" type="xsd:string" />
+		<xsd:attribute name="tableName" type="xsd:string" use="required" />
+	</xsd:attributeGroup>
 
-    <xsd:complexType name="ChangeSet">
-        <xsd:sequence>
-            <xsd:element ref="comment" minOccurs="0" />
-            <xsd:choice maxOccurs="unbounded">
-                <xsd:element name="createTable" type="CreateTable" />
-                <xsd:element name="addPrimaryKey" type="AddPrimaryKey" />
-                <xsd:element name="addForeignKey" type="AddForeignKey" />
-                <xsd:element name="dropForeignKey" type="DropForeignKey" />
-                <xsd:element name="dropPrimaryKey" type="DropPrimaryKey" />
-                <xsd:element name="truncateTable" type="TruncateTable" />
-                <xsd:element name="dropTable" type="DropTable" />
-                <xsd:element name="insert" type="Insert" />
-                <xsd:element name="addColumn" type="AddColumn" />
-                <xsd:element name="dropColumn" type="DropColumn" />
-                <xsd:element name="createIndex" type="CreateIndex" />
-                <xsd:element name="dropIndex" type="DropIndex" />
-                <xsd:element name="runSql" type="RunSql" />
-            </xsd:choice>
-        </xsd:sequence>
-        <xsd:attribute name="id" type="xsd:string" use="required" />
-        <xsd:attribute name="dbms" type="xsd:string" />
-    </xsd:complexType>
+	<xsd:complexType name="ChangeSet">
+		<xsd:sequence>
+			<xsd:element ref="comment" minOccurs="0" />
+			<xsd:choice maxOccurs="unbounded">
+				<xsd:element name="createTable" type="CreateTable" />
+				<xsd:element name="addPrimaryKey" type="AddPrimaryKey" />
+				<xsd:element name="addForeignKey" type="AddForeignKey" />
+				<xsd:element name="dropForeignKey" type="DropForeignKey" />
+				<xsd:element name="dropPrimaryKey" type="DropPrimaryKey" />
+				<xsd:element name="truncateTable" type="TruncateTable" />
+				<xsd:element name="dropTable" type="DropTable" />
+				<xsd:element name="insert" type="Insert" />
+				<xsd:element name="addColumn" type="AddColumn" />
+				<xsd:element name="dropColumn" type="DropColumn" />
+				<xsd:element name="createIndex" type="CreateIndex" />
+				<xsd:element name="dropIndex" type="DropIndex" />
+				<xsd:element name="renameColumn" type="RenameColumn" />
+				<xsd:element name="runSql" type="RunSql" />
+			</xsd:choice>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:string" use="required" />
+		<xsd:attribute name="dbms" type="xsd:string" />
+	</xsd:complexType>
 
-    <xsd:element name="changeSet" type="ChangeSet" />
-    <xsd:element name="comment" type="xsd:string" />
-
-
-    <xsd:complexType name="AddColumn">
-        <xsd:sequence>
-            <xsd:element name="column" type="Column" />
-        </xsd:sequence>
-        <xsd:attributeGroup ref="tableNameAttributes" />
-    </xsd:complexType>
-
-    <xsd:complexType name="AddForeignKey">
-        <xsd:sequence>
-            <xsd:element name="baseTable" type="TableReference" />
-            <xsd:element name="referencedTable" type="TableReference" />
-            <xsd:element name="columnPair" type="ColumnPair" maxOccurs="unbounded" />
-        </xsd:sequence>
-        <xsd:attribute name="constraintName" type="xsd:string" use="required" />
-    </xsd:complexType>
-
-    <xsd:complexType name="DropForeignKey">
-        <xsd:sequence>
-            <xsd:element name="baseTable" type="TableReference" />
-        </xsd:sequence>
-        <xsd:attribute name="constraintName" type="xsd:string" use="required" />
-    </xsd:complexType>
-
-    <xsd:complexType name="DropColumn">
-        <xsd:attributeGroup ref="tableNameAttributes" />
-        <xsd:attribute name="columnName" type="xsd:string" />
-    </xsd:complexType>
-
-    <xsd:complexType name="DropIndex">
-        <xsd:attributeGroup ref="tableNameAttributes" />
-        <xsd:attribute name="indexName" type="xsd:string" />
-    </xsd:complexType>
-
-    <xsd:complexType name="DropPrimaryKey">
-        <xsd:attributeGroup ref="tableNameAttributes" />
-        <xsd:attribute name="constraintName" type="xsd:string" />
-    </xsd:complexType>
-
-    <xsd:complexType name="ColumnPair">
-        <xsd:sequence>
-            <xsd:element name="base" type="ColumnReference" />
-            <xsd:element name="referenced" type="ColumnReference" />
-        </xsd:sequence>
-    </xsd:complexType>
+	<xsd:element name="changeSet" type="ChangeSet" />
+	<xsd:element name="comment" type="xsd:string" />
 
 
-    <xsd:complexType name="AddPrimaryKey">
-        <xsd:sequence>
-            <xsd:element name="column" type="xsd:string" maxOccurs="unbounded" />
-        </xsd:sequence>
-        <xsd:attributeGroup ref="tableNameAttributes" />
-        <xsd:attribute name="constraintName" type="xsd:string" />
-    </xsd:complexType>
+	<xsd:complexType name="AddColumn">
+		<xsd:sequence>
+			<xsd:element name="column" type="Column" />
+		</xsd:sequence>
+		<xsd:attributeGroup ref="tableNameAttributes" />
+	</xsd:complexType>
+
+	<xsd:complexType name="AddForeignKey">
+		<xsd:sequence>
+			<xsd:element name="baseTable" type="TableReference" />
+			<xsd:element name="referencedTable" type="TableReference" />
+			<xsd:element name="columnPair" type="ColumnPair"
+				maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="constraintName" type="xsd:string"
+			use="required" />
+	</xsd:complexType>
+
+	<xsd:complexType name="DropForeignKey">
+		<xsd:sequence>
+			<xsd:element name="baseTable" type="TableReference" />
+		</xsd:sequence>
+		<xsd:attribute name="constraintName" type="xsd:string"
+			use="required" />
+	</xsd:complexType>
+
+	<xsd:complexType name="DropColumn">
+		<xsd:attributeGroup ref="tableNameAttributes" />
+		<xsd:attribute name="columnName" type="xsd:string" />
+	</xsd:complexType>
+
+	<xsd:complexType name="DropIndex">
+		<xsd:attributeGroup ref="tableNameAttributes" />
+		<xsd:attribute name="indexName" type="xsd:string" />
+	</xsd:complexType>
+
+	<xsd:complexType name="DropPrimaryKey">
+		<xsd:attributeGroup ref="tableNameAttributes" />
+		<xsd:attribute name="constraintName" type="xsd:string" />
+	</xsd:complexType>
+
+	<xsd:complexType name="ColumnPair">
+		<xsd:sequence>
+			<xsd:element name="base" type="ColumnReference" />
+			<xsd:element name="referenced" type="ColumnReference" />
+		</xsd:sequence>
+	</xsd:complexType>
 
 
-    <xsd:complexType name="Column">
-        <xsd:attribute name="name" type="xsd:string" />
-        <xsd:attribute name="type" type="SqlType" />
-        <xsd:attribute name="primaryKey" type="xsd:boolean" />
-        <xsd:attribute name="length" type="xsd:int" />
-        <xsd:attribute name="precision" type="xsd:int" />
-        <xsd:attribute name="scale" type="xsd:int" />
-        <xsd:attribute name="defaultValue" type="xsd:string" />
-        <xsd:attribute name="autoIncrement" type="xsd:boolean" />
-        <xsd:attribute name="nullable" type="xsd:boolean" default="true" />
-    </xsd:complexType>
-
-    <xsd:complexType name="CreateIndex">
-        <xsd:sequence>
-            <xsd:element name="column" type="Column" maxOccurs="unbounded" />
-        </xsd:sequence>
-        <xsd:attributeGroup ref="tableNameAttributes" />
-        <xsd:attribute name="indexName" type="xsd:string" use="required" />
-        <xsd:attribute name="unique" type="xsd:boolean" />
-    </xsd:complexType>
-
-    <xsd:complexType name="CreateTable">
-        <xsd:sequence>
-            <xsd:element name="column" type="Column" maxOccurs="unbounded" />
-        </xsd:sequence>
-        <xsd:attributeGroup ref="tableNameAttributes" />
-    </xsd:complexType>
-
-    <xsd:complexType name="DropTable">
-        <xsd:attributeGroup ref="tableNameAttributes" />
-    </xsd:complexType>
-
-    <xsd:complexType name="TruncateTable">
-        <xsd:attributeGroup ref="tableNameAttributes" />
-    </xsd:complexType>
-
-    <xsd:complexType name="Insert">
-        <xsd:sequence>
-            <xsd:element name="column" type="ColumnValue" maxOccurs="unbounded" />
-        </xsd:sequence>
-        <xsd:attributeGroup ref="tableNameAttributes" />
-    </xsd:complexType>
-
-    <xsd:complexType name="ColumnValue">
-        <xsd:simpleContent>
-            <xsd:extension base="xsd:string">
-                <xsd:attribute name="name" type="xsd:string" use="required"/>
-                <xsd:attribute name="type" type="xsd:string" use="required"/>
-                <xsd:attribute name="null" type="xsd:boolean" default="false"/>
-            </xsd:extension>
-        </xsd:simpleContent>
-    </xsd:complexType>
+	<xsd:complexType name="AddPrimaryKey">
+		<xsd:sequence>
+			<xsd:element name="column" type="xsd:string" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attributeGroup ref="tableNameAttributes" />
+		<xsd:attribute name="constraintName" type="xsd:string" />
+	</xsd:complexType>
 
 
-    <xsd:simpleType name="fkCascadeActionOptions">
-        <xsd:restriction base="xsd:token">
-            <xsd:enumeration value="CASCADE" />
-            <xsd:enumeration value="SET NULL" />
-            <xsd:enumeration value="SET DEFAULT" />
-            <xsd:enumeration value="RESTRICT" />
-            <xsd:enumeration value="NO ACTION" />
-        </xsd:restriction>
-    </xsd:simpleType>
-    
-    <xsd:complexType name="RunSql">
-        <xsd:simpleContent>
-            <xsd:extension base="xsd:string">
-                <xsd:attribute name="dbms" type="xsd:string" use="optional"/>
-            </xsd:extension>
-        </xsd:simpleContent>
-    </xsd:complexType>
+	<xsd:complexType name="Column">
+		<xsd:attribute name="name" type="xsd:string" />
+		<xsd:attribute name="type" type="SqlType" />
+		<xsd:attribute name="primaryKey" type="xsd:boolean" />
+		<xsd:attribute name="length" type="xsd:int" />
+		<xsd:attribute name="precision" type="xsd:int" />
+		<xsd:attribute name="scale" type="xsd:int" />
+		<xsd:attribute name="defaultValue" type="xsd:string" />
+		<xsd:attribute name="autoIncrement" type="xsd:boolean" />
+		<xsd:attribute name="nullable" type="xsd:boolean"
+			default="true" />
+	</xsd:complexType>
+
+	<xsd:complexType name="CreateIndex">
+		<xsd:sequence>
+			<xsd:element name="column" type="Column" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attributeGroup ref="tableNameAttributes" />
+		<xsd:attribute name="indexName" type="xsd:string" use="required" />
+		<xsd:attribute name="unique" type="xsd:boolean" />
+	</xsd:complexType>
+
+	<xsd:complexType name="CreateTable">
+		<xsd:sequence>
+			<xsd:element name="column" type="Column" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attributeGroup ref="tableNameAttributes" />
+	</xsd:complexType>
+
+	<xsd:complexType name="DropTable">
+		<xsd:attributeGroup ref="tableNameAttributes" />
+	</xsd:complexType>
+
+	<xsd:complexType name="TruncateTable">
+		<xsd:attributeGroup ref="tableNameAttributes" />
+	</xsd:complexType>
+
+	<xsd:complexType name="Insert">
+		<xsd:sequence>
+			<xsd:element name="column" type="ColumnValue" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attributeGroup ref="tableNameAttributes" />
+	</xsd:complexType>
+
+	<xsd:complexType name="ColumnValue">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="name" type="xsd:string" use="required" />
+				<xsd:attribute name="type" type="xsd:string" use="required" />
+				<xsd:attribute name="null" type="xsd:boolean" default="false" />
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+
+	<xsd:simpleType name="fkCascadeActionOptions">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="CASCADE" />
+			<xsd:enumeration value="SET NULL" />
+			<xsd:enumeration value="SET DEFAULT" />
+			<xsd:enumeration value="RESTRICT" />
+			<xsd:enumeration value="NO ACTION" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:complexType name="RenameColumn">
+		<xsd:attribute name="columnType" type="SqlType" use="optional" />
+		<xsd:attribute name="currentColumnName" type="xsd:string" use="required" />
+		<xsd:attribute name="newColumnName" type="xsd:string" use="required" />
+		<xsd:attributeGroup ref="tableNameAttributes" />
+	</xsd:complexType>
+
+	<xsd:complexType name="RunSql">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="dbms" type="xsd:string" use="optional" />
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
 
 
 </xsd:schema>
