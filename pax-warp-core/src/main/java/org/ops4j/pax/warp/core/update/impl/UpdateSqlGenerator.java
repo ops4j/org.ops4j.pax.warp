@@ -41,6 +41,7 @@ import org.ops4j.pax.warp.jaxb.gen.DropForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.DropIndex;
 import org.ops4j.pax.warp.jaxb.gen.DropPrimaryKey;
 import org.ops4j.pax.warp.jaxb.gen.Insert;
+import org.ops4j.pax.warp.jaxb.gen.RenameColumn;
 import org.ops4j.pax.warp.jaxb.gen.RunSql;
 import org.ops4j.pax.warp.jaxb.gen.TruncateTable;
 import org.ops4j.pax.warp.jaxb.gen.visitor.VisitorAction;
@@ -155,6 +156,10 @@ public class UpdateSqlGenerator extends InsertSqlGenerator {
         return VisitorAction.CONTINUE;
     }
 
+    @Override
+    public VisitorAction enter(RenameColumn action) {
+        return produceStatement("renameColumn", action);
+    }
 
     @Override
     public VisitorAction enter(ChangeSet changeSet) {
