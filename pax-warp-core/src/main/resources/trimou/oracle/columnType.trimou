@@ -1,0 +1,19 @@
+{{#trim}}
+{{#switch type.name}}
+  {{#case "INT_8"     break="true"}}NUMBER(3,0){{/case}}
+  {{#case "INT_16"    break="true"}}NUMBER(5,0){{/case}}
+  {{#case "INT_32"    break="true"}}NUMBER(10,0){{/case}}
+  {{#case "INT_64"    break="true"}}NUMBER(19,0){{/case}}
+  {{#case "DECIMAL"   break="true"}}DECIMAL{{/case}}
+  {{#case "FLOAT"     break="true"}}FLOAT{{/case}}
+  {{#case "DOUBLE"    break="true"}}DOUBLE PRECISION{{/case}}
+  {{#case "CHAR"      break="true"}}CHAR{{/case}}
+  {{#case "VARCHAR"   break="true"}}VARCHAR2{{/case}}
+  {{#case "BLOB"      break="true"}}BLOB{{/case}}
+  {{#case "CLOB"      break="true"}}CLOB{{/case}}
+  {{#case "BOOLEAN"   break="true"}}NUMBER(1,0){{/case}}
+  {{#case "DATE"      break="true"}}DATE{{/case}}
+  {{#case "TIME"      break="true"}}DATE{{/case}}
+  {{#case "TIMESTAMP" break="true"}}TIMESTAMP{{/case}}
+{{/switch}}
+{{/trim}}

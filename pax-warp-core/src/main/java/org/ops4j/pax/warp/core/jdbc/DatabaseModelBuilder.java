@@ -148,7 +148,11 @@ public class DatabaseModelBuilder {
                 int columnSize = rs.getInt("COLUMN_SIZE");
                 int decimalDigits = rs.getInt("DECIMAL_DIGITS");
                 int nullable = rs.getInt("NULLABLE");
-                String autoIncrement = rs.getString("IS_AUTOINCREMENT");
+                String autoIncrement = "NO";
+                // Oracle workaround
+                if (dbms.getAutoIncrementHasMetadata()) {
+                    autoIncrement = rs.getString("IS_AUTOINCREMENT");
+                }
                 JDBCType jdbcType = JDBCType.valueOf(dataType);
                 log.debug("column [{}]: name={}, jdbcType={}, typeName={}, size={}, digits={}, "
                     + "nullable={}, autoIncrement={}", ordinal, columnName, jdbcType, typeName,

@@ -15,6 +15,8 @@
  */
 package org.ops4j.pax.warp.core.trimou;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.trimou.Mustache;
@@ -87,6 +89,13 @@ public class TemplateEngine {
     public String renderTemplate(String templateName, Object action) {
         Mustache mustache = engine.getMustache(templateName);
         String result = mustache.render(ImmutableMap.of("action", action));
+        log.debug(result);
+        return result;
+    }
+
+    public String renderTemplate(String templateName, Map<String, ?> map) {
+        Mustache mustache = engine.getMustache(templateName);
+        String result = mustache.render(map);
         log.debug(result);
         return result;
     }

@@ -40,6 +40,18 @@ public interface DbmsProfile {
     default boolean getAutoIncrementIsPrimaryKey() {
         return false;
     }
+    
+    default boolean getAutoIncrementNeedsTrigger() {
+        return false;
+    }
+
+    default boolean getAutoIncrementNeedsSequence() {
+        return false;
+    }
+    
+    default boolean getAutoIncrementHasMetadata() {
+        return true;
+    }
 
     /**
      * Are table names case sensitive?

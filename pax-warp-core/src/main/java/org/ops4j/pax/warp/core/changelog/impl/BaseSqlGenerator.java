@@ -20,6 +20,7 @@ package org.ops4j.pax.warp.core.changelog.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -31,6 +32,7 @@ import org.ops4j.pax.warp.jaxb.gen.visitor.BaseVisitor;
 import org.ops4j.pax.warp.jaxb.gen.visitor.VisitorAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.trimou.util.ImmutableMap;
 
 
 /**
@@ -58,7 +60,7 @@ public class BaseSqlGenerator extends BaseVisitor {
     }
 
     protected VisitorAction produceStatement(String templateName, Object action) {
-        String sql = engine.renderTemplate(templateName, action);
+        String sql = engine.renderTemplate(templateName, ImmutableMap.of("action", action));
         runStatement(sql);
 
         return VisitorAction.CONTINUE;
@@ -67,6 +69,15 @@ public class BaseSqlGenerator extends BaseVisitor {
     protected void runStatement(String sql) {
         try (PreparedStatement st = dbc.prepareStatement(sql)) {
             consumer.accept(st);
+        }
+        catch (SQLException exc) {
+            throw new WarpException(exc);
+        }
+    }
+
+    protected void runSimpleStatement(String sql) {
+        try (Statement st = dbc.createStatement()) {
+            st.execute(sql);
         }
         catch (SQLException exc) {
             throw new WarpException(exc);

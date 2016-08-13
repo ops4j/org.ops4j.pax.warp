@@ -32,11 +32,6 @@ public class OracleProfile implements DbmsProfile {
     }
 
     @Override
-    public boolean getAutoIncrementIsPrimaryKey() {
-        return true;
-    }
-
-    @Override
     public boolean getTableNameIsCaseSensitive() {
         return true;
     }
@@ -49,5 +44,20 @@ public class OracleProfile implements DbmsProfile {
     @Override
     public boolean getSchemaIsCatalog() {
         return true;
+    }
+    
+    @Override
+    public boolean getAutoIncrementNeedsTrigger() {
+        return true;
+    }
+
+    @Override
+    public boolean getAutoIncrementNeedsSequence() {
+        return true;
+    }
+
+    @Override
+    public boolean getAutoIncrementHasMetadata() {
+        return false;
     }
 }

@@ -1,0 +1,8 @@
+{{#action}}
+CREATE OR REPLACE TRIGGER {{tableName}}_auto
+BEFORE INSERT ON {{tableName}}
+FOR EACH ROW
+BEGIN
+  SELECT {{tableName}}_seq.nextval INTO :new.{{autoIncrementColumn}} from dual;
+END;
+{{/action}}

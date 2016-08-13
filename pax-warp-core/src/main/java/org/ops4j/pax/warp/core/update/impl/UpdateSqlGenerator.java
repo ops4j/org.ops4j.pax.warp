@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -45,6 +46,7 @@ import org.ops4j.pax.warp.jaxb.gen.RenameColumn;
 import org.ops4j.pax.warp.jaxb.gen.RunSql;
 import org.ops4j.pax.warp.jaxb.gen.TruncateTable;
 import org.ops4j.pax.warp.jaxb.gen.visitor.VisitorAction;
+import org.trimou.util.ImmutableMap;
 
 /**
  * SQL generator for DDL statements.
@@ -83,7 +85,21 @@ public class UpdateSqlGenerator extends InsertSqlGenerator {
             action.getColumn().stream().filter(c -> isAutoIncrement(c))
                 .forEach(c -> autoIncrementColumns.add(action.getTableName() + "." + c.getName()));
         }
-        return produceStatement("createTable", action);
+        produceStatement("createTable", action);
+        Optional<Column> autoIncr = action.getColumn().stream().filter(this::isAutoIncrement)
+            .findFirst();
+        if (autoIncr.isPresent()) {
+            if (dbms.getAutoIncrementNeedsSequence()) {
+                String sql = engine.renderTemplate("createAutoIncrementSequence", action);
+                runStatement(sql);
+            }
+            if (dbms.getAutoIncrementNeedsTrigger()) {
+                String sql = engine.renderTemplate("createAutoIncrementTrigger",
+                    ImmutableMap.of("action", action, "autoIncrementColumn", autoIncr.get().getName()));
+                runSimpleStatement(sql);
+            }
+        }
+        return VisitorAction.CONTINUE;
     }
 
     private boolean isAutoIncrement(Column c) {
