@@ -60,4 +60,9 @@ public class OracleProfile implements DbmsProfile {
     public boolean getAutoIncrementHasMetadata() {
         return false;
     }
+
+    @Override
+    public boolean getEmptyStringIsNull() {
+        return true;
+    }
 }

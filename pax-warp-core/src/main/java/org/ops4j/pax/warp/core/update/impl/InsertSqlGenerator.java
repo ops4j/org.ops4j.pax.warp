@@ -106,6 +106,9 @@ public class InsertSqlGenerator extends BaseSqlGenerator {
             case CLOB:
             case VARCHAR:
             case LONGVARCHAR:
+                if (value.isEmpty() && dbms.getEmptyStringIsNull()) {
+                    return " ";
+                }
                 return value;
             case DATE:
                 return Date.valueOf(value);

@@ -53,6 +53,10 @@ public interface DbmsProfile {
         return true;
     }
 
+    default boolean getEmptyStringIsNull() {
+        return false;
+    }
+
     /**
      * Are table names case sensitive?
      *

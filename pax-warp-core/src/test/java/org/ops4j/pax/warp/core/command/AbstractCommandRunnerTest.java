@@ -17,8 +17,10 @@
  */
 package org.ops4j.pax.warp.core.command;
 
+import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -40,6 +42,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.warp.core.dbms.DbmsAdapter;
+
 
 /**
  * @author Harald Wellmann
@@ -91,7 +94,29 @@ public abstract class AbstractCommandRunnerTest {
         dbc.close();
     }
 
-    private void insertData(String jdbcUrl) throws JAXBException, SQLException, IOException {
+    private void insertData1(String jdbcUrl) throws JAXBException, SQLException, IOException {
+        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
+        InputStream is = getClass().getResourceAsStream("/changelogs/data1.xml");
+        commandRunner.importData(dbc, is);
+        is.close();
+
+        Statement st = dbc.createStatement();
+        ResultSet rs = st.executeQuery("select id, v255 from strings where v4 is null");
+        if (rs.next()) {
+            assertThat(rs.getString(1), is("myid"));
+            String v255 = rs.getString(2);
+            assertThat(v255, anyOf(is(""), is(" ")));
+        }
+        else {
+            fail("Expected non-empty result");
+        }
+        rs.close();
+
+        st.close();
+        dbc.close();
+    }
+
+    private void insertData2(String jdbcUrl) throws JAXBException, SQLException, IOException {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         InputStream is = getClass().getResourceAsStream("/changelogs/data2.xml");
         commandRunner.importData(dbc, is);
@@ -149,7 +174,12 @@ public abstract class AbstractCommandRunnerTest {
 
     @Test
     public void test03ShouldInsertData() throws JAXBException, SQLException, IOException {
-        insertData(getJdbcUrl());
+        insertData1(getJdbcUrl());
+    }
+
+    @Test
+    public void test04ShouldInsertData() throws JAXBException, SQLException, IOException {
+        insertData2(getJdbcUrl());
     }
 
     @Test
