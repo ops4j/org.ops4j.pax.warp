@@ -95,6 +95,10 @@ public class CommandRunnerImpl implements CommandRunner {
         dumpDataService.dumpData(dbc, os, getDbms(dbc), Optional.empty());
     }
 
+    public void dumpAll(Connection dbc, OutputStream os) {
+        dumpDataService.dumpAll(dbc, os, getDbms(dbc), Optional.empty());
+    }
+
     @Override
     public void dumpData(Connection dbc, OutputStream os, String schema) {
         dumpDataService.dumpData(dbc, os, getDbms(dbc), Optional.of(schema));
@@ -114,6 +118,16 @@ public class CommandRunnerImpl implements CommandRunner {
     public void dumpData(String jdbcUrl, String username, String password, OutputStream os) {
         try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
             dumpData(dbc, os);
+        }
+        catch (SQLException exc) {
+            throw new WarpException(exc);
+        }
+    }
+
+    @Override
+    public void dumpAll(String jdbcUrl, String username, String password, OutputStream os) {
+        try (Connection dbc = DriverManager.getConnection(jdbcUrl, username, password)) {
+            dumpAll(dbc, os);
         }
         catch (SQLException exc) {
             throw new WarpException(exc);

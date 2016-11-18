@@ -227,7 +227,7 @@ public class DatabaseModelBuilder {
         String fkColumn = rs.getString("FKCOLUMN_NAME");
         int keySeq = rs.getShort("KEY_SEQ");
         fkName = rs.getString("FK_NAME");
-        log.debug("FK column [{}]: {} {} -> {} {}", keySeq, fkTable, fkColumn, pkTable,
+        log.debug("FK {} column [{}]: {} {} -> {} {}", fkName, keySeq, fkTable, fkColumn, pkTable,
             pkColumn);
 
         ColumnPair pair = new ColumnPair();

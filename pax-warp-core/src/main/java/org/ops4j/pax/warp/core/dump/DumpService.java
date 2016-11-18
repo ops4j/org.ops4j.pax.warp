@@ -42,8 +42,8 @@ public interface DumpService {
      * @param dbms
      *            DBMS profile
      * @param schema
-     *            Optional database schema. If missing, the current schema will be used.
-     *            If present, the given schema will be used.
+     *            Optional database schema. If missing, the current schema will be used. If present,
+     *            the given schema will be used.
      */
     void dumpStructure(Connection dbc, OutputStream os, DbmsProfile dbms, Optional<String> schema);
 
@@ -57,8 +57,24 @@ public interface DumpService {
      * @param dbms
      *            DBMS profile
      * @param schema
-     *            Optional database schema. If missing, the current schema will be used.
-     *            If present, the given schema will be used.
+     *            Optional database schema. If missing, the current schema will be used. If present,
+     *            the given schema will be used.
      */
     void dumpData(Connection dbc, OutputStream os, DbmsProfile dbms, Optional<String> schema);
+
+    /**
+     * Dumps structure information and all data from the given database as an XML change log to the
+     * given output stream.
+     *
+     * @param dbc
+     *            JDBC database connection
+     * @param os
+     *            output stream
+     * @param dbms
+     *            DBMS profile
+     * @param schema
+     *            Optional database schema. If missing, the current schema will be used. If present,
+     *            the given schema will be used.
+     */
+    void dumpAll(Connection dbc, OutputStream os, DbmsProfile dbms, Optional<String> schema);
 }

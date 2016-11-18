@@ -142,6 +142,22 @@ public interface CommandRunner {
     void dumpData(DataSource ds, OutputStream os);
 
     /**
+     * Analyzes the structure of the database with the given URL and writes a change log
+     * corresponding to the database structure to the given output stream, also including
+     * change sets for all data records.
+     *
+     * @param jdbcUrl
+     *            JDBC URL of database
+     * @param username
+     *            database username
+     * @param password
+     *            database password
+     * @param os
+     *            output stream for change log
+     */
+    void dumpAll(String jdbcUrl, String username, String password, OutputStream os);
+    
+    /**
      * Migrates the database with the given URL by applying the change log from the given input
      * stream.
      *

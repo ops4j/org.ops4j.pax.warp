@@ -71,17 +71,19 @@ public class DumpServiceImpl implements DumpService {
         Optional<String> schema) {
         DatabaseModel database = buildDatabaseModel(dbc, dbms, schema);
 
+        ChangeLog changeLog = addTables(database);
+        addKeysAndIndexes(dbms, database, changeLog);
+
+        changeLogWriter.writeChangeLog(changeLog, os);
+    }
+
+    private ChangeLog addTables(DatabaseModel database) {
         ChangeLog changeLog = new ChangeLog();
         changeLog.setVersion("0.1");
         changeLog.getChangeSet();
         database.getTables().stream().filter(t -> !isWarpTable(t))
             .forEach(t -> addChangeSet(changeLog, t));
-        database.getPrimaryKeys().forEach(t -> addChangeSet(changeLog, t));
-        database.getForeignKeys().forEach(t -> addChangeSet(changeLog, t));
-        database.getIndexes().stream().filter(t -> !dbms.isGeneratedIndex(t.getIndexName()))
-            .forEach(t -> addChangeSet(changeLog, t));
-
-        changeLogWriter.writeChangeLog(changeLog, os);
+        return changeLog;
     }
 
     private DatabaseModel buildDatabaseModel(Connection dbc, DbmsProfile dbms,
@@ -115,6 +117,30 @@ public class DumpServiceImpl implements DumpService {
         insertData(changeLog, database, dbc, dbms);
 
         changeLogWriter.writeChangeLog(changeLog, os);
+    }
+
+    @Override
+    public void dumpAll(Connection dbc, OutputStream os, DbmsProfile dbms,
+        Optional<String> schema) {
+        DatabaseModel database = buildDatabaseModel(dbc, dbms, schema);
+
+        ChangeLog changeLog = addTables(database);
+        insertData(changeLog, database, dbc, dbms);
+        addKeysAndIndexes(dbms, database, changeLog);
+
+        changeLogWriter.writeChangeLog(changeLog, os);
+    }
+
+    /**
+     * @param dbms
+     * @param database
+     * @param changeLog
+     */
+    private void addKeysAndIndexes(DbmsProfile dbms, DatabaseModel database, ChangeLog changeLog) {
+        database.getPrimaryKeys().forEach(t -> addChangeSet(changeLog, t));
+        database.getForeignKeys().forEach(t -> addChangeSet(changeLog, t));
+        database.getIndexes().stream().filter(t -> !dbms.isGeneratedIndex(t.getIndexName()))
+            .forEach(t -> addChangeSet(changeLog, t));
     }
 
     private void insertData(ChangeLog changeLog, DatabaseModel database, Connection dbc, DbmsProfile dbms) {
