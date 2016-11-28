@@ -34,7 +34,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -62,15 +61,12 @@ public abstract class AbstractCommandRunnerTest {
         this.dbms = dbms;
     }
 
-    private void updateStructure(String jdbcUrl) throws JAXBException, SQLException, IOException {
-        InputStream is = getClass().getResourceAsStream("/changelogs/changelog1.xml");
-        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
-        commandRunner.migrate(dbc, is);
-        dbc.close();
-        is.close();
+    private void updateStructure() throws SQLException, IOException {
+        InputStream inputStream = getClass().getResourceAsStream("/changelogs/changelog1.xml");
+        migrateChangeSet(inputStream);
     }
 
-    private void dumpDataOnly(String jdbcUrl) throws JAXBException, SQLException, IOException {
+    private void dumpDataOnly(String jdbcUrl) throws SQLException, IOException {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         OutputStream os = new FileOutputStream("target/dataOnly1.xml");
         commandRunner.dumpData(dbc, os);
@@ -78,7 +74,7 @@ public abstract class AbstractCommandRunnerTest {
         dbc.close();
     }
 
-    private void dumpStructure(String jdbcUrl) throws JAXBException, SQLException, IOException {
+    private void dumpStructure(String jdbcUrl) throws  SQLException, IOException {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         OutputStream os = new FileOutputStream("target/structure1.xml");
         commandRunner.dumpStructure(dbc, os);
@@ -86,15 +82,12 @@ public abstract class AbstractCommandRunnerTest {
         dbc.close();
     }
 
-    private void reimportStructure(String jdbcUrl) throws JAXBException, SQLException, IOException {
-        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
-        InputStream is = new FileInputStream("target/structure1.xml");
-        commandRunner.migrate(dbc, is);
-        is.close();
-        dbc.close();
+    private void reimportStructure() throws  SQLException, IOException {
+        InputStream inputStream = new FileInputStream("target/structure1.xml");
+        migrateChangeSet(inputStream);
     }
 
-    private void insertData1(String jdbcUrl) throws JAXBException, SQLException, IOException {
+    private void insertData1(String jdbcUrl) throws  SQLException, IOException {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         InputStream is = getClass().getResourceAsStream("/changelogs/data1.xml");
         commandRunner.importData(dbc, is);
@@ -116,7 +109,7 @@ public abstract class AbstractCommandRunnerTest {
         dbc.close();
     }
 
-    private void insertData2(String jdbcUrl) throws JAXBException, SQLException, IOException {
+    private void insertData2(String jdbcUrl) throws SQLException, IOException {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         InputStream is = getClass().getResourceAsStream("/changelogs/data2.xml");
         commandRunner.importData(dbc, is);
@@ -124,7 +117,7 @@ public abstract class AbstractCommandRunnerTest {
         dbc.close();
     }
 
-    private void reinsertData(String jdbcUrl) throws JAXBException, SQLException, IOException {
+    private void reinsertData(String jdbcUrl) throws SQLException, IOException {
         Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
         InputStream is = new FileInputStream("target/dataOnly1.xml");
         commandRunner.importData(dbc, is);
@@ -139,12 +132,19 @@ public abstract class AbstractCommandRunnerTest {
         dbc.close();
     }
 
-    private void runDropChangeSet(String jdbcUrl) throws JAXBException, SQLException, IOException {
-        InputStream is = getClass().getResourceAsStream("/changelogs/changelog2.xml");
-        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
-        commandRunner.migrate(dbc, is);
+    private void runDropChangeSet() throws SQLException, IOException {
+        migrateChangeSet(getClass().getResourceAsStream("/changelogs/changelog2.xml"));
+    }
+    
+    private void runRenameAndDropTableChangeSet() throws IOException, SQLException {
+        migrateChangeSet(getClass().getResourceAsStream("/changelogs/changelog3.xml"));
+    }
+
+    private void migrateChangeSet(InputStream inputStream) throws SQLException, IOException {
+        Connection dbc = DriverManager.getConnection(getJdbcUrl(), "warp", "warp");
+        commandRunner.migrate(dbc, inputStream);
         dbc.close();
-        is.close();
+        inputStream.close();
     }
 
     protected String getJdbcUrl() {
@@ -160,46 +160,50 @@ public abstract class AbstractCommandRunnerTest {
     }
 
     @Test
-    public void test01ShouldUpdate() throws JAXBException, SQLException, IOException {
+    public void test01ShouldUpdate() throws SQLException, IOException {
         dropAndCreateDatabase();
-        updateStructure(getJdbcUrl());
+        updateStructure();
         dumpStructure(getJdbcUrl());
     }
 
     @Test
-    public void test02UpdateStructureShouldBeIdempotent()
-        throws JAXBException, SQLException, IOException {
-        updateStructure(getJdbcUrl());
+    public void test02UpdateStructureShouldBeIdempotent() throws  SQLException, IOException {
+        updateStructure();
     }
 
     @Test
-    public void test03ShouldInsertData() throws JAXBException, SQLException, IOException {
+    public void test03ShouldInsertData() throws  SQLException, IOException {
         insertData1(getJdbcUrl());
     }
 
     @Test
-    public void test04ShouldInsertData() throws JAXBException, SQLException, IOException {
+    public void test04ShouldInsertData() throws  SQLException, IOException {
         insertData2(getJdbcUrl());
     }
 
     @Test
-    public void test05ShouldDumpDataOnly() throws JAXBException, SQLException, IOException {
+    public void test05ShouldDumpDataOnly() throws  SQLException, IOException {
         dumpDataOnly(getJdbcUrl());
     }
 
     @Test
-    public void test06ShouldInsertData() throws JAXBException, SQLException, IOException {
+    public void test06ShouldInsertData() throws  SQLException, IOException {
         reinsertData(getJdbcUrl());
     }
 
     @Test
-    public void test07ShouldDropColumnAndIndex() throws JAXBException, SQLException, IOException {
-        runDropChangeSet(getJdbcUrl());
+    public void test07ShouldDropColumnAndIndex() throws SQLException, IOException {
+        runDropChangeSet();
+    }
+    
+    @Test
+    public void test09ShouldRenameAndDropTable() throws IOException, SQLException {
+        runRenameAndDropTableChangeSet();
     }
 
     @Test
-    public void test08ShouldReimportStructure() throws JAXBException, SQLException, IOException {
+    public void test08ShouldReimportStructure() throws  SQLException, IOException {
         dropAndCreateDatabase();
-        reimportStructure(getJdbcUrl());
+        reimportStructure();
     }
 }
