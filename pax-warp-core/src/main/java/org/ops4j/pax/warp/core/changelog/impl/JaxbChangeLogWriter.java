@@ -21,9 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -77,8 +75,14 @@ public class JaxbChangeLogWriter implements ChangeLogWriter {
 
     @Override
     public void writeChangeLog(ChangeLog changeLog, OutputStream os) {
-        OutputStreamWriter writer = new OutputStreamWriter(os, StandardCharsets.UTF_8);
-        write(changeLog, writer);
+        try {
+            Marshaller marshaller = context.createValidatingMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.marshal(changeLog, os);
+        }
+        catch (JAXBException exc) {
+            throw new WarpException(exc);
+        }
     }
 
 
