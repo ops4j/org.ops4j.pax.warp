@@ -342,6 +342,8 @@ A table column is specified by `<column>` element with the following attributes
 
 === Rename Column
 
+=== Rename Table
+
 === Run SQL
 
 === Truncate table
