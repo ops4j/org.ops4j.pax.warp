@@ -33,6 +33,7 @@ import org.ops4j.pax.warp.jaxb.gen.DropColumn;
 import org.ops4j.pax.warp.jaxb.gen.DropForeignKey;
 import org.ops4j.pax.warp.jaxb.gen.DropIndex;
 import org.ops4j.pax.warp.jaxb.gen.DropPrimaryKey;
+import org.ops4j.pax.warp.jaxb.gen.DropTable;
 import org.ops4j.pax.warp.jaxb.gen.Insert;
 import org.ops4j.pax.warp.jaxb.gen.RenameColumn;
 import org.ops4j.pax.warp.jaxb.gen.RunSql;
@@ -121,6 +122,11 @@ public class ImportDataSqlGenerator extends InsertSqlGenerator {
     @Override
     public VisitorAction enter(Insert action) {
         return generateInsert(action);
+    }
+
+    @Override
+    public VisitorAction enter(DropTable action) {
+        return notSupported(action);
     }
 
     @Override
