@@ -135,6 +135,12 @@
             </dependency>
 
             <dependency>
+                <groupId>org.mariadb.jdbc</groupId>
+                <artifactId>mariadb-java-client</artifactId>
+                <version>1.5.5</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.ops4j.base</groupId>
                 <artifactId>ops4j-base-io</artifactId>
                 <version>${version.ops4j.base}</version>

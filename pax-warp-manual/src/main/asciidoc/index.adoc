@@ -63,6 +63,7 @@ Pax Warp currently supports the following relational database management systems
 * Apache Derby
 * H2
 * MySQL
+* MariaDB (uses mariadb driver. All other things are identical to MySQL as MariaDB is a drop-in replacement for MySQL.
 * PostgreSQL
 
 Any relational database with a JDBC driver can be supported by Pax Warp by adding a set of

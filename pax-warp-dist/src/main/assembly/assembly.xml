@@ -43,6 +43,7 @@
                 <include>com.h2database:*</include>
                 <include>mysql:*</include>
                 <include>org.apache.derby:*</include>
+                <include>org.mariadb:*</include>
                 <include>org.postgresql:*</include>
             </includes>
         </dependencySet>

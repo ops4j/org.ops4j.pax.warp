@@ -33,6 +33,17 @@ public interface DbmsProfile {
     String getSubprotocol();
 
     /**
+     * Gets the JDBC subprotocol alias for this DBMS.
+     *
+     * Used as name when selecting the correct profile.
+     *
+     * @return either result of  {@link #getSubprotocol()}) or a distinct protocol name (e.g. mariadb, which is a drop-in replacement for mysql)
+     */
+    default String getSubprotocolAlias() {
+        return getSubprotocol();
+    }
+
+    /**
      * Does an auto-increment columns have to be a primary key column?
      *
      * @return true if a primary is automatically generated for an auto-increment column

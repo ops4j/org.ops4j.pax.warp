@@ -45,6 +45,7 @@ public class DbmsProfileSelector {
         addProfile(new DerbyProfile());
         addProfile(new H2Profile());
         addProfile(new MysqlProfile());
+        addProfile(new MariaDBProfile());
         addProfile(new OracleProfile());
         addProfile(new PostgresProfile());
     }
@@ -91,6 +92,6 @@ public class DbmsProfileSelector {
     }
 
     private static void addProfile(DbmsProfile profile) {
-        profileMap.put(profile.getSubprotocol(), profile);
+        profileMap.put(profile.getSubprotocolAlias(), profile);
     }
 }
