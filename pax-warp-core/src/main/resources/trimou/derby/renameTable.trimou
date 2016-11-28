@@ -1,0 +1,3 @@
+{{#action}}
+RENAME TABLE {{oldTableName}} TO {{newTableName}};
+{{/action}}

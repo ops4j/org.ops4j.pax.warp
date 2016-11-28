@@ -66,6 +66,7 @@
 				<xsd:element name="createIndex" type="CreateIndex" />
 				<xsd:element name="dropIndex" type="DropIndex" />
 				<xsd:element name="renameColumn" type="RenameColumn" />
+				<xsd:element name="renameTable" type="RenameTable" />
 				<xsd:element name="runSql" type="RunSql" />
 			</xsd:choice>
 		</xsd:sequence>
@@ -205,6 +206,11 @@
 		<xsd:attribute name="currentColumnName" type="xsd:string" use="required" />
 		<xsd:attribute name="newColumnName" type="xsd:string" use="required" />
 		<xsd:attributeGroup ref="tableNameAttributes" />
+	</xsd:complexType>
+
+	<xsd:complexType name="RenameTable">
+		<xsd:attribute name="oldTableName" type="xsd:string" use="required" />
+		<xsd:attribute name="newTableName" type="xsd:string" use="required" />
 	</xsd:complexType>
 
 	<xsd:complexType name="RunSql">
