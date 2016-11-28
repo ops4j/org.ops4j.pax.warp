@@ -4,5 +4,6 @@
         <dropIndex tableName="numbers" indexName="ix_i32_i64"/>
         <renameColumn tableName="numbers" currentColumnName="n16" newColumnName="n16_renamed" columnType="int16" />
         <dropColumn tableName="numbers" columnName="n16_renamed"/>
+        <dropTable tableName="numbers" />
     </changeSet>
 </changeLog>
