@@ -26,7 +26,6 @@ import java.sql.Statement;
 import org.ops4j.pax.warp.core.dbms.DbmsProfile;
 import org.ops4j.pax.warp.core.dbms.DbmsProfileSelector;
 import org.ops4j.pax.warp.core.trimou.TemplateEngine;
-import org.ops4j.pax.warp.core.trimou.TemplateEngineSelector;
 import org.ops4j.pax.warp.exc.WarpException;
 
 /**
@@ -47,7 +46,7 @@ public class SchemaHandler {
      *            JDBC subprotocol
      */
     public SchemaHandler(String subprotocol) {
-        this.engine = TemplateEngineSelector.getTemplateEngine(subprotocol);
+        this.engine = new TemplateEngine(subprotocol);
         this.profile = new DbmsProfileSelector().selectProfile(subprotocol);
     }
 
