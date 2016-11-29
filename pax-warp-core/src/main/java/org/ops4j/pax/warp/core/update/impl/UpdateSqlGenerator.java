@@ -170,7 +170,7 @@ public class UpdateSqlGenerator extends InsertSqlGenerator {
     @Override
     public VisitorAction enter(RunSql action) {
         String selectedDbms = action.getDbms();
-        String currentSubprotocol = this.dbms.getSubprotocol();
+        String currentSubprotocol = dbms.getSubprotocol();
 
         if (selectedDbms == null || currentSubprotocol.contains(selectedDbms)) {
             String sql = action.getValue();
