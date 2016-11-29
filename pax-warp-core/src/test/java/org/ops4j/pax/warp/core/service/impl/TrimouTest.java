@@ -17,16 +17,8 @@
  */
 package org.ops4j.pax.warp.core.service.impl;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-import java.net.JarURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -75,8 +67,7 @@ public class TrimouTest {
             .setProperty(EngineConfigurationKey.DEFAULT_FILE_ENCODING, "UTF-8")
             .addTemplateLocator(new ClassPathTemplateLocator(100, "trimou/shared", "trimou"))
             .addTemplateLocator(new ClassPathTemplateLocator(200, "trimou/h2", "trimou"))
-            .registerHelpers(HelpersBuilder.empty().addSwitch().build())
-            .addGlobalData("trim", trim)
+            .registerHelpers(HelpersBuilder.empty().addSwitch().build()).addGlobalData("trim", trim)
             .build();
 
     }
@@ -86,7 +77,8 @@ public class TrimouTest {
         Mustache mustache = engine.getMustache("dropPrimaryKey");
         DropPrimaryKey action = new DropPrimaryKey();
         action.setTableName("foo");
-        System.out.println(mustache.render(ImmutableMap.of("action", action)));
+        assertThat(mustache.render(ImmutableMap.of("action", action)),
+            is("ALTER TABLE foo DROP PRIMARY KEY  \n"));
     }
 
     @Test
@@ -96,7 +88,8 @@ public class TrimouTest {
         action.setTableName("foo");
         action.getColumn().add("c1");
         action.getColumn().add("c2");
-        System.out.println(mustache.render(ImmutableMap.of("action", action)));
+        assertThat(mustache.render(ImmutableMap.of("action", action)),
+            is("ALTER TABLE foo ADD PRIMARY KEY (c1, c2)\n"));
     }
 
     @Test
@@ -113,7 +106,8 @@ public class TrimouTest {
         c2.setType(SqlType.INT_64);
         action.getColumn().add(c1);
         action.getColumn().add(c2);
-        System.out.println(mustache.render(ImmutableMap.of("action", action)));
+        assertThat(mustache.render(ImmutableMap.of("action", action)),
+            is("CREATE TABLE foo (\n" + "  c1 int NOT NULL, \n" + "  c2 bigint\n" + ")\n"));
     }
 
     @Test
@@ -143,7 +137,10 @@ public class TrimouTest {
         action.getColumn().add(c2);
         action.getColumn().add(c3);
         action.getColumn().add(c4);
-        System.out.println(mustache.render(ImmutableMap.of("action", action)));
+        assertThat(mustache.render(ImmutableMap.of("action", action)),
+            is("CREATE TABLE foo (\n" + "  c1 int AUTO_INCREMENT NOT NULL, \n"
+                + "  c2 bigint NOT NULL, \n" + "  c3 varchar(10), \n" + "  c4 decimal(5, 2)\n"
+                + ")\n"));
     }
 
     @Test
@@ -174,7 +171,9 @@ public class TrimouTest {
         cp2.setBase(base2);
         cp2.setReferenced(ref2);
         action.getColumnPair().add(cp2);
-        System.out.println(mustache.render(ImmutableMap.of("action", action)));
+        assertThat(mustache.render(ImmutableMap.of("action", action)),
+            is("ALTER TABLE order ADD CONSTRAINT fk_4711  \n"
+                + "FOREIGN KEY (customer_id, product_id) REFERENCES customer (id, prod_id)\n"));
     }
 
     @Test
@@ -190,7 +189,8 @@ public class TrimouTest {
         c2.setName("c2");
         action.getColumn().add(c1);
         action.getColumn().add(c2);
-        System.out.println(mustache.render(ImmutableMap.of("action", action)));
+        assertThat(mustache.render(ImmutableMap.of("action", action)),
+            is("CREATE UNIQUE INDEX i_order ON foo (c1, c2)\n"));
 
     }
 
@@ -209,22 +209,17 @@ public class TrimouTest {
 
         action.getColumn().add(cv1);
         action.getColumn().add(cv2);
-        System.out.println(mustache.render(ImmutableMap.of("action", action)));
-
+        assertThat(mustache.render(ImmutableMap.of("action", action)),
+            is("INSERT INTO foo\n" + "  (c1, c2)\n" + "  VALUES (?, ?)\n"));
     }
 
     @Test
-    public void shouldResolveJarUrl() throws URISyntaxException, IOException {
-        URL resource = org.h2.Driver.class.getResource("Driver.class");
-        System.out.println(resource);
-        URI parent = resource.toURI().resolve(".");
-        System.out.println(parent);
-
-        URLConnection connection = resource.openConnection();
-        assertThat(connection, instanceOf(JarURLConnection.class));
-        JarURLConnection jarConnection = (JarURLConnection) connection;
-        assertThat(jarConnection.getEntryName(), is("org/h2/Driver.class"));
+    public void shouldRenderDefaultValue() {
+        Mustache mustache = engine.getMustache("defaultValue");
+        Column c = new Column();
+        c.setName("foo");
+        c.setType(SqlType.VARCHAR);
+        c.setDefaultValue("'bar'");
+        assertThat(mustache.render(ImmutableMap.of("defaultValue", "'bar'")), is(" DEFAULT 'bar'"));
     }
-
-
 }

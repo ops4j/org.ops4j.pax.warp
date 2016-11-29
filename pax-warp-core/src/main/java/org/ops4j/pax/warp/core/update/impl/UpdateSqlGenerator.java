@@ -87,6 +87,7 @@ public class UpdateSqlGenerator extends InsertSqlGenerator {
             action.getColumn().stream().filter(c -> isAutoIncrement(c))
                 .forEach(c -> autoIncrementColumns.add(action.getTableName() + "." + c.getName()));
         }
+        action.getColumn().stream().forEach(this::quoteDefaultValue);
         produceStatement("createTable", action);
         Optional<Column> autoIncr = action.getColumn().stream().filter(this::isAutoIncrement)
             .findFirst();
@@ -102,6 +103,44 @@ public class UpdateSqlGenerator extends InsertSqlGenerator {
             }
         }
         return VisitorAction.CONTINUE;
+    }
+
+    private void quoteDefaultValue(Column c) {
+        if (c.getDefaultValue() == null) {
+            return;
+        }
+
+        switch (c.getType()) {
+            case CHAR:
+            case VARCHAR:
+                c.setDefaultValue(quotedString(c.getDefaultValue()));
+                break;
+            case BOOLEAN:
+                if (c.getDefaultValue().contains("1")) {
+                    c.setDefaultValue("1");
+                }
+                else {
+                    c.setDefaultValue("0");
+                }
+            default:
+                // nothing
+        }
+    }
+
+    private static String quotedString(String s) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("'");
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '\'') {
+                builder.append("''");
+            }
+            else {
+                builder.append(c);
+            }
+        }
+        builder.append("'");
+        return builder.toString();
     }
 
     private boolean isAutoIncrement(Column c) {
