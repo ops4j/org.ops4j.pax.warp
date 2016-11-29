@@ -26,6 +26,7 @@ import java.util.function.Predicate;
 
 import org.ops4j.pax.warp.core.dbms.DbmsProfile;
 import org.ops4j.pax.warp.core.trimou.TemplateEngine;
+import org.ops4j.pax.warp.core.trimou.TemplateEngineSelector;
 import org.ops4j.pax.warp.exc.WarpException;
 import org.ops4j.pax.warp.jaxb.gen.ChangeSet;
 import org.ops4j.pax.warp.jaxb.gen.visitor.BaseVisitor;
@@ -56,7 +57,7 @@ public class BaseSqlGenerator extends BaseVisitor {
         this.dbms = dbms;
         this.dbc = dbc;
         this.consumer = consumer;
-        this.engine = new TemplateEngine(dbms.getSubprotocol());
+        this.engine = TemplateEngineSelector.getTemplateEngine(dbms.getSubprotocol());
     }
 
     protected VisitorAction produceStatement(String templateName, Object action) {
