@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * To avoid reinitializing the mustache engine multiple times, this class caches the template
+ * To avoid reinitializing the Mustache engine multiple times, this class caches the template
  * engines.
  *
  * @author Kevin Grüneberg
@@ -25,5 +25,4 @@ public class TemplateEngineSelector {
         TemplateEngine templateEngine = new TemplateEngine(subprotocol);
         templateEngines.put(subprotocol,templateEngine);
     }
-
 }
