@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<changeLog xmlns="urn:org.ops4j.pax.warp:changelog" version="0.1">
+    <changeSet id="4">
+        <createTable tableName="foo">
+            <column name="id" type="int32" autoIncrement="true" nullable="false"/>
+        </createTable>
+        <runSql dbms="h2, oracle">INSERT INTO foo VALUES (1)</runSql>
+    </changeSet>
+</changeLog>

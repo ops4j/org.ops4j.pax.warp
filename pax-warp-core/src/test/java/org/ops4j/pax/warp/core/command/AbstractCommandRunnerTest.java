@@ -140,6 +140,10 @@ public abstract class AbstractCommandRunnerTest {
         migrateChangeSet(getClass().getResourceAsStream("/changelogs/changelog3.xml"));
     }
 
+    private void runRunSqlChangeSet() throws IOException, SQLException {
+        migrateChangeSet(getClass().getResourceAsStream("/changelogs/changelog4.xml"));
+    }
+
     private void migrateChangeSet(InputStream inputStream) throws SQLException, IOException {
         Connection dbc = DriverManager.getConnection(getJdbcUrl(), "warp", "warp");
         commandRunner.migrate(dbc, inputStream);
@@ -195,15 +199,20 @@ public abstract class AbstractCommandRunnerTest {
     public void test07ShouldDropColumnAndIndex() throws SQLException, IOException {
         runDropChangeSet();
     }
-    
+
+    @Test
+    public void test08ShouldReimportStructure() throws  SQLException, IOException {
+        dropAndCreateDatabase();
+        reimportStructure();
+    }
+
     @Test
     public void test09ShouldRenameAndDropTable() throws IOException, SQLException {
         runRenameAndDropTableChangeSet();
     }
 
     @Test
-    public void test08ShouldReimportStructure() throws  SQLException, IOException {
-        dropAndCreateDatabase();
-        reimportStructure();
+    public void test10ShouldRunSqlInSelectedDbms() throws IOException, SQLException {
+        runRunSqlChangeSet();
     }
 }
