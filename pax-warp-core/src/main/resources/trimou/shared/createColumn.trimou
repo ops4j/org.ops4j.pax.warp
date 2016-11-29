@@ -1,1 +1,1 @@
-{{name}} {{>columnType}}{{>precisionScale}}{{>lengthSuffix}}{{>autoIncrement}}{{>notNull}}
+{{name}} {{>columnType}}{{>precisionScale}}{{>lengthSuffix}}{{>autoIncrement}}{{>defaultValue}}{{>notNull}}

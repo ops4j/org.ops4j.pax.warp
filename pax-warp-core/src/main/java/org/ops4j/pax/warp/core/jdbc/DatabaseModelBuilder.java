@@ -148,6 +148,7 @@ public class DatabaseModelBuilder {
                 int columnSize = rs.getInt("COLUMN_SIZE");
                 int decimalDigits = rs.getInt("DECIMAL_DIGITS");
                 int nullable = rs.getInt("NULLABLE");
+                String defaultValue = rs.getString("COLUMN_DEF");
                 String autoIncrement = "NO";
                 // Oracle workaround
                 if (dbms.getAutoIncrementHasMetadata()) {
@@ -155,8 +156,8 @@ public class DatabaseModelBuilder {
                 }
                 JDBCType jdbcType = JDBCType.valueOf(dataType);
                 log.debug("column [{}]: name={}, jdbcType={}, typeName={}, size={}, digits={}, "
-                    + "nullable={}, autoIncrement={}", ordinal, columnName, jdbcType, typeName,
-                    columnSize, decimalDigits, nullable, autoIncrement);
+                    + "nullable={}, autoIncrement={}, defaultValue={}", ordinal, columnName, jdbcType, typeName,
+                    columnSize, decimalDigits, nullable, autoIncrement, defaultValue);
                 List<Column> columns = table.getColumn();
                 Column column = new Column();
                 column.setName(columnName);
@@ -181,6 +182,10 @@ public class DatabaseModelBuilder {
                 }
                 if ("YES".equals(autoIncrement)) {
                     column.setAutoIncrement(true);
+                }
+                // FIXME move hard-coded exceptions to DbmsProfile
+                if (defaultValue != null && !defaultValue.startsWith("(NEXT VALUE") && !defaultValue.equals("GENERATED_BY_DEFAULT")) {
+                    column.setDefaultValue(defaultValue);
                 }
                 columns.add(column);
             }
