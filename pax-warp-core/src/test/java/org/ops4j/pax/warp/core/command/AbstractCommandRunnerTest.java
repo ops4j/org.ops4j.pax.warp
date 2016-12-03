@@ -156,7 +156,7 @@ public abstract class AbstractCommandRunnerTest {
     }
 
     protected String getJdbcAdminUrl() {
-        return dbms.getJdbcUrl();
+        return dbms.getJdbcAdminUrl();
     }
 
     protected void dropAndCreateDatabase() throws SQLException {

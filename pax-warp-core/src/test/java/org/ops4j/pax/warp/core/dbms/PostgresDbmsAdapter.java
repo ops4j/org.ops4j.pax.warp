@@ -28,19 +28,23 @@ import java.sql.Statement;
  */
 public class PostgresDbmsAdapter implements DbmsAdapter {
 
+    private String getPort() {
+        return System.getProperty("postgresql.jdbc.port", "5432");
+    }
+
     @Override
     public String getJdbcUrl() {
-        return "jdbc:postgresql://localhost/warp";
+        return String.format("jdbc:postgresql://127.0.0.1:%s/warp", getPort());
     }
 
     @Override
     public String getJdbcAdminUrl() {
-        return "jdbc:postgresql://localhost/warp_admin";
+        return String.format("jdbc:postgresql://127.0.0.1:%s/warp_admin", getPort());
     }
 
     @Override
     public void dropAndCreateDatabase() throws SQLException {
-        Connection dbc = DriverManager.getConnection(getJdbcAdminUrl(), "warp", "warp");
+        Connection dbc = DriverManager.getConnection(getJdbcAdminUrl(), "warp_admin", "warp_admin");
         Statement st = dbc.createStatement();
         st.executeUpdate("drop database if exists warp");
         st.executeUpdate("create database warp");
