@@ -122,6 +122,7 @@ public class UpdateSqlGenerator extends InsertSqlGenerator {
                 else {
                     c.setDefaultValue("0");
                 }
+                break;
             default:
                 // nothing
         }

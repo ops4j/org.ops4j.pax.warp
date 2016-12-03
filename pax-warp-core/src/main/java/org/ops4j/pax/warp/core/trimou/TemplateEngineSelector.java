@@ -13,6 +13,10 @@ public class TemplateEngineSelector {
 
     private static Map<String, TemplateEngine> templateEngines = new HashMap<>();
 
+    private TemplateEngineSelector() {
+        // Hidden utility class constructor
+    }
+
     public static TemplateEngine getTemplateEngine(String subprotocol) {
         if (!templateEngines.containsKey(subprotocol)) {
             initTemplateEngine(subprotocol);
@@ -23,6 +27,6 @@ public class TemplateEngineSelector {
 
     private static void initTemplateEngine(String subprotocol) {
         TemplateEngine templateEngine = new TemplateEngine(subprotocol);
-        templateEngines.put(subprotocol,templateEngine);
+        templateEngines.put(subprotocol, templateEngine);
     }
 }

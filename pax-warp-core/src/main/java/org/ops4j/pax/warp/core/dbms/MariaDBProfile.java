@@ -21,10 +21,9 @@ package org.ops4j.pax.warp.core.dbms;
  * @author Toni Menzel (toni.menzel@rebaze.com)
  *
  */
-public class MariaDBProfile extends MysqlProfile
-{
-    public String getSubprotocolAlias()
-    {
+public class MariaDBProfile extends MysqlProfile {
+
+    public String getSubprotocolAlias() {
         return "mariadb";
     }
 }
