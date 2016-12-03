@@ -22,7 +22,7 @@ public class TemplateEngineSelector {
      * @param subprotocol JDBC subprotocol
      * @return template engine
      */
-    public synchronized static TemplateEngine getTemplateEngine(String subprotocol) {
+    public static synchronized TemplateEngine getTemplateEngine(String subprotocol) {
         if (!templateEngines.containsKey(subprotocol)) {
             initTemplateEngine(subprotocol);
         }
