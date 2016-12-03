@@ -306,8 +306,7 @@ public abstract class AbstractSqlScriptRunner {
         }
         sb.append(resourceName.substring(slash + 1));
         log.debug("construced path {}", sb.toString());
-        URL url = clazz.getResource(sb.toString());
-        return url;
+        return clazz.getResource(sb.toString());
     }
 
     /**

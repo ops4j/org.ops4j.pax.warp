@@ -95,6 +95,7 @@ public class CommandRunnerImpl implements CommandRunner {
         dumpDataService.dumpData(dbc, os, getDbms(dbc), Optional.empty());
     }
 
+    @Override
     public void dumpAll(Connection dbc, OutputStream os) {
         dumpDataService.dumpAll(dbc, os, getDbms(dbc), Optional.empty());
     }

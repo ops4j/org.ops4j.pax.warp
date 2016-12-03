@@ -185,14 +185,18 @@ public class DatabaseModelBuilder {
                 if ("YES".equals(autoIncrement)) {
                     column.setAutoIncrement(true);
                 }
-                // FIXME move hard-coded exceptions to DbmsProfile
-                if (defaultValue != null && !defaultValue.startsWith("(NEXT VALUE")
-                    && !defaultValue.startsWith("nextval(")
-                    && !defaultValue.equals("GENERATED_BY_DEFAULT")) {
-                    column.setDefaultValue(defaultValue);
-                }
+                addDefaultValue(column, defaultValue);
                 columns.add(column);
             }
+        }
+    }
+
+    private void addDefaultValue(Column column, String defaultValue) {
+        // FIXME move hard-coded exceptions to DbmsProfile
+        if (defaultValue != null && !defaultValue.startsWith("(NEXT VALUE")
+            && !defaultValue.startsWith("nextval(")
+            && !defaultValue.equals("GENERATED_BY_DEFAULT")) {
+            column.setDefaultValue(defaultValue);
         }
     }
 

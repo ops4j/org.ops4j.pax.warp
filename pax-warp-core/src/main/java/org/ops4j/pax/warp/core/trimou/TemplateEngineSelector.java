@@ -17,7 +17,12 @@ public class TemplateEngineSelector {
         // Hidden utility class constructor
     }
 
-    public static TemplateEngine getTemplateEngine(String subprotocol) {
+    /**
+     * Gets a template engine for the given JDBC subprotocol.
+     * @param subprotocol JDBC subprotocol
+     * @return template engine
+     */
+    public synchronized static TemplateEngine getTemplateEngine(String subprotocol) {
         if (!templateEngines.containsKey(subprotocol)) {
             initTemplateEngine(subprotocol);
         }
