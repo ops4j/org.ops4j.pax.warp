@@ -42,8 +42,7 @@ import org.trimou.engine.locator.ClassPathTemplateLocator;
 import org.trimou.handlebars.HelpersBuilder;
 import org.trimou.lambda.InputProcessingLambda;
 import org.trimou.lambda.Lambda;
-
-import com.google.common.collect.ImmutableMap;
+import org.trimou.util.ImmutableMap;
 
 public class TrimouTest {
 

@@ -29,7 +29,7 @@ Run Build:
 
 Releases go to Maven Central.
 
-Pax Warp is incubating. The current milestone release is *Pax Warp 0.5.0*.
+Pax Warp is incubating. The current milestone release is *Pax Warp 0.6.2*.
 
 ## Continuous Integration Builds
 
