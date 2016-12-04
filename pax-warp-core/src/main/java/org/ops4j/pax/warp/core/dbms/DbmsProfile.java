@@ -37,7 +37,8 @@ public interface DbmsProfile {
      *
      * Used as name when selecting the correct profile.
      *
-     * @return either result of  {@link #getSubprotocol()}) or a distinct protocol name (e.g. mariadb, which is a drop-in replacement for mysql)
+     * @return either result of {@link #getSubprotocol()}) or a distinct protocol name (e.g.
+     *         mariadb, which is a drop-in replacement for mysql)
      */
     default String getSubprotocolAlias() {
         return getSubprotocol();
@@ -51,7 +52,7 @@ public interface DbmsProfile {
     default boolean getAutoIncrementIsPrimaryKey() {
         return false;
     }
-    
+
     default boolean getAutoIncrementNeedsTrigger() {
         return false;
     }
@@ -59,7 +60,7 @@ public interface DbmsProfile {
     default boolean getAutoIncrementNeedsSequence() {
         return false;
     }
-    
+
     default boolean getAutoIncrementHasMetadata() {
         return true;
     }
@@ -106,6 +107,13 @@ public interface DbmsProfile {
         return false;
     }
 
+    /**
+     * Quotes the given identifier with the appropriate syntax for the DBMS.
+     * 
+     * @param identifier
+     *            table or column name
+     * @return quoted identifier
+     */
     default String quoteIdentifier(String identifier) {
         StringBuilder builder = new StringBuilder();
         builder.append('"');
