@@ -12,3 +12,4 @@ test-output
 *.iml
 .DS_Store
 pax-warp-spring
+.maven-settings.xml
