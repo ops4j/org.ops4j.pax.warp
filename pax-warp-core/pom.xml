@@ -186,48 +186,48 @@
                         <version>0.18.1</version>
                         <configuration>
                             <images>
-<!--                                 <image> -->
-<!--                                     <name>mysql:5.6.31</name> -->
-<!--                                     <run> -->
-<!--                                         <env> -->
-<!--                                             <MYSQL_ROOT_PASSWORD>root</MYSQL_ROOT_PASSWORD> -->
-<!--                                         </env> -->
-<!--                                         <wait> -->
-<!--                                             <log>init process done</log> -->
-<!--                                             <time>60000</time> -->
-<!--                                         </wait> -->
-<!--                                         <ports> -->
-<!--                                             <port>mysql.jdbc.port:3306</port> -->
-<!--                                         </ports> -->
-<!--                                         <volumes> -->
-<!--                                             <bind> -->
-<!--                                                 <volume>${project.basedir}/src/main/docker/mysql/sql/createWarp.sql:/docker-entrypoint-initdb.d/createWarp.sql</volume> -->
-<!--                                             </bind> -->
-<!--                                         </volumes> -->
-<!--                                     </run> -->
-<!--                                 </image> -->
-<!--                                 <image> -->
-<!--                                     <name>postgres:9.4.10</name> -->
-<!--                                     <run> -->
-<!--                                         <env> -->
-<!--                                             <POSTGRES_USER>warp_admin</POSTGRES_USER> -->
-<!--                                             <POSTGRES_PASSWORD>warp_admin</POSTGRES_PASSWORD> -->
-<!--                                             <POSTGRES_DB>warp_admin</POSTGRES_DB> -->
-<!--                                         </env> -->
-<!--                                         <wait> -->
-<!--                                             <log>init process complete</log> -->
-<!--                                             <time>60000</time> -->
-<!--                                         </wait> -->
-<!--                                         <ports> -->
-<!--                                             <port>postgresql.jdbc.port:5432</port> -->
-<!--                                         </ports> -->
-<!--                                         <volumes> -->
-<!--                                             <bind> -->
-<!--                                                 <volume>${project.basedir}/src/main/docker/postgresql/sql/createWarp.sql:/docker-entrypoint-initdb.d/createWarp.sql</volume> -->
-<!--                                             </bind> -->
-<!--                                         </volumes> -->
-<!--                                     </run> -->
-<!--                                 </image> -->
+                                <image>
+                                    <name>mysql:5.6.31</name>
+                                    <run>
+                                        <env>
+                                            <MYSQL_ROOT_PASSWORD>root</MYSQL_ROOT_PASSWORD>
+                                        </env>
+                                        <wait>
+                                            <log>init process done</log>
+                                            <time>60000</time>
+                                        </wait>
+                                        <ports>
+                                            <port>mysql.jdbc.port:3306</port>
+                                        </ports>
+                                        <volumes>
+                                            <bind>
+                                                <volume>${project.basedir}/src/main/docker/mysql/sql/createWarp.sql:/docker-entrypoint-initdb.d/createWarp.sql</volume>
+                                            </bind>
+                                        </volumes>
+                                    </run>
+                                </image>
+                                <image>
+                                    <name>postgres:9.4.10</name>
+                                    <run>
+                                        <env>
+                                            <POSTGRES_USER>warp_admin</POSTGRES_USER>
+                                            <POSTGRES_PASSWORD>warp_admin</POSTGRES_PASSWORD>
+                                            <POSTGRES_DB>warp_admin</POSTGRES_DB>
+                                        </env>
+                                        <wait>
+                                            <log>init process complete</log>
+                                            <time>60000</time>
+                                        </wait>
+                                        <ports>
+                                            <port>postgresql.jdbc.port:5432</port>
+                                        </ports>
+                                        <volumes>
+                                            <bind>
+                                                <volume>${project.basedir}/src/main/docker/postgresql/sql/createWarp.sql:/docker-entrypoint-initdb.d/createWarp.sql</volume>
+                                            </bind>
+                                        </volumes>
+                                    </run>
+                                </image>
                                 <image>
                                     <name>wnameless/oracle-xe-11g:16.04</name>
                                     <run>
