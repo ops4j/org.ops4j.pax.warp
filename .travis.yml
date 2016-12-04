@@ -8,4 +8,5 @@ sudo: required
 services:
   - docker
 
-script: mvn -Pdocker clean install
+install: "mvn -Pdocker clean install"
+
