@@ -207,6 +207,26 @@
                                     </run>
                                 </image>
                                 <image>
+                                    <name>mariadb:10.1.19</name>
+                                    <run>
+                                        <env>
+                                            <MYSQL_ROOT_PASSWORD>root</MYSQL_ROOT_PASSWORD>
+                                        </env>
+                                        <wait>
+                                            <log>init process done</log>
+                                            <time>60000</time>
+                                        </wait>
+                                        <ports>
+                                            <port>mariadb.jdbc.port:3306</port>
+                                        </ports>
+                                        <volumes>
+                                            <bind>
+                                                <volume>${project.basedir}/src/main/docker/mysql/sql/createWarp.sql:/docker-entrypoint-initdb.d/createWarp.sql</volume>
+                                            </bind>
+                                        </volumes>
+                                    </run>
+                                </image>
+                                <image>
                                     <name>postgres:9.4.10</name>
                                     <run>
                                         <env>
@@ -278,14 +298,17 @@
                         <version>2.18.1</version>
                         <configuration>
                             <systemPropertyVariables>
+                                <mariadb>true</mariadb>
                                 <mysql>true</mysql>
                                 <postgres>true</postgres>
                                 <oracle>true</oracle>
+                                <mariadb.jdbc.port>${mariadb.jdbc.port}</mariadb.jdbc.port>
                                 <mysql.jdbc.port>${mysql.jdbc.port}</mysql.jdbc.port>
                                 <postgresql.jdbc.port>${postgresql.jdbc.port}</postgresql.jdbc.port>
                                 <oracle.jdbc.port>${oracle.jdbc.port}</oracle.jdbc.port>
                             </systemPropertyVariables>
                             <includes>
+                                <include>**/MariaDB*Test.java</include>
                                 <include>**/Mysql*Test.java</include>
                                 <include>**/Postgres*Test.java</include>
                                 <include>**/Oracle*Test.java</include>
@@ -297,6 +320,7 @@
                                 <phase>integration-test</phase>
                                 <goals>
                                     <goal>integration-test</goal>
+                                    <goal>verify</goal>
                                 </goals>
                             </execution>
                         </executions>

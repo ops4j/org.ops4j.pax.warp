@@ -25,21 +25,24 @@ import java.sql.Statement;
  *
  */
 public class MariaDBDbmsAdapter implements DbmsAdapter {
+    
+    private String getPort() {
+        return System.getProperty("mariadb.jdbc.port", "3306");
+    }
 
     @Override
     public String getJdbcUrl() {
-        return "jdbc:mariadb://localhost/warp?useSSL=false";
+        return String.format("jdbc:mariadb://127.0.0.1:%s/warp?useSSL=false", getPort());
     }
 
     @Override
     public String getJdbcAdminUrl() {
-        return "jdbc:mariadb://localhost/warp_admin?useSSL=false";
+        return String.format("jdbc:mariadb://127.0.0.1:%s/warp_admin?useSSL=false", getPort());
     }
 
     @Override
-    public void dropAndCreateDatabase() throws SQLException
-    {
-        Connection dbc = DriverManager.getConnection(getJdbcAdminUrl(), "warp", "warp");
+    public void dropAndCreateDatabase() throws SQLException {
+        Connection dbc = DriverManager.getConnection(getJdbcAdminUrl(), "warp_admin", "warp_admin");
         Statement st = dbc.createStatement();
         st.executeUpdate("drop database if exists warp");
         st.executeUpdate("drop database if exists foo");
