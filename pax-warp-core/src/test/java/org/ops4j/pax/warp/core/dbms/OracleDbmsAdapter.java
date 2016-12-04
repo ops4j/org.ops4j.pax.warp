@@ -25,15 +25,19 @@ import java.sql.Statement;
  *
  */
 public class OracleDbmsAdapter implements DbmsAdapter {
+    
+    private String getPort() {
+        return System.getProperty("oracle.jdbc.port", "1521");
+    }
 
     @Override
     public String getJdbcUrl() {
-        return "jdbc:oracle:thin://@localhost:49161:xe";
+        return String.format("jdbc:oracle:thin://@localhost:%s:xe", getPort());
     }
 
     @Override
     public String getJdbcAdminUrl() {
-        return "jdbc:oracle:thin://@localhost:49161:xe";
+        return String.format("jdbc:oracle:thin://@localhost:%s:xe", getPort());
     }
 
     @Override
