@@ -62,12 +62,19 @@ Pax Warp currently supports the following relational database management systems
 
 * Apache Derby
 * H2
+* MariaDB
 * MySQL
-* MariaDB (uses mariadb driver. All other things are identical to MySQL as MariaDB is a drop-in replacement for MySQL.
+* Oracle
 * PostgreSQL
 
 Any relational database with a JDBC driver can be supported by Pax Warp by adding a set of
 SQL templates and a new DBMS profile.
+
+The Pax Warp binary distribution contains drivers for Derby, H2, MariaDB and PostgreSQL. The MariaDB driver can be
+used both for MariaDB and MySQL. The MySQL driver is not included to avoid ambiguities in driver selection.
+
+The Oracle driver is not included due to incompatible licensing. To work with Pax Warp on Oracle databases, please
+register with Oracle to access Oracle's Maven repository or to download the driver directly.
 
 = Getting Started
 
@@ -278,22 +285,22 @@ column type of the given DBMS. The generic types are mapped as follows:
 
 [options="header"]
 |=======================
-| Pax Warp   | Derby               | H2               | MySQL            | PostgreSQL
-| blob       | blob                | blob             | BLOB             | bytea
-| boolean    | boolean             | boolean          | BOOLEAN          | boolean
-| char       | char                | char             | CHAR             | char
-| clob       | clob                | text             | TEXT             | text
-| date       | date                | date             | DATE             | date
-| decimal    | decimal             | decimal          | DECIMAL          | decimal
-| double     | double precision    | double precision | DOUBLE PRECISION | double precision
-| float      | real                | real             | REAL             | real
-| int8       | smallint            | tinyint          | TINYINT          | smallint
-| int16      | smallint            | smallint         | SMALLINT         | smallint
-| int32      | integer             | int              | INT              | int
-| int64      | bigint              | bigint           | BIGINT           | bigint
-| time       | time                | time             | TIME             | time
-| timestamp  | timestamp           | datetime         | TIMESTAMP        | timestamp
-| varchar    | varchar             | varchar          | VARCHAR          | varchar
+| Pax Warp   | Derby               | H2               | MariaDB, MySQL   | Oracle           | PostgreSQL
+| blob       | blob                | blob             | BLOB             | BLOB             | bytea
+| boolean    | boolean             | boolean          | BOOLEAN          | NUMBER(1,0)      | boolean
+| char       | char                | char             | CHAR             | CHAR             | char
+| clob       | clob                | text             | TEXT             | CLOB             | text
+| date       | date                | date             | DATE             | DATE             | date
+| decimal    | decimal             | decimal          | DECIMAL          | DECIMAL          | decimal
+| double     | double precision    | double precision | DOUBLE PRECISION | DOUBLE PRECISION | double precision
+| float      | real                | real             | REAL             | FLOAT            | real
+| int8       | smallint            | tinyint          | TINYINT          | NUMBER(3,0)      | smallint
+| int16      | smallint            | smallint         | SMALLINT         | NUMBER(5,0)      | smallint
+| int32      | integer             | int              | INT              | NUMBER(10,0)     | int
+| int64      | bigint              | bigint           | BIGINT           | NUMBER(19,0)     | bigint
+| time       | time                | time             | TIME             | DATE             | time
+| timestamp  | timestamp           | datetime         | TIMESTAMP        | TIMESTAMP        | timestamp
+| varchar    | varchar             | varchar          | VARCHAR          | VARCHAR2         | varchar
 |=======================
 
 === Column

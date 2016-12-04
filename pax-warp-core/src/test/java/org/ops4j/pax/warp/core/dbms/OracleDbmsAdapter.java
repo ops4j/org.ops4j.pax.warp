@@ -20,11 +20,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Harald Wellmann
  *
  */
 public class OracleDbmsAdapter implements DbmsAdapter {
+    
+    private static Logger log = LoggerFactory.getLogger(OracleDbmsAdapter.class);
     
     private String getPort() {
         return System.getProperty("oracle.jdbc.port", "1521");
@@ -56,9 +61,8 @@ public class OracleDbmsAdapter implements DbmsAdapter {
         try {
             st.execute(sql);
         }
-        catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        catch (SQLException exc) {
+            log.debug("", exc);
         }
     }
 
