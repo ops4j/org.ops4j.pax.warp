@@ -155,8 +155,8 @@
             <dependencies>
                 <dependency>
                     <groupId>com.oracle.jdbc</groupId>
-                    <artifactId>ojdbc7</artifactId>
-                    <version>12.1.0.2</version>
+                    <artifactId>ojdbc6</artifactId>
+                    <version>11.2.0.4</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -257,8 +257,8 @@
                                             <ORACLE_SID>XE</ORACLE_SID>
                                         </env>
                                         <wait>
-                                            <time>60000</time>
-                                            <log>Grant succeeded</log>
+                                            <time>180000</time>
+                                            <log>Disconnected from Oracle Database</log>
                                         </wait>
                                         <labels>
                                             <transient>true</transient>
