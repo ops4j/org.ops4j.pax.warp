@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import org.ops4j.pax.warp.core.dbms.DbmsProfile;
 import org.ops4j.pax.warp.core.history.ChangeSetHistory;
@@ -210,13 +211,19 @@ public class UpdateSqlGenerator extends InsertSqlGenerator {
     @Override
     public VisitorAction enter(RunSql action) {
         String selectedDbms = action.getDbms();
-        String currentSubprotocol = dbms.getSubprotocol();
 
-        if (selectedDbms == null || currentSubprotocol.contains(selectedDbms)) {
+        if (selectedDbms == null || subprotocolMatches(selectedDbms)) {
             String sql = action.getValue();
             runStatement(sql);
         }
         return VisitorAction.CONTINUE;
+    }
+
+    private boolean subprotocolMatches(String selectedDbms) {
+        String currentSubprotocol = dbms.getSubprotocol();
+        String[] selectedProtocols = selectedDbms.split(",\\s*");
+
+        return Stream.of(selectedProtocols).anyMatch(currentSubprotocol::equals);
     }
 
     @Override

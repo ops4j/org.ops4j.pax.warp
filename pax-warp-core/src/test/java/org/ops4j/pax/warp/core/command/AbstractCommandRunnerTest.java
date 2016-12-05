@@ -56,7 +56,6 @@ public abstract class AbstractCommandRunnerTest {
 
     private DbmsAdapter dbms;
 
-
     protected AbstractCommandRunnerTest(DbmsAdapter dbms) {
         this.dbms = dbms;
     }
@@ -66,16 +65,16 @@ public abstract class AbstractCommandRunnerTest {
         migrateChangeSet(inputStream);
     }
 
-    private void dumpDataOnly(String jdbcUrl) throws SQLException, IOException {
-        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
+    private void dumpDataOnly() throws SQLException, IOException {
+        Connection dbc = getConnection();
         OutputStream os = new FileOutputStream("target/dataOnly1.xml");
         commandRunner.dumpData(dbc, os);
         os.close();
         dbc.close();
     }
 
-    private void dumpStructure(String jdbcUrl) throws  SQLException, IOException {
-        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
+    private void dumpStructure() throws  SQLException, IOException {
+        Connection dbc = getConnection();
         OutputStream os = new FileOutputStream("target/structure1.xml");
         commandRunner.dumpStructure(dbc, os);
         os.close();
@@ -87,8 +86,8 @@ public abstract class AbstractCommandRunnerTest {
         migrateChangeSet(inputStream);
     }
 
-    private void insertData1(String jdbcUrl) throws  SQLException, IOException {
-        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
+    private void insertData1() throws  SQLException, IOException {
+        Connection dbc = getConnection();
         InputStream is = getClass().getResourceAsStream("/changelogs/data1.xml");
         commandRunner.importData(dbc, is);
         is.close();
@@ -109,16 +108,16 @@ public abstract class AbstractCommandRunnerTest {
         dbc.close();
     }
 
-    private void insertData2(String jdbcUrl) throws SQLException, IOException {
-        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
+    private void insertData2() throws SQLException, IOException {
+        Connection dbc = getConnection();
         InputStream is = getClass().getResourceAsStream("/changelogs/data2.xml");
         commandRunner.importData(dbc, is);
         is.close();
         dbc.close();
     }
 
-    private void reinsertData(String jdbcUrl) throws SQLException, IOException {
-        Connection dbc = DriverManager.getConnection(jdbcUrl, "warp", "warp");
+    private void reinsertData() throws SQLException, IOException {
+        Connection dbc = getConnection();
         InputStream is = new FileInputStream("target/dataOnly1.xml");
         commandRunner.importData(dbc, is);
         is.close();
@@ -135,7 +134,7 @@ public abstract class AbstractCommandRunnerTest {
     private void runDropChangeSet() throws SQLException, IOException {
         migrateChangeSet(getClass().getResourceAsStream("/changelogs/changelog2.xml"));
     }
-    
+
     private void runRenameAndDropTableChangeSet() throws IOException, SQLException {
         migrateChangeSet(getClass().getResourceAsStream("/changelogs/changelog3.xml"));
     }
@@ -145,10 +144,14 @@ public abstract class AbstractCommandRunnerTest {
     }
 
     private void migrateChangeSet(InputStream inputStream) throws SQLException, IOException {
-        Connection dbc = DriverManager.getConnection(getJdbcUrl(), "warp", "warp");
+        Connection dbc = getConnection();
         commandRunner.migrate(dbc, inputStream);
         dbc.close();
         inputStream.close();
+    }
+
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(getJdbcUrl(), "warp", "warp");
     }
 
     protected String getJdbcUrl() {
@@ -167,7 +170,7 @@ public abstract class AbstractCommandRunnerTest {
     public void test01ShouldUpdate() throws SQLException, IOException {
         dropAndCreateDatabase();
         updateStructure();
-        dumpStructure(getJdbcUrl());
+        dumpStructure();
     }
 
     @Test
@@ -177,22 +180,22 @@ public abstract class AbstractCommandRunnerTest {
 
     @Test
     public void test03ShouldInsertData() throws  SQLException, IOException {
-        insertData1(getJdbcUrl());
+        insertData1();
     }
 
     @Test
     public void test04ShouldInsertData() throws  SQLException, IOException {
-        insertData2(getJdbcUrl());
+        insertData2();
     }
 
     @Test
     public void test05ShouldDumpDataOnly() throws  SQLException, IOException {
-        dumpDataOnly(getJdbcUrl());
+        dumpDataOnly();
     }
 
     @Test
     public void test06ShouldInsertData() throws  SQLException, IOException {
-        reinsertData(getJdbcUrl());
+        reinsertData();
     }
 
     @Test
@@ -214,5 +217,26 @@ public abstract class AbstractCommandRunnerTest {
     @Test
     public void test10ShouldRunSqlInSelectedDbms() throws IOException, SQLException {
         runRunSqlChangeSet();
+
+        Connection connection = getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT COUNT(id) FROM ch4");
+        resultSet.next();
+        int count = resultSet.getInt(1);
+        assertThat(count, is(expectedRowSizeAfterRunSqlChangeSet()));
+
+        resultSet.close();
+        statement.close();
+        connection.close();
+    }
+
+    /**
+     * test10 should only run in h2 and oracle. The change set imported during that tests inserts
+     * a single row.
+     *
+     * @return expected row count after executing test10
+     */
+    protected int expectedRowSizeAfterRunSqlChangeSet() {
+        return 0;
     }
 }
