@@ -37,6 +37,7 @@ public class OracleCommandRunnerTest extends AbstractCommandRunnerTest {
     }
 
     @Override
+    protected int expectedRowSizeAfterRunSqlChangeSet() {
         return 1;
     }
 }
