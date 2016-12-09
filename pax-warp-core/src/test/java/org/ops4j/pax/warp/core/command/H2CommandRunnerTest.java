@@ -26,4 +26,9 @@ public class H2CommandRunnerTest extends AbstractCommandRunnerTest {
     public H2CommandRunnerTest() {
         super(new H2DbmsAdapter());
     }
+
+    @Override
+    protected int expectedRowSizeAfterRunSqlChangeSet() {
+        return 1;
+    }
 }

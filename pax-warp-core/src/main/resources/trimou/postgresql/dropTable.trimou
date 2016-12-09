@@ -1,3 +1,0 @@
-{{#action}}
-DROP TABLE IF EXISTS {{tableName}}
-{{/action}}
