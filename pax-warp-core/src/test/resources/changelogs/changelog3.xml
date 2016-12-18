@@ -4,7 +4,7 @@
         <createTable tableName="foo">
             <column name="id" type="int32" autoIncrement="true" nullable="false"/>
         </createTable>
-        <renameTable oldTableName="foo" newTableName="foo_bar" />
+        <renameTable currentTableName="foo" newTableName="foo_bar" />
         <dropTable tableName="foo_bar" />
     </changeSet>
 </changeLog>

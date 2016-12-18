@@ -209,7 +209,7 @@
 	</xsd:complexType>
 
 	<xsd:complexType name="RenameTable">
-		<xsd:attribute name="oldTableName" type="xsd:string" use="required" />
+		<xsd:attribute name="currentTableName" type="xsd:string" use="required" />
 		<xsd:attribute name="newTableName" type="xsd:string" use="required" />
 	</xsd:complexType>
 
