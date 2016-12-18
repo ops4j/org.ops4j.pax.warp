@@ -105,6 +105,18 @@ and the supported commands:
          --version                                                                                                                                                                                                                            
         prints version                                                                                                                                                                                                                        
    Commands:                                                                                                                                                                                                                                  
+    dumpAll      dumps all structure and data from a database
+      Usage: dumpAll [options]
+        Options:
+              --output
+             output file path
+              --password
+             JDBC password
+        *     --url
+             JDBC URL
+              --username
+             JDBC username
+
      dumpData      dumps all data from a database                                                                                                                                                                                             
        Usage: dumpData [options]                                                                                                                                                                                                              
          Options:                                                                                                                                                                                                                             
@@ -194,6 +206,7 @@ integration tests in the `itest-osgi` module, e.g. `org.ops4j.pax.warp.itest.Com
 Pax Warp provides a Maven plugin, with goals and parameters matching the command-line syntax
 of the stand-alone application. The Maven plugin has the following goals:
 
+* `dump-all`
 * `dump-data`
 * `dump-structure`
 * `import-data`
@@ -325,36 +338,127 @@ A table column is specified by `<column>` element with the following attributes
 
 == Changes
 
+The following sections list all supported changes with a brief description and an XML example. 
+For more details, take a look at the XML schema `warp.xsd`.
+
 === Add column
+
+Adds a column to a given table.
+
+        <addColumn tableName="numbers">
+            <column name="n16" type="int16" nullable="true"/>
+        </addColumn>
 
 === Add foreign key
 
+Adds a foreign key to a given table, referencing one or more columns of some other table.
+
+        <addForeignKey constraintName="fk_numbers_strings_numbers">
+            <baseTable tableName="numbers_strings"/>
+            <referencedTable tableName="numbers"/>
+            <columnPair>
+                <base columnName="number_id"/>
+                <referenced columnName="id"/>
+            </columnPair>
+        </addForeignKey>
+
 === Add primary key
+
+Adds a primary key to a given table.
+
+        <addPrimaryKey tableName="numbers_strings">
+            <column>number_id</column>
+            <column>string_id</column>
+        </addPrimaryKey>
+
 
 === Create index
 
+Creates an index on one or more columns of a given table.
+
+        <createIndex tableName="numbers" indexName="ix_i32_i64">
+            <column name="i32"/>
+            <column name="i64"/>
+        </createIndex>
+
 === Create table
+
+Creates a table.
+
+        <createTable tableName="numbers_strings">
+            <column name="number_id" type="int32" nullable="false"/>
+            <column name="string_id" type="varchar" length="255" nullable="false"/>
+        </createTable>
 
 === Drop column
 
+Drops a column from a given table.
+
+        <dropColumn tableName="numbers" columnName="n16"/>
+
 === Drop foreign key
+
+Drops a given foreign key from a table.
+
+        <dropForeignKey tableName="numbers" constraintName="fk_numbers_strings"/>
 
 === Drop index
 
+Drops a given index from a table.
+
+        <dropIndex tableName="numbers" indexName="ix_i32_i64"/>
+
 === Drop primary key
+
+Drops a given primary key from a table.
+
+        <dropPrimaryKey tableName="numbers" constraintName="pk_numbers"/>
 
 === Drop table
 
+Drops a given table.
+
+        <dropTable tableName="foo_bar" />
+
 === Insert
+
+Inserts a data row into a given table.
+
+        <insert tableName="strings">
+            <column name="id" type="VARCHAR">myid</column>
+            <column name="c4" type="CHAR">abcd</column>
+            <column name="c254" type="CHAR">foo</column>
+            <column name="v4" type="VARCHAR" null="true"></column>
+            <column name="v255" type="VARCHAR"/>
+            <column name="t" type="CLOB">A long string</column>
+            <column name="enabled" type="BOOLEAN">true</column>
+        </insert>
 
 === Rename Column
 
+Renames a given column of a table.
+
+        <renameColumn tableName="strings" currentColumnName="t" newColumnName="txt" />        
+
 === Rename Table
+
+Renames a given table.
+
+        <renameTable currentTableName="foo" newTableName="foo_bar" />        
 
 === Run SQL
 
+Runs an arbitrary SQL statement, optionally only for a given list of suppported DBMSs.
+
+Use with care, as this is not portable. The DBMS-independent actions are preferred.
+
+        <runSql dbms="h2, oracle">INSERT INTO ch4 VALUES (1)</runSql>
+
 === Truncate table
 
+Truncates a given table, deleting all records, but preserving the empty table.
+
+        <truncateTable tableName="foo_bar" />
 
 // Return to normal title levels 
 :leveloffset: 0
