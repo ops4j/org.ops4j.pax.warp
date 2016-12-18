@@ -120,36 +120,9 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>mysql</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <mysql>true</mysql>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>postgres</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <postgres>true</postgres>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+        <!-- Enable this profile to access the Oracle JDBC driver. This requires an Oracle user account.
+             The credentials must be defined in your ~/.m2/settings.xml.
+         -->
         <profile>
             <id>oracle</id>
             <dependencies>
@@ -174,8 +147,24 @@
                     </snapshots>
                 </repository>
             </repositories>
-
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.18.1</version>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <oracle>true</oracle>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>                     
+                </plugins>
+            </build>
         </profile>
+        <!-- 
+            Enable this profile to execute integration tests with non-embedded database servers running
+            in Docker containers.
+         -->
         <profile>
             <id>docker</id>
             <build>
@@ -301,7 +290,6 @@
                                 <mariadb>true</mariadb>
                                 <mysql>true</mysql>
                                 <postgres>true</postgres>
-                                <oracle>true</oracle>
                                 <mariadb.jdbc.port>${mariadb.jdbc.port}</mariadb.jdbc.port>
                                 <mysql.jdbc.port>${mysql.jdbc.port}</mysql.jdbc.port>
                                 <postgresql.jdbc.port>${postgresql.jdbc.port}</postgresql.jdbc.port>
