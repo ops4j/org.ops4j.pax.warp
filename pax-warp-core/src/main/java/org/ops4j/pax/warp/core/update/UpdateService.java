@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.ops4j.pax.warp.core.dbms.DbmsProfile;
+import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
 
 /**
  * Updates a database with information from a change log.
@@ -31,6 +32,26 @@ import org.ops4j.pax.warp.core.dbms.DbmsProfile;
  *
  */
 public interface UpdateService {
+
+    /**
+     * Applies all new change sets from the given change log to the given database. The change set
+     * history metadata table is checked for each change set. If the change set identity is stored
+     * in the table, the actual change set checksum is compared to the change set checksum stored in
+     * the database. If the checksum matches, the change set will be skipped, otherwise, the
+     * migration will be aborted. If the change set identity is not stored, the change set will be
+     * applied, and a record will be added to the history table.
+     *
+     * @param dbc
+     *            JDBC database connection
+     * @param changeLog
+     *            change log
+     * @param dbms
+     *            profile identifying a database management system
+     * @param schema
+     *            Optional database schema. If missing, the default schema will be used.
+     *            If present, the given schema will be used and created if missing.
+     */
+    void migrate(Connection dbc, ChangeLog changeLog, DbmsProfile dbms, Optional<String> schema);
 
     /**
      * Applies all new change sets from the given change log to the given database. The change set

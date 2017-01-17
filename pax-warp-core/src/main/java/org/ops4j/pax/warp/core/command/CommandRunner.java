@@ -24,6 +24,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.ops4j.pax.warp.jaxb.gen.ChangeLog;
+
 /**
  * Interface for embedding Pax Warp into client applications via dependency injection.
  *
@@ -156,7 +158,7 @@ public interface CommandRunner {
      *            output stream for change log
      */
     void dumpAll(String jdbcUrl, String username, String password, OutputStream os);
-    
+
     /**
      * Analyzes the structure of the database with the given URL and writes a change log
      * corresponding to the database structure to the given output stream, also including
@@ -168,7 +170,7 @@ public interface CommandRunner {
      *            output stream for change log
      */
     void dumpAll(Connection dbc, OutputStream os);
-    
+
     /**
      * Migrates the database with the given URL by applying the change log from the given input
      * stream.
@@ -205,6 +207,28 @@ public interface CommandRunner {
      *            input stream for change log
      */
     void migrate(Connection dbc, InputStream is);
+
+    /**
+     * Migrates the database with the given connection by applying the given change log.
+     * @param dbc
+     *            JDBC database connection
+     * @param changeLog
+     *            change log
+     */
+    void migrate(Connection dbc, ChangeLog changeLog);
+
+    /**
+     * Migrates the database with the given connection by applying the change log.
+     *
+     * @param dbc
+     *            JDBC database connection
+     * @param changeLog
+     *            change log
+     * @param schema
+     *            database schema which will be created if needed and will be set on the
+     *            given connection for the duration of this command
+     */
+    void migrate(Connection dbc, ChangeLog changeLog, String schema);
 
     /**
      * Migrates the database with the given connection by applying the change log from the given
