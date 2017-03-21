@@ -30,7 +30,7 @@
         <version.pax.exam>4.9.2</version.pax.exam>
         <version.pax.jdbc>0.5.0</version.pax.jdbc>
         <version.pax.url>2.5.1</version.pax.url>
-        <version.trimou>2.1.0.Final</version.trimou>
+        <version.trimou>2.2.0.Final</version.trimou>
         <version.weld>2.4.1.Final</version.weld>
         <version.weld.api>2.4.Final</version.weld.api>
     </properties>
